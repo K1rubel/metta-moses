@@ -180,3 +180,13 @@
 (= (List.concat Nil $list2) $list2)
 (= (List.concat (Cons $head $tail) $list2)
    (Cons $head (List.concat $tail $list2)))
+
+;; List.takeNFrom -- takes N members starting from given start position position 
+(: List.takeNFrom (-> Number Number (List $a) (List $a)))
+(= (List.takeNFrom $start $n Nil) Nil)
+(= (List.takeNFrom $start $n (Cons $x $xs))
+    (if (== $n 0)
+        Nil
+        (if (== $start 0)
+            (List.takeN $n (Cons $x $xs))
+            (List.takeNFrom (- $start 1) $n $xs))))   
