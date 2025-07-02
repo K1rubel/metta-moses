@@ -29,12 +29,12 @@ jobs:
 
         sudo apt-get update
 
-        # Remove existing SWI-Prolog packages to avoid conflicts
-        sudo apt-get remove -y swi-prolog-core swi-prolog-nox swi-prolog-x swi-prolog || true
-        sudo apt-get install -f -y  # Fix any broken dependencies
+        # Clean removal of all Prolog packages
+        sudo apt-get purge -y 'swi-prolog*'
+        sudo apt-get autoremove -y
+        sudo apt-get clean
 
-        # Attempt to install specific version of swi-prolog-nox (adjust if unavailable)
-        sudo dpkg --force-overwrite -i /var/cache/apt/archives/swi-prolog-nox_9.3.25-1-gaf32dae2b-nobleppa2_amd64.deb || true
+        # Re-install required packages cleanly
         sudo apt-get install -y swi-prolog-nox
 
         # Clone and run INSTALL.sh from logicmoo/metta-wam
