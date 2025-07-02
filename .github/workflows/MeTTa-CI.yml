@@ -12,21 +12,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout your repository
+      uses: actions/checkout@v2
 
-    - name: Install SWI-Prolog
+    - name: Install SWI-Prolog and system deps
       run: |
         sudo apt-get update
-        sudo apt-get install -y swi-prolog git
+        sudo apt-get install -y swi-prolog curl
 
-    - name: Clone metta-wam (mettalog)
+    - name: Clone and install metta-wam (mettalog)
       run: |
-        git clone https://github.com/trueagi-io/metta-wam.git
+        git clone https://github.com/trueagi-io/metta-wam
         cd metta-wam
-        swipl -g main -t halt -s compile.pl  # build mettalog
+        chmod +x INSTALL.sh
+        ./INSTALL.sh --allow-system-modifications --yes
 
-    - name: Set METTALOG path
-      run: echo "$(pwd)/metta-wam" >> $GITHUB_PATH
+    - name: Add mettalog to PATH
+      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Install Python
       uses: actions/setup-python@v4
