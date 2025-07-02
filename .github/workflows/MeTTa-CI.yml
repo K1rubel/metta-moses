@@ -65,7 +65,7 @@ jobs:
         git clone https://github.com/trueagi-io/metta-wam --depth 1
         cd metta-wam
         chmod +x ./INSTALL.sh
-        sudo ./INSTALL.sh --allow-system-modifications > install.log 2>&1 || { cat install.log; exit 1; }
+        source ./INSTALL.sh --allow-system-modifications > install.log 2>&1 || { cat install.log; exit 1; }
         cd ..
 
     - name: Verify SWI-Prolog Installation
