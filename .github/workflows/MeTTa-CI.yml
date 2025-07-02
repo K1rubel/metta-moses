@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4  # Update to latest checkout action
+    - uses: actions/checkout@v4
 
     - name: Cache Python Dependencies
       uses: actions/cache@v4
@@ -33,7 +33,7 @@ jobs:
           ${{ runner.os }}-apt-
 
     - name: Setup Python Environment
-      uses: actions/setup-python@v5  # Update to latest setup-python action
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11.6'
 
@@ -44,6 +44,12 @@ jobs:
 
         sudo apt-get update
 
+        # Install build dependencies for SWI-Prolog
+        sudo apt-get install -y build-essential autoconf git cmake libpython3-dev libgmp-dev libssl-dev unixodbc-dev \
+          libreadline-dev zlib1g-dev libarchive-dev libossp-uuid-dev libxext-dev \
+          libice-dev libjpeg-dev libxinerama-dev libxft-dev libxpm-dev libxt-dev \
+          pkg-config libdb-dev libpcre3-dev libyaml-dev libedit-dev
+
         # Remove ALL Prolog-related packages
         sudo apt-get purge -y 'swi-prolog*' || true
         sudo apt-get autoremove -y
@@ -52,14 +58,14 @@ jobs:
         # Remove leftover SWI-Prolog directories
         sudo rm -rf /usr/lib/swi-prolog /usr/lib/swipl /usr/lib/cmake/swipl || true
 
-        # Install specific version of SWI-Prolog
+        # Install specific version of SWI-Prolog (compatible with metta-wam requirements)
         sudo apt-get install -y swi-prolog-nox=9.0.4+dfsg-3.1ubuntu4 swi-prolog=9.0.4+dfsg-3.1ubuntu4
 
-        # Clone and install metta-wam
-        git clone https://github.com/logicmoo/metta-wam --depth 1
+        # Clone and install metta-wam from trueagi-io
+        git clone https://github.com/trueagi-io/metta-wam --depth 1
         cd metta-wam
         chmod +x ./INSTALL.sh
-        sudo ./INSTALL.sh --allow-system-modifications || true
+        sudo ./INSTALL.sh --allow-system-modifications > install.log 2>&1 || { cat install.log; exit 1; }
         cd ..
 
     - name: Verify SWI-Prolog Installation
@@ -70,7 +76,21 @@ jobs:
           exit 1
         fi
 
+    - name: Verify MeTTaLog Installation
+      run: |
+        # Check if mettalog exists in expected locations
+        find / -name mettalog 2>/dev/null || echo "mettalog binary not found"
+        if [ -f ./metta-wam/bin/mettalog ]; then
+          echo "mettalog found in ./metta-wam/bin"
+          sudo mv ./metta-wam/bin/mettalog /usr/local/bin/mettalog
+          sudo chmod +x /usr/local/bin/mettalog
+        else
+          echo "mettalog not found in ./metta-wam/bin"
+          exit 1
+        fi
+        mettalog --version || { echo "mettalog --version failed"; exit 1; }
+
     - name: Run tests using mettalog
       run: |
-        mettalog --test examples/tests/unit_test_example.metta || { echo "Unit tests failed"; exit 1; }
-        mettalog --test tests/baseline_compat/metta-morph_tests/tests0.metta || { echo "Metta-morph tests failed"; exit 1; }
+        mettalog --test examples/tests/unit_test_example.metta --html || { echo "Unit tests failed"; exit 1; }
+        mettalog --test tests/baseline_compat/metta-morph_tests/tests0.metta --html || { echo "Metta-morph tests failed"; exit 1; }
