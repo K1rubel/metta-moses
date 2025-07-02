@@ -14,41 +14,63 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4  # Update to latest checkout action
+
+    - name: Cache Python Dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Cache Apt Dependencies
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-${{ hashFiles('**/*.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-
 
     - name: Setup Python Environment
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5  # Update to latest setup-python action
       with:
         python-version: '3.11.6'
 
     - name: Install MeTTaLog Dependencies
       run: |
         python -m pip install --upgrade pip==23.1.2
-        pip install numpy==2.2.1
-        pip install pyswip janus ansi2html junit2html
+        pip install numpy==2.2.1 pyswip janus ansi2html junit2html
 
         sudo apt-get update
 
-        # Remove ALL Prolog-related packages including swi-prolog-core explicitly
-        sudo apt-get purge -y swi-prolog-core swi-prolog-nox swi-prolog swi-prolog-x
+        # Remove ALL Prolog-related packages
+        sudo apt-get purge -y 'swi-prolog*' || true
         sudo apt-get autoremove -y
         sudo apt-get clean
 
-        # Clean up any leftover files
-        sudo rm -rf /usr/lib/swi-prolog /usr/lib/cmake/swipl || true
+        # Remove leftover SWI-Prolog directories
+        sudo rm -rf /usr/lib/swi-prolog /usr/lib/swipl /usr/lib/cmake/swipl || true
 
-        # Reinstall clean Prolog version (non-conflicting)
-        sudo apt-get install -y swi-prolog-nox swi-prolog
+        # Install specific version of SWI-Prolog
+        sudo apt-get install -y swi-prolog-nox=9.0.4+dfsg-3.1ubuntu4 swi-prolog=9.0.4+dfsg-3.1ubuntu4
 
-        # Clone and run INSTALL.sh from logicmoo/metta-wam
+        # Clone and install metta-wam
         git clone https://github.com/logicmoo/metta-wam --depth 1
         cd metta-wam
-
         chmod +x ./INSTALL.sh
-        source ./INSTALL.sh --allow-system-modifications  # avoid crashing on minor failures
+        sudo ./INSTALL.sh --allow-system-modifications || true
         cd ..
+
+    - name: Verify SWI-Prolog Installation
+      run: |
+        swipl --version
+        if ! command -v swipl &> /dev/null; then
+          echo "SWI-Prolog installation failed"
+          exit 1
+        fi
 
     - name: Run tests using mettalog
       run: |
-        mettalog --test examples/tests/unit_test_example.metta
-        mettalog --test tests/baseline_compat/metta-morph_tests/tests0.metta
+        mettalog --test examples/tests/unit_test_example.metta || { echo "Unit tests failed"; exit 1; }
+        mettalog --test tests/baseline_compat/metta-morph_tests/tests0.metta || { echo "Metta-morph tests failed"; exit 1; }
