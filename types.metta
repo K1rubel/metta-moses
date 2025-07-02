@@ -1,0 +1,12 @@
+(: List type)
+(: Nil (List $t))
+(: Cons (-> $t (List $t) (List $t)))
+
+(: Signal Type)
+(: ReductionSignal Signal)
+(: IterationSignal Signal)
+(: DELETE ReductionSignal)
+(: DISCONNECT ReductionSignal)
+(: KEEP ReductionSignal)
+(: NONE ReductionSignal)
+(: ADVANCE IterationSignal)

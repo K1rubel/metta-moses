@@ -1,0 +1,17 @@
+;(: gatherJunctors (-> Expression Expression Expression))
+(= (gatherJunctors $expr $prev)
+   (case $expr
+      (
+         (($op $a $b)
+            (if (== $prev ())
+               (concatTuple ($op) (concatTuple (gatherJunctors $a $op) (gatherJunctors $b $op)))
+               (if (== $op $prev)
+                  (concatTuple (gatherJunctors $a $op) (gatherJunctors $b $op))
+                  ((concatTuple ($op) (concatTuple (gatherJunctors $a $op) (gatherJunctors $b $op))))
+               )
+            )
+         )
+         ($symbol ($symbol))
+      )
+   )
+)
