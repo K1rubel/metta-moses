@@ -54,10 +54,13 @@ jobs:
         sudo apt-get clean
         sudo rm -rf /usr/lib/swi-prolog /usr/lib/swipl /usr/lib/cmake/swipl || true
 
-        # Install SWI-Prolog 9.3.9 (required by trueagi-io/metta-wam)
+        # Check available SWI-Prolog packages
         sudo add-apt-repository -y ppa:swi-prolog/stable
         sudo apt-get update
-        sudo apt-get install -y swi-prolog-nox=9.3.9-1-g3a1a3b44b-nobleppa2 swi-prolog=9.3.9-1-g3a1a3b44b-nobleppa2
+        apt-cache policy swi-prolog-core swi-prolog-core-packages
+
+        # Install available SWI-Prolog packages
+        sudo apt-get install -y swi-prolog-core swi-prolog-core-packages || { echo "SWI-Prolog package installation failed"; exit 1; }
 
         # Clone and install metta-wam from trueagi-io
         git clone https://github.com/trueagi-io/metta-wam --depth 1
