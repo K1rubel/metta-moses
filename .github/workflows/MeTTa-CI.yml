@@ -3,18 +3,18 @@ name: metta-run CI
 on:
   push:
     branches:
-      - refactor-metta
+      - ref/mettalog
   pull_request:
     branches:
-      - refactor-metta
+      - ref/mettalog
+  workflow_dispatch:
 
 jobs:
   setup-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - name: Setup Python Environment
       uses: actions/setup-python@v4
@@ -29,13 +29,13 @@ jobs:
 
         sudo apt-get update
 
-        # Clean removal of all Prolog packages
+        # Full purge of old SWI-Prolog packages to prevent conflict
         sudo apt-get purge -y 'swi-prolog*'
         sudo apt-get autoremove -y
         sudo apt-get clean
 
-        # Re-install required packages cleanly
-        sudo apt-get install -y swi-prolog-nox
+        # Reinstall base SWI-Prolog packages
+        sudo apt-get install -y swi-prolog-nox swi-prolog
 
         # Clone and run INSTALL.sh from logicmoo/metta-wam
         git clone https://github.com/logicmoo/metta-wam --depth 1
@@ -44,12 +44,12 @@ jobs:
           chmod +x ./INSTALL.sh
           source ./INSTALL.sh --allow-system-modifications
         else
-          echo "INSTALL.sh not found in logicmoo/metta-wam. Manual installation required."
+          echo "INSTALL.sh not found in metta-wam. Manual installation required."
           exit 1
         fi
         cd ..
 
-    - name: Run tests using MeTTaLog
+    - name: Run tests using mettalog
       run: |
         mettalog --test examples/tests/unit_test_example.metta
         mettalog --test tests/baseline_compat/metta-morph_tests/tests0.metta
