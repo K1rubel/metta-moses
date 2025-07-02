@@ -45,7 +45,7 @@ jobs:
         cd metta-wam
 
         chmod +x ./INSTALL.sh
-        bash "source ./INSTALL.sh --allow-system-modifications || true"  # avoid crashing on minor failures
+        source ./INSTALL.sh --allow-system-modifications  # avoid crashing on minor failures
         cd ..
 
     - name: Run tests using mettalog
