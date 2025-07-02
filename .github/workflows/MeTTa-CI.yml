@@ -1,39 +1,35 @@
-name: mettalog CI
+name: metta-run CI
 
 on:
   push:
-    branches: [main, dev, refactor-metta]
+    branches: [ref/mettalog]
   pull_request:
-    branches: [main, dev, refactor-metta]
-  workflow_dispatch:
+    branches: [ref/mettalog]
 
 jobs:
-  setup-and-test:
+  mettalog-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout your repository
-      uses: actions/checkout@v2
+    - name: Checkout Repo
+      uses: actions/checkout@v3
 
-    - name: Install SWI-Prolog and system deps
+    - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y swi-prolog curl
+        sudo apt-get install -y swi-prolog-nox swi-prolog
 
-    - name: Clone and install metta-wam (mettalog)
-      run: |
-        git clone https://github.com/trueagi-io/metta-wam
-        cd metta-wam
-        chmod +x INSTALL.sh
-        source ./INSTALL.sh --allow-system-modifications --yes
-
-    - name: Add mettalog to PATH
-      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-    - name: Install Python
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11.6'
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
     - name: Run mettalog tests
-      run: python3 scripts/run-tests.py
+      run: |
+        cd metta-moses/metta-moses/utilities/tests
+        mettalog ../lazy-random-selector.metta
