@@ -41,7 +41,7 @@ def run_test_file(test_file):
     print(f"Running mettalog on {test_file}")
     try:
         result = subprocess.run(
-            [metta_run_command, str(test_file), "--html"],
+            [metta_run_command, str(test_file)],
             capture_output=True,
             text=True,
             check=True,
