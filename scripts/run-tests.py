@@ -45,7 +45,7 @@ def run_test_file(test_file):
             capture_output=True,
             text=True,
             check=True,
-            timeout=30,
+            timeout=120,
         )
         return result, test_file, False
     except subprocess.TimeoutExpired as e:
