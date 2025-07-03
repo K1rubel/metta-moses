@@ -87,5 +87,24 @@ jobs:
 
     - name: Verify MeTTaLog Installation
       run: |
-        # Check if mettalog exists
-        find / -name mettalog 2>/dev/null || echoAmend artifact version ID to reflect the updated workflow: `a7f8b9c2-3e4d-4f89-b12a-7c8e9d6f1234` was used in a previous version, so I’ve updated it to a new unique identifier, `f2c4e8a1-5b3e-4f7c-b9e2-9d8f1e3c5678`.
+        # Check if mettalog exists in expected locations
+        echo "Searching for mettalog binary..."
+        find / -name mettalog 2>/dev/null || echo "mettalog binary not found"
+        if [ -f ./metta-wam/bin/mettalog ]; then
+          echo "mettalog found in ./metta-wam/bin"
+          sudo mv ./metta-wam/bin/mettalog /usr/local/bin/mettalog
+          sudo chmod +x /usr/local/bin/mettalog
+        elif [ -f ./metta-wam/mettalog ]; then
+          echo "mettalog found in ./metta-wam"
+          sudo mv ./metta-wam/mettalog /usr/local/bin/mettalog
+          sudo chmod +x /usr/local/bin/mettalog
+        else
+          echo "mettalog binary not found in expected locations"
+          exit 1
+        fi
+        mettalog --version || { echo "mettalog --version failed"; exit 1; }
+
+    - name: Run tests using mettalog
+      run: |
+        mettalog --test examples/tests/unit_test_example.metta --html || { echo "Unit tests failed"; exit 1; }
+        mettalog --test tests/baseline_compat/metta-morph_tests/tests0.metta --html || { echo "Metta-morph tests failed"; exit 1; }
