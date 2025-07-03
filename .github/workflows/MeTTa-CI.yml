@@ -6,56 +6,75 @@ on:
   pull_request:
     branches: [refactor-metta]
   workflow_dispatch:
+
 jobs:
   mettalog-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python 3.12
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12.3'
 
     - name: Upgrade pip and install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install numpy pyswip janus ansi2html junit2html
+        pip install numpy pyswip janus==1.0.0 ansi2html junit2html
 
     - name: Install SWI-Prolog from PPA
       run: |
-        sudo apt-get remove -y swi-prolog swi-prolog-core swi-prolog-nox swi-prolog-x || true
         sudo apt-get update
-        sudo apt-add-repository ppa:swi-prolog/stable -y
+        sudo apt-get purge -y 'swi-prolog*' || true
+        sudo apt-get autoremove -y
+        sudo apt-get clean
+        sudo rm -rf /usr/lib/swi-prolog /usr/lib/swipl /usr/lib/cmake/swipl || true
+        sudo dpkg --purge --force-all swi-prolog-core || true
+        sudo rm -f /usr/lib/cmake/swipl/SWIPLConfig.cmake || true
+        sudo apt-get install -y build-essential autoconf git cmake libpython3-dev libgmp-dev libssl-dev unixodbc-dev \
+          libreadline-dev zlib1g-dev libarchive-dev libossp-uuid-dev
+        sudo add-apt-repository -y ppa:swi-prolog/stable
         sudo apt-get update
-        sudo apt-get install -y swi-prolog
+        apt-cache policy swi-prolog-nox
+        sudo apt-get install -y swi-prolog-nox || { echo "SWI-Prolog installation failed"; exit 1; }
 
-    - name: Install MeTTaLog (runs INSTALL.sh)
+    - name: Install MeTTaLog
       run: |
         git clone https://github.com/eyuuab/metta-wam --depth 1
         cd metta-wam
         chmod +x ./INSTALL.sh
-        bash -c "source ./INSTALL.sh --allow-system-modifications"
-
-
-        # Export real paths (with expanded $PWD and $PATH)
+        bash -c "source ./INSTALL.sh --allow-system-modifications" > env_setup.log 2>&1 || { cat env_setup.log; exit 1; }
         echo "PATH=${PWD}/venv/bin:${PATH}" >> $GITHUB_ENV
         echo "PYTHONPATH=${PWD}/python:${PWD}/tests/python_compat/metta-motto" >> $GITHUB_ENV
         echo "SWIPL_BOOT_FLAGS=--no-pce" >> $GITHUB_ENV
         echo "METTALOG_DIR=${PWD}" >> $GITHUB_ENV
-    
+        cd ..
 
-    # - name: Debug mettalog installation
-    #   run: |
-    #     echo "Looking inside venv/bin"
-    #     ls -la metta-wam/venv/bin
-    #     echo "Trying to locate mettalog"
-    #     find metta-wam -type f -name "mettalog"
-    #     which mettalog
- 
+    - name: Debug MeTTaLog Installation
+      run: |
+        echo "Looking inside metta-wam/venv/bin"
+        ls -la metta-wam/venv/bin
+        echo "Trying to locate mettalog"
+        find metta-wam -type f -name "mettalog"
+        if [ -f ./metta-wam/bin/mettalog ]; then
+          echo "mettalog found in ./metta-wam/bin"
+          sudo mv ./metta-wam/bin/mettalog /usr/local/bin/mettalog
+          sudo chmod +x /usr/local/bin/mettalog
+        elif [ -f ./metta-wam/mettalog ]; then
+          echo "mettalog found in ./metta-wam"
+          sudo mv ./metta-wam/mettalog /usr/local/bin/mettalog
+          sudo chmod +x /usr/local/bin/mettalog
+        else
+          echo "mettalog binary not found in expected locations"
+          exit 1
+        fi
+        which mettalog || { echo "mettalog not in PATH"; exit 1; }
+        mettalog --version || { echo "mettalog --version failed"; exit 1; }
+
     - name: Run MeTTaLog Tests
       run: |
-        which mettalog  # Show full path if available
+        which mettalog
         python3 scripts/run-tests.py
