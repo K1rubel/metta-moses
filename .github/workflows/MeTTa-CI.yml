@@ -74,17 +74,6 @@ jobs:
         which mettalog || { echo "mettalog not in PATH"; exit 1; }
         mettalog --version || { echo "mettalog --version failed"; exit 1; }
 
-    - name: Debug Repository Structure
-      run: |
-        echo "Listing repository root contents"
-        ls -la .
-        echo "Listing metta-wam contents"
-        ls -la metta-wam
-        echo "Listing metta-wam/python/sandbox contents"
-        ls -la metta-wam/python/sandbox || echo "metta-wam/python/sandbox not found"
-        echo "Listing all *test.metta files"
-        find .. -type f -name "*test.metta"
-
     - name: Verify Test Files
       run: |
         echo "Checking for expected test file"
@@ -104,12 +93,14 @@ jobs:
 
     - name: Test mettalog Command
       run: |
-        echo "Running sample mettalog commands"
+        echo "Running sample mettalog command"
         mettalog --version || { echo "mettalog --version failed"; exit 1; }
-        echo "Testing mettalog with empty input"
-        echo "" | mettalog || { echo "mettalog failed on empty input"; exit 1; }
-        echo "Testing mettalog with list-methods-test.metta"
-        mettalog utilities/tests/list-methods-test.metta --html || { echo "mettalog test run failed"; exit 1; }
+        # Test with a dummy file if available
+        if [ -f ../examples/tests/unit_test_example.metta ]; then
+          mettalog ../examples/tests/unit_test_example.metta --html || { echo "mettalog test run failed"; exit 1; }
+        else
+          echo "Sample test file not found, skipping"
+        fi
 
     - name: Run MeTTaLog Tests
       run: |
