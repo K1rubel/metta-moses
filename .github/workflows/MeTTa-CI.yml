@@ -74,11 +74,11 @@ jobs:
         which mettalog || { echo "mettalog not in PATH"; exit 1; }
         mettalog --version || { echo "mettalog --version failed"; exit 1; }
 
-    - name: Verify Test Files
-      run: |
-        echo "Listing test files in ../ from scripts/"
-        ls -la ../*test.metta || echo "No *test.metta files found in ../"
-        find .. -type f -name "*test.metta"
+    # - name: Verify Test Files
+    #   run: |
+    #     echo "Listing test files in ../ from scripts/"
+    #     ls -la ../*test.metta || echo "No *test.metta files found in ../"
+    #     find .. -type f -name "*test.metta"
 
     - name: Test mettalog Command
       run: |
