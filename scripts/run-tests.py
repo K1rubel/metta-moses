@@ -41,11 +41,11 @@ def run_test_file(test_file):
     print(f"Running mettalog on {test_file}")
     try:
         result = subprocess.run(
-            [metta_run_command, str(test_file)],
+            [metta_run_command, str(test_file), "--html"],
             capture_output=True,
             text=True,
             check=True,
-            timeout=30,  # Timeout after 30 seconds
+            timeout=30,
         )
         return result, test_file, False
     except subprocess.TimeoutExpired as e:
@@ -65,12 +65,13 @@ def print_ascii_art(text):
 # Define the command to run with the test files
 metta_run_command = "mettalog"
 
-root = pathlib.Path("../")
-testMettaFiles = list(root.rglob("*test.metta"))
+# Restrict test file discovery to utilities/tests
+test_dir = pathlib.Path("utilities/tests")
+testMettaFiles = list(test_dir.rglob("*test.metta"))
 total_files = len(testMettaFiles)
 
 if total_files == 0:
-    print(RED + "No *test.metta files found in ../" + RESET)
+    print(RED + "No *test.metta files found in utilities/tests" + RESET)
     sys.exit(1)
 
 print(CYAN + f"Found {total_files} test files:" + RESET)

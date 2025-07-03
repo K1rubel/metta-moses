@@ -74,22 +74,42 @@ jobs:
         which mettalog || { echo "mettalog not in PATH"; exit 1; }
         mettalog --version || { echo "mettalog --version failed"; exit 1; }
 
-    # - name: Verify Test Files
-    #   run: |
-    #     echo "Listing test files in ../ from scripts/"
-    #     ls -la ../*test.metta || echo "No *test.metta files found in ../"
-    #     find .. -type f -name "*test.metta"
+    - name: Debug Repository Structure
+      run: |
+        echo "Listing repository root contents"
+        ls -la .
+        echo "Listing metta-wam contents"
+        ls -la metta-wam
+        echo "Listing metta-wam/python/sandbox contents"
+        ls -la metta-wam/python/sandbox || echo "metta-wam/python/sandbox not found"
+        echo "Listing all *test.metta files"
+        find .. -type f -name "*test.metta"
+
+    - name: Verify Test Files
+      run: |
+        echo "Checking for expected test file"
+        if [ -f utilities/tests/list-methods-test.metta ]; then
+          echo "Found utilities/tests/list-methods-test.metta"
+        else
+          echo "Expected test file utilities/tests/list-methods-test.metta not found"
+          exit 1
+        fi
+        echo "Checking for unexpected test files in metta-wam/python/sandbox"
+        if ls metta-wam/python/sandbox/*test.metta >/dev/null 2>&1; then
+          echo "Unexpected test files found in metta-wam/python/sandbox:"
+          ls -la metta-wam/python/sandbox/*test.metta
+        else
+          echo "No unexpected test files in metta-wam/python/sandbox"
+        fi
 
     - name: Test mettalog Command
       run: |
-        echo "Running sample mettalog command"
+        echo "Running sample mettalog commands"
         mettalog --version || { echo "mettalog --version failed"; exit 1; }
-        # Test with a dummy file if available
-        if [ -f ../examples/tests/unit_test_example.metta ]; then
-          mettalog ../examples/tests/unit_test_example.metta --html || { echo "mettalog test run failed"; exit 1; }
-        else
-          echo "Sample test file not found, skipping"
-        fi
+        echo "Testing mettalog with empty input"
+        echo "" | mettalog || { echo "mettalog failed on empty input"; exit 1; }
+        echo "Testing mettalog with list-methods-test.metta"
+        mettalog utilities/tests/list-methods-test.metta --html || { echo "mettalog test run failed"; exit 1; }
 
     - name: Run MeTTaLog Tests
       run: |
