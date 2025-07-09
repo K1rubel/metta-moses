@@ -699,3 +699,19 @@
             True
             (let $amp (abs (+ $x $y))
                 (<= $diff (* EPSILON $amp))))))      
+                
+;; A function to concatenate two expressions.
+(= (concatT $expr1 $expr2)
+    (if (== $expr1 ())
+        $expr2
+        (let*
+            (
+            ($head (car-atom $expr1))
+            ($tail (concatT (cdr-atom $expr1) $expr2))
+            )
+            (cons-atom $head $tail)
+        )
+        
+
+    )
+)

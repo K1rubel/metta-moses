@@ -13,6 +13,7 @@
             (ConsMap ($curKey $curVal) (Map.insert ($key $value) $tail)))))
 
 ;; An insertion function that also allows map to act as a counter
+
 (: Map.insertCounter (-> $k (Map ($k $v)) (Map ($k $v))))
 (= (Map.insertCounter $key NilMap) (ConsMap ($key 1) NilMap))
 (= (Map.insertCounter $key (ConsMap ($curKey $curVal) $tail))
@@ -61,9 +62,8 @@
 (: Map.remove (-> $k (Map ($k $v)) (Map ($k $v))))
 (= (Map.remove $key NilMap) (Error $key "not found"))
 (= (Map.remove $key (ConsMap ($curKey $curVal) $tail)) 
-    (if (== $key $curKey) 
-        $tail 
-        (chain (Map.remove $key $tail) $res (if-error $res $res (ConsMap ($curKey $curVal) $res)))))
+    (if (== $key $curKey) $tail 
+    (chain (Map.remove $key $tail) $res (if-error $res $res (ConsMap ($curKey $curVal) $res)))))
 
 ;; Get the all the values from the map
 (: Map.values (-> (Map ($k $v)) (List $v)))
@@ -98,4 +98,7 @@
                       (if (== $targetIdx -1)
                           $targetIdx
                           (+ 1 $targetIdx)))))
-                          
+
+!(Map.find (ConsMap ((0) 1) (ConsMap ((1) 2) (ConsMap ((2) 3) NilMap))) (2) )
+!(Map.getByIdx (ConsMap ((0) 1) (ConsMap ((1) 2) (ConsMap ((2) 3) NilMap))) 1)
+
