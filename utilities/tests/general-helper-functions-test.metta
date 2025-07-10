@@ -382,60 +382,60 @@
 !(assertEqual (swapAndOr OR) AND)
 !(assertEqual (swapAndOr A) A)
 
-; ;; Test for compose function
-; (: inc (-> Number Number) )
-; (= (inc $x) (+ $x 1))
+;; Test for compose function
+(: inc (-> Number Number) )
+(= (inc $x) (+ $x 1))
 
-; (: dec (-> Number Number) )
-; (= (dec $x) (- $x 1))
+(: dec (-> Number Number) )
+(= (dec $x) (- $x 1))
 
-; !(assertEqual ((compose inc dec) 1) 1)
-; !(assertEqual ((compose (compose inc dec) (compose inc inc)) 1) 3)
-; !(assertEqual ((compose (compose inc dec) inc) 1) 2)
-; !(assertEqual ((compose not isZero) 1) True)
+!(assertEqual ((compose inc dec) 1) 1)
+!(assertEqual ((compose (compose inc dec) (compose inc inc)) 1) 3)
+!(assertEqual ((compose (compose inc dec) inc) 1) 2)
+!(assertEqual ((compose not isZero) 1) True)
 
-; ;; Test cases -- Aproximate equality
-; !(assertEqual (isApproxEq 0.0000005 0.0000006) True)
-; !(assertEqual (isApproxEq 1.0000005 1.0000006) True)
-; !(assertEqual (isApproxEq 1000000.1 1000000.2) True)
-; !(assertEqual (isApproxEq 1.0 1.1) False)
+;; Test cases -- Aproximate equality
+!(assertEqual (isApproxEq 0.0000005 0.0000006) True)
+!(assertEqual (isApproxEq 1.0000005 1.0000006) True)
+!(assertEqual (isApproxEq 1000000.1 1000000.2) True)
+!(assertEqual (isApproxEq 1.0 1.1) False)
 
-; ;; custom comparison functions for selectionSort
+;; custom comparison functions for selectionSort
 
-; ;; Function that compares the size of the two inputes and return True if the first is greater false otherwise
-; (: bySize Expression Expression Bool)
-; (= (bySize $x $y) 
-;     (let* (
-;         ($xLen (size-atom $x))
-;         ($yLen (size-atom $y))
-;     )
-;     (> $xLen $yLen)
-; ))
+;; Function that compares the size of the two inputes and return True if the first is greater false otherwise
+(: bySize Expression Expression Bool)
+(= (bySize $x $y) 
+    (let* (
+        ($xLen (size-atom $x))
+        ($yLen (size-atom $y))
+    )
+    (> $xLen $yLen)
+))
 
-; ;; Function that compares the second element (which is number) of the two inputes and return True if the first is greater false otherwise
-; (: bySecondAtom (-> ($a Number) ($b Number) Bool))
-; (= (bySecondAtom $x $y) 
-;     (let* (
-;         ($xSecond (indexAtom $x 1))
-;         ($ySecond (indexAtom $y 1))
-;     )
-;     (> $xSecond $ySecond)
-;     ))
+;; Function that compares the second element (which is number) of the two inputes and return True if the first is greater false otherwise
+(: bySecondAtom (-> ($a Number) ($b Number) Bool))
+(= (bySecondAtom $x $y) 
+    (let* (
+        ($xSecond (indexAtom $x 1))
+        ($ySecond (indexAtom $y 1))
+    )
+    (> $xSecond $ySecond)
+    ))
 
-; ;; Test cases -- bySize
-; !(assertEqual (bySize (w) (1 1 1)) False)
-; !(assertEqual (bySize (I c o g) (1 1 1)) True)
+;; Test cases -- bySize
+!(assertEqual (bySize (w) (1 1 1)) False)
+!(assertEqual (bySize (I c o g) (1 1 1)) True)
 
-; ;; Test cases -- bySecondAtom
-; !(assertEqual (bySecondAtom (b 1) (a 2)) False) 
-; !(assertEqual (bySecondAtom (b 10) (a 2)) True) 
+;; Test cases -- bySecondAtom
+!(assertEqual (bySecondAtom (b 1) (a 2)) False) 
+!(assertEqual (bySecondAtom (b 10) (a 2)) True) 
 
-; ;; Test cases -- selectionSort
-; !(assertEqual (selectionSort (4 1 9 2 8 3 25 2 9 73) 2 <) (1 2 4 9 8 3 25 2 9 73))
-; !(assertEqual (selectionSort (5 2 9 1 73 2 3 9 8 34 25) 3 >) (73 34 25 5 2 9 1 2 3 9 8))
-; !(assertEqual (selectionSort (1 73 2 3 1 9 8 34 1 25 1) 4 <) (1 1 1 1 73 2 3 9 8 34 25))
-; !(assertEqual (selectionSort () 2 >) ())
-; !(assertEqual (selectionSort (1 2 3) 4 >) (3 2 1))
+;; Test cases -- selectionSort
+!(assertEqual (selectionSort (4 1 9 2 8 3 25 2 9 73) 2 <) (1 2 4 9 8 3 25 2 9 73))
+!(assertEqual (selectionSort (5 2 9 1 73 2 3 9 8 34 25) 3 >) (73 34 25 5 2 9 1 2 3 9 8))
+!(assertEqual (selectionSort (1 73 2 3 1 9 8 34 1 25 1) 4 <) (1 1 1 1 73 2 3 9 8 34 25))
+!(assertEqual (selectionSort () 2 >) ())
+!(assertEqual (selectionSort (1 2 3) 4 >) (3 2 1))
 
 ; ;; Test cases -- selectionSort with non numeric expressions
 ; !(assertEqual (selectionSort ((a b) (a b c) (d) (m o s e s)) 1 bySize) ((m o s e s) (a b) (a b c) (d)))
