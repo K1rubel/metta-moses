@@ -1,5 +1,4 @@
 ;; Helper functions that are going to be useful for writing any metta code
-! (bind! isnan (py-atom math.isnan))
 
 (: ~= (-> Atom Atom Bool))
 (= (~= $a $b) (not (== $a $b)))
