@@ -437,17 +437,17 @@
 !(assertEqual (selectionSort () 2 >) ())
 !(assertEqual (selectionSort (1 2 3) 4 >) (3 2 1))
 
-; ;; Test cases -- selectionSort with non numeric expressions
-; !(assertEqual (selectionSort ((a b) (a b c) (d) (m o s e s)) 1 bySize) ((m o s e s) (a b) (a b c) (d)))
-; !(assertEqual (selectionSort ((a 1) (b 2) (d 10) (l 8)) 2 bySecondAtom) ((d 10) (l 8) (a 1) (b 2)))
+;; Test cases -- selectionSort with non numeric expressions
+!(assertEqual (selectionSort ((a b) (a b c) (d) (m o s e s)) 1 bySize) ((m o s e s) (a b) (a b c) (d)))
+!(assertEqual (selectionSort ((a 1) (b 2) (d 10) (l 8)) 2 bySecondAtom) ((d 10) (l 8) (a 1) (b 2)))
 
-; ;; Test cases --  selector
-; ! (assertEqual (selector (11 20 3 4 32) 11 >) 32)
-; ! (assertEqual (selector (11 20 3 4 32) <) 3)
-; ! (assertEqual (selector ((a b) (a b c) (d) (m o s e s)) (a b) bySize) (m o s e s))
-; ! (assertEqual (selector ((a 1) (b 2) (d 10) (l 8)) (a 1) bySecondAtom) (d 10))
+;; Test cases --  selector
+! (assertEqual (selector (11 20 3 4 32) 11 >) 32)
+! (assertEqual (selector (11 20 3 4 32) <) 3)
+! (assertEqual (selector ((a b) (a b c) (d) (m o s e s)) (a b) bySize) (m o s e s))
+! (assertEqual (selector ((a 1) (b 2) (d 10) (l 8)) (a 1) bySecondAtom) (d 10))
 
-; ;; Test cases -- concatT
-; ! (assertEqual (concatT (1 2 3) (4 5 6)) (1 2 3 4 5 6))
-; ! (assertEqual (concatT (1 2 3) ()) (1 2 3))
-; ! (assertEqual (concatT () (1 2 3)) (1 2 3))
+;; Test cases -- concatT
+! (assertEqual (concatT (1 2 3) (4 5 6)) (1 2 3 4 5 6))
+! (assertEqual (concatT (1 2 3) ()) (1 2 3))
+! (assertEqual (concatT () (1 2 3)) (1 2 3))
