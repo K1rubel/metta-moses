@@ -1,13 +1,11 @@
-; ! (bind! isnan (py-atom "math.isnan"))
-
 ;; The probability parameter p in the scoring represents the assumed probability that the model makes an error on any given data point.
 ;; If p is small (close to 0), it means the model is expected to be very accurate, making mistakes rarely.
 ;; If p is large (approaching 0.5), it means the model is expected to be less accurate, making mistakes more often (but still better than random guessing).
 
 (: getCscore (-> (ITable $a) (Tree $a) Number Cscore))
 (= (getCscore $itable $tree $complexityRatio)
-    (let $bs (scoreTree $itable $tree)
-        (if-error $bs ;; return worst possible composite score
+    (chain (scoreTree $itable $tree) $bs 
+            (if-error $bs ;; return worst possible composite score
             (worstCscore)
             (let* (($bsum (sumBScore $bs))
                    (() (println! (Score: $bsum)))
@@ -17,6 +15,8 @@
                    ($cCoef (getComplexityCoef $complexityRatio)))
 
                    (updatePenalizedScore (mkCscore $bsum $cpxy (* $cpxy $cCoef) 0.0 (* -1 (pow-math 10 308)))  False)))))
+
+
 
 ;; getComplexityCoef -- calcualtes the complexity coeffient of a tree   
 ;; takes complexity ratio as input and returns complexity coefficient
@@ -97,6 +97,3 @@
         (if (isnan $pl)
             False
             (or (> $pl $pr) (and (== $pl $pr) (< $cl $cr))))))
-
-            ; ! (isnan 4)
-            ; ! (isnan NaN)
