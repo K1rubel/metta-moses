@@ -95,4 +95,3 @@
         (if (isnan $pl)
             False
             (or (> $pl $pr) (and (== $pl $pr) (< $cl $cr))))))
-! (isnan 4)
