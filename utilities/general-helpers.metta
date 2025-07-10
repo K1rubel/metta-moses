@@ -697,5 +697,5 @@
 )
 
 ;; checking for nan
-!(bind! nan (py-atom "float ('nan')"))
+; !(bind! nan (py-atom "float ('nan')"))
 (= (isnan $x) (chain (eval (if-equal $x 1.5NaN True False))))
