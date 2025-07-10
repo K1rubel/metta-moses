@@ -231,58 +231,58 @@
 !(assertEqual (decons ()) (if False ((car-atom ()) (cdr-atom ())) (Error Unit Or Symbol cannot be deconstructed)))
 !(assertEqual (decons (A)) (A ()))
 
-; ;; ;; FIX: Failing Test case
-; ;; !(assertEqual (zip (A B C) (1 2 3)) ((A 1) (B 2) (C 3)))
-; ;; !(assertEqual (zip (A B) (1 2 3)) ((A 1) (B 2)))
+;; ;; FIX: Failing Test case
+;; !(assertEqual (zip (A B C) (1 2 3)) ((A 1) (B 2) (C 3)))
+;; !(assertEqual (zip (A B) (1 2 3)) ((A 1) (B 2)))
 
-; !(assertEqual (zipWith == (A B C) (A 2 3)) (True False False))
-; !(assertEqual (zipWith == (B C) (A 2 3)) (False False))
-; !(assertEqual (zipWith == () (A 2 3)) ())
-; !(assertEqual (zipWith == () ()) ())
+!(assertEqual (zipWith == (A B C) (A 2 3)) (True False False))
+!(assertEqual (zipWith == (B C) (A 2 3)) (False False))
+!(assertEqual (zipWith == () (A 2 3)) ())
+!(assertEqual (zipWith == () ()) ())
 
-; ;; ;; FIX: Failing Test case
-; ;; !(assertEqual (len (A B C D)) 4)
-; ;; !(assertEqual (len ()) 0)
-; ;; !(assertEqual (len (A)) 1)
-; ;; !(assertEqual (len A) 4) ;; Should return Error. !(assertEqual (replaceByIndex (A B C) 0 D) (D B C))
+;; ;; FIX: Failing Test case
+;; !(assertEqual (len (A B C D)) 4)
+;; !(assertEqual (len ()) 0)
+;; !(assertEqual (len (A)) 1)
+;; !(assertEqual (len A) 4) ;; Should return Error. !(assertEqual (replaceByIndex (A B C) 0 D) (D B C))
 
-; !(assertEqual (replaceByIndex (1 2 3 4) 4 D) (1 2 3 4))
-; !(assertEqual (replaceByIndex (1 2 3 4) 3 D) (1 2 3 D))
+!(assertEqual (replaceByIndex (1 2 3 4) 4 D) (1 2 3 4))
+!(assertEqual (replaceByIndex (1 2 3 4) 3 D) (1 2 3 D))
 
-; !(assertEqual (selectByIndex (1 2 3 4) 2) 3)
-; !(assertEqual (selectByIndex (1 2 3 4) 3) 4)
-; !(assertEqual (selectByIndex (1 2 3 4) 0) 1)
+!(assertEqual (selectByIndex (1 2 3 4) 2) 3)
+!(assertEqual (selectByIndex (1 2 3 4) 3) 4)
+!(assertEqual (selectByIndex (1 2 3 4) 0) 1)
 
-; !(assertEqual (indexAtom (1 2 3 4) 2) 3)
-; !(assertEqual (indexAtom (1 2 3 4) 3) 4)
-; !(assertEqual (indexAtom (1 2 3 4) 0) 1)
+!(assertEqual (indexAtom (1 2 3 4) 2) 3)
+!(assertEqual (indexAtom (1 2 3 4) 3) 4)
+!(assertEqual (indexAtom (1 2 3 4) 0) 1)
 
-; ! (assertEqual (removeAtom 1 ()) ()) 
-; ! (assertEqual (removeAtom 1 (1)) ()) 
-; ! (assertEqual (removeAtom 1 (1 2)) (2)) 
-; ! (assertEqual (removeAtom 1 (1 2 3)) (2 3))
-; ! (assertEqual (removeAtom 1 (1 2 3 1 1)) (2 3 1 1)) 
+! (assertEqual (removeAtom 1 ()) ()) 
+! (assertEqual (removeAtom 1 (1)) ()) 
+! (assertEqual (removeAtom 1 (1 2)) (2)) 
+! (assertEqual (removeAtom 1 (1 2 3)) (2 3))
+! (assertEqual (removeAtom 1 (1 2 3 1 1)) (2 3 1 1)) 
 
-; ! (assertEqual (subtractionAtom (1 2 3) ()) (1 2 3))
-; ! (assertEqual (subtractionAtom (1 2 3) (1)) (2 3))
-; ! (assertEqual (subtractionAtom (1 2 1 3 1) (1 2)) (1 3 1))
+! (assertEqual (subtractionAtom (1 2 3) ()) (1 2 3))
+! (assertEqual (subtractionAtom (1 2 3) (1)) (2 3))
+! (assertEqual (subtractionAtom (1 2 1 3 1) (1 2)) (1 3 1))
 
 
-; !(assertEqual (compareElements (A B C) (1 2 3)) (False False False))
-; !(assertEqual (compareElements (A B C) (A B C)) (True True True))
-; !(assertEqual (compareElements (1 2 3) (1 2 3)) (True True True))
+!(assertEqual (compareElements (A B C) (1 2 3)) (False False False))
+!(assertEqual (compareElements (A B C) (A B C)) (True True True))
+!(assertEqual (compareElements (1 2 3) (1 2 3)) (True True True))
 
-; !(assertEqual (splitAt 2 (A B C D E)) ((A B) (C D E)))
-; !(assertEqual (splitAt 0 (A B C D E)) (() (A B C D E)))
-; !(assertEqual (splitAt 5 (A B C D E)) ((A B C D E) ()))
+!(assertEqual (splitAt 2 (A B C D E)) ((A B) (C D E)))
+!(assertEqual (splitAt 0 (A B C D E)) (() (A B C D E)))
+!(assertEqual (splitAt 5 (A B C D E)) ((A B C D E) ()))
 
-; ;; ;; FIX: Failing Test case.
-; ;; !(assertEqual (sort (2 3 1 4) 4) (1 2 3 4))
-; ;; !(assertEqual (sort (2 3 1 4) 4 >=) (4 3 2 1))
+;; ;; FIX: Failing Test case.
+;; !(assertEqual (sort (2 3 1 4) 4) (1 2 3 4))
+;; !(assertEqual (sort (2 3 1 4) 4 >=) (4 3 2 1))
 
-; !(assertEqual (take 1 (A B C)) (A))
-; !(assertEqual (take 2 (A B C)) (A B))
-; !(assertEqual (take 2 ()) ())
+!(assertEqual (take 1 (A B C)) (A))
+!(assertEqual (take 2 (A B C)) (A B))
+!(assertEqual (take 2 ()) ())
 
 ; !(assertEqual (drop 1 (A B C)) (B C))
 ; !(assertEqual (drop 2 (A B C)) (C))
