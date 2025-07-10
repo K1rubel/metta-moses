@@ -1,4 +1,4 @@
-! (bind! isnan (py-atom math.isnan))
+! (bind! isnan (py-atom "math.isnan"))
 
 ;; The probability parameter p in the scoring represents the assumed probability that the model makes an error on any given data point.
 ;; If p is small (close to 0), it means the model is expected to be very accurate, making mistakes rarely.
