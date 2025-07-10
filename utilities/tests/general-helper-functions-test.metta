@@ -284,86 +284,86 @@
 !(assertEqual (take 2 (A B C)) (A B))
 !(assertEqual (take 2 ()) ())
 
-; !(assertEqual (drop 1 (A B C)) (B C))
-; !(assertEqual (drop 2 (A B C)) (C))
-; !(assertEqual (drop 2 ()) ())
+!(assertEqual (drop 1 (A B C)) (B C))
+!(assertEqual (drop 2 (A B C)) (C))
+!(assertEqual (drop 2 ()) ())
 
-; ;; Test selectByIndex
+;; Test selectByIndex
 
-; !(assertEqual (selectByIndex (0 1 2 3 4) 2) 2)
-; !(assertEqual (selectByIndex (0 1 2 3 4) 3) 3)
-; !(assertEqual (selectByIndex (0 1 2 3 4) 5) (Error (Index out of range) ()))
+!(assertEqual (selectByIndex (0 1 2 3 4) 2) 2)
+!(assertEqual (selectByIndex (0 1 2 3 4) 3) 3)
+!(assertEqual (selectByIndex (0 1 2 3 4) 5) (Error (Index out of range) ()))
 
-; ;; Test unNest
+;; Test unNest
 
-; !(assertEqual (collapse (unNest (AND A (AND B C)))) (AND A AND B C))
-; !(assertEqual (collapse (unNest (1 2 (3 4 (5))))) (1 2 3 4 5))
+!(assertEqual (collapse (unNest (AND A (AND B C)))) (AND A AND B C))
+!(assertEqual (collapse (unNest (1 2 (3 4 (5))))) (1 2 3 4 5))
 
-; ;; Test cleanSpace
+;; Test cleanSpace
 
-; !(bind! &__ (new-space))
+!(bind! &__ (new-space))
 
-; !(add-reduct &__ (superpose ((A B C) atom 2 4 (2 1))))
+!(add-reduct &__ (superpose ((A B C) atom 2 4 (2 1))))
 
-; !(assertEqual 
-;         (let () (cleanSpace &__) 
-;             (collapse (get-atoms &__))) (empty))
+!(assertEqual 
+        (let () (cleanSpace &__) 
+            (collapse (get-atoms &__))) (empty))
 
-; ;; Test repeat
+;; Test repeat
 
-; !(assertEqual (repeat A 3) (A A A))
-; !(assertEqual (repeat (== 1 2) 0) ())
-; !(assertEqual (repeat (== 1 2) 2) (False False))
-; !(assertEqual (repeat 5 4) (5 5 5 5))
-; !(assertEqual (repeat 1 3) (1 1 1))
+!(assertEqual (repeat A 3) (A A A))
+!(assertEqual (repeat (== 1 2) 0) ())
+!(assertEqual (repeat (== 1 2) 2) (False False))
+!(assertEqual (repeat 5 4) (5 5 5 5))
+!(assertEqual (repeat 1 3) (1 1 1))
 
-; ;; Test update-atom
-; !(add-atom &__ (A 2 3))
-; !(let () (collapse (update-atom  &__ (A 2 3) (A 3 4))) (assertEqual (match &__ $x $x) (A 3 4))) ;; FIX: Possibly failing test
+;; Test update-atom
+!(add-atom &__ (A 2 3))
+!(let () (collapse (update-atom  &__ (A 2 3) (A 3 4))) (assertEqual (match &__ $x $x) (A 3 4))) ;; FIX: Possibly failing test
 
-; ;; Test flatten
+;; Test flatten
 
-; !(assertEqual (flatten (AND A (AND A B))) (AND A AND A B))
-; !(assertEqual (flatten (AND A (AND (OR A (NOT C)) (OR B D)))) (AND A AND OR A (NOT C) OR B D))
+!(assertEqual (flatten (AND A (AND A B))) (AND A AND A B))
+!(assertEqual (flatten (AND A (AND (OR A (NOT C)) (OR B D)))) (AND A AND OR A (NOT C) OR B D))
 
-; ;; Test notNt 
-; !(bind! NTS (start expr bop uop term))
+;; Test notNt 
+!(bind! NTS (start expr bop uop term))
 
-; !(assertEqual (notMember AND NTS) True)
-; !(assertEqual (notMember A NTS) True)
-; !(assertEqual (notMember expr NTS) False)
+!(assertEqual (notMember AND NTS) True)
+!(assertEqual (notMember A NTS) True)
+!(assertEqual (notMember expr NTS) False)
 
-; ;; Test map`
+;; Test map`
 
-; !(assertEqual (map` + 2 (1 2 3 4 5)) (3 4 5 6 7))
-; !(assertEqual (map` notMember (1 2 3) (2 4 1 3)) (False True False False))
+!(assertEqual (map` + 2 (1 2 3 4 5)) (3 4 5 6 7))
+!(assertEqual (map` notMember (1 2 3) (2 4 1 3)) (False True False False))
 
-; ;; Test isValidExp
+;; Test isValidExp
 
-; !(assertEqual (isValidExp A (start expr bop uop term)) True)
-; !(assertEqual (isValidExp expr (start expr bop uop term)) False)
-; !(assertEqual (isValidExp (AND A B) (start expr bop uop term)) True)
-; !(assertEqual (isValidExp (OR (AND B null) (NOT B)) (start expr bop uop term)) True)
+!(assertEqual (isValidExp A (start expr bop uop term)) True)
+!(assertEqual (isValidExp expr (start expr bop uop term)) False)
+!(assertEqual (isValidExp (AND A B) (start expr bop uop term)) True)
+!(assertEqual (isValidExp (OR (AND B null) (NOT B)) (start expr bop uop term)) True)
 
-; ;; Test for compoase (.)
-; !(assertEqual ((. not isEven) 4) False)
-; !(assertEqual ((. isEven (. decrement increment)) 4) True)
-; !(assertEqual ((. decrement (. increment increment)) 4) 5)
-; !(assertEqual ((. greaterThanTen (. decrement (. increment increment))) 4) False)
+;; Test for compoase (.)
+!(assertEqual ((. not isEven) 4) False)
+!(assertEqual ((. isEven (. decrement increment)) 4) True)
+!(assertEqual ((. decrement (. increment increment)) 4) 5)
+!(assertEqual ((. greaterThanTen (. decrement (. increment increment))) 4) False)
 
-; ;; Test for exprToList
-; !(assertEqual (exprToList (AND A B)) (Cons AND (Cons A (Cons B Nil))))
-; !(assertEqual (exprToList (1 2 3 4)) (Cons 1 (Cons 2 (Cons 3 (Cons 4 Nil)))))
+;; Test for exprToList
+!(assertEqual (exprToList (AND A B)) (Cons AND (Cons A (Cons B Nil))))
+!(assertEqual (exprToList (1 2 3 4)) (Cons 1 (Cons 2 (Cons 3 (Cons 4 Nil)))))
 
-; ;; Test for expression pair (tuple)
+;; Test for expression pair (tuple)
 
-; !(assertEqual (first (1 2)) 1)
-; !(assertEqual (second (1 2)) 2)
-; !(assertEqual (first (second (1 (1 2)))) 1)
+!(assertEqual (first (1 2)) 1)
+!(assertEqual (second (1 2)) 2)
+!(assertEqual (first (second (1 (1 2)))) 1)
 
-; !(assertEqual (let $a (first (1 2)) (get-type $a)) Number)
-; !(assertEqual (let $a (second (1 2)) (get-type $a)) Number)
-; !(assertEqual (let $a (first (second (1 (1 2)))) (get-type $a)) Number)
+!(assertEqual (let $a (first (1 2)) (get-type $a)) Number)
+!(assertEqual (let $a (second (1 2)) (get-type $a)) Number)
+!(assertEqual (let $a (first (second (1 (1 2)))) (get-type $a)) Number)
 
 ; ;; Test the add Function for Numbers wrapped within constructors
 ; !(assertEqual (add (mkMultip 1) (mkMultip 2)) (mkMultip 3))
@@ -377,10 +377,10 @@
 
 ; !(assertEqual (expToMMap () NilMMap discSpec<=) NilMMap)
 
-; ;; Test for swapAndOr
-; !(assertEqual (swapAndOr AND) OR)
-; !(assertEqual (swapAndOr OR) AND)
-; !(assertEqual (swapAndOr A) A)
+;; Test for swapAndOr
+!(assertEqual (swapAndOr AND) OR)
+!(assertEqual (swapAndOr OR) AND)
+!(assertEqual (swapAndOr A) A)
 
 ; ;; Test for compose function
 ; (: inc (-> Number Number) )
