@@ -365,17 +365,17 @@
 !(assertEqual (let $a (second (1 2)) (get-type $a)) Number)
 !(assertEqual (let $a (first (second (1 (1 2)))) (get-type $a)) Number)
 
-; ;; Test the add Function for Numbers wrapped within constructors
-; !(assertEqual (add (mkMultip 1) (mkMultip 2)) (mkMultip 3))
-; !(assertEqual (add (mkMultip A) (mkMultip 1)) (Error (A or 1) "One of the argument is not a number"))
-; ;; Test for expToMMap
-; !(assertEqual 
-; (expToMMap (((mkDiscSpec 1) (mkLsk1)) ((mkDiscSpec 2) (mkLsk2)) ((mkDiscSpec 3) (mkLsk3)))
-; NilMMap discSpec<=)
-; (ConsMMap ((mkDiscSpec 1) (mkLsk1)) (ConsMMap ((mkDiscSpec 2) (mkLsk2)) (ConsMMap ((mkDiscSpec 3) (mkLsk3)) NilMMap)))
-; )
+;; Test the add Function for Numbers wrapped within constructors
+!(assertEqual (add (mkMultip 1) (mkMultip 2)) (mkMultip 3))
+!(assertEqual (add (mkMultip A) (mkMultip 1)) (Error (A or 1) "One of the argument is not a number"))
+;; Test for expToMMap
+!(assertEqual 
+(expToMMap (((mkDiscSpec 1) (mkLsk1)) ((mkDiscSpec 2) (mkLsk2)) ((mkDiscSpec 3) (mkLsk3)))
+NilMMap discSpec<=)
+(ConsMMap ((mkDiscSpec 1) (mkLsk1)) (ConsMMap ((mkDiscSpec 2) (mkLsk2)) (ConsMMap ((mkDiscSpec 3) (mkLsk3)) NilMMap)))
+)
 
-; !(assertEqual (expToMMap () NilMMap discSpec<=) NilMMap)
+!(assertEqual (expToMMap () NilMMap discSpec<=) NilMMap)
 
 ;; Test for swapAndOr
 !(assertEqual (swapAndOr AND) OR)
