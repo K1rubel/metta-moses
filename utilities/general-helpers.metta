@@ -380,7 +380,7 @@
      (let* (
         ($initial (car-atom $list))
         ($cur (selector $list $initial $op))
-        ($newList (subtraction-atom $list ($cur)))
+        ($newList (subtractionAtom $list ($cur)))
         ($rest (selectionSort $newList (- $n 1) $op))
     )
     (cons-atom $cur $rest)
@@ -640,8 +640,12 @@
 
 ;; A trick function to make chain reduce when using union-atom
 (: (-> unionAtom (-> Expression Expression Expression)))
-(= (unionAtom $x $y) (union-atom $x $y))
-
+; (= (unionAtom $x $y) (union-atom $x $y))
+(= (unionAtom $a $b) 
+    (if-decons-expr $a $head $tail
+        (chain (unionAtom $tail $b) $rest
+            (cons-atom $head $rest))
+        $b))
 
 ;; helper function to generate list of numbers ranging from 0 to n
 (: genList (-> Number Expression))
