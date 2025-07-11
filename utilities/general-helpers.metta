@@ -702,3 +702,15 @@
 ;; needed because using using the direct python binding appears to cause issue with git workflow
 (: isnan (-> $a Bool))
 (= (isnan $x) (== $x 1.5NaN))
+
+;; isInf -- check if a number if Inf
+;; the same applies to this weid looking 1.0Inf thing - it is what you get when you bind (py-atom "float ('inf')") in mettalog and the followingn function works 
+(: isInf (-> $a Bool))
+(= (isInf $x) (== $x 1.0Inf))
+
+;; int -- replicates pythons int functionality -- convert floating point numbers into integer
+;; uses -- metta's floor-math function
+(: int (-> Number Number))
+(= (int $x) (if (>= $x 0) (floor-math $x) (+ 1 (floor-math $x))))
+
+! (bind! EXP 2.71828)
