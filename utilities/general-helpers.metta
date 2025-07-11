@@ -696,9 +696,9 @@
     )
 )
 
-;; checking for nan
-; !(bind! nan (py-atom "float ('nan')"))
+;; isnan -- to check if a value is NaN
+;; it happens that the NaN representation in mettalog is the weird 1.5NaN
+;; you will see this when binig "Not a Number" from pythons "float('nan')" 1.5NaN is what it returns
+;; needed because using using the direct python binding appears to cause issue with git workflow
 (: isnan (-> $a Bool))
 (= (isnan $x) (== $x 1.5NaN))
-; ! (isnan 4)
-; ! (isnan 1.5NaN)
