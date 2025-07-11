@@ -4,6 +4,7 @@
 ; ! (bind! CAP-COEF 50)
 
 ;; python int casting function
+! (import! &self py_ops)
 ! (bind! int (py-atom "int"))
 
 ;; Exemplar type
@@ -102,3 +103,12 @@
 (: getExemplarTree (-> (Exemplar $a) (Tree $a)))
 (= (getExemplarTree (mkExemplar $tree $demeId $cscore $bscore)) $tree)
 
+; ! (string_conversion 3.4)
+; ! (repr 3.4)
+; (= (strSplit $str)
+;     )
+; ! (get-type (type-cast "3" Number &self))
+; !(+ "3" 0)
+; ! (string-to-number  "3")
+; !(set-random-seed &rng 0)
+; ! (random-int &rng 1 10)
