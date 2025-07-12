@@ -2,6 +2,7 @@
 ;; random-float and random-int both require what is denoted as RandomGenerator
 ;; which, for now, is not clear what it is
 
+;; removed python binding for compatibility with workflow -- XXX 
 ; ! (bind! rndfloat (py-atom random.random))
 ; ! (bind! round (py-atom round))
 ! (bind! NO_EXEMPLAR "empty metapopulation")
