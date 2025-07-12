@@ -54,7 +54,7 @@
 
 (: rouletteSelect (-> (OS (Exemplar $a)) (List Number) Number (Exemplar $a)))
 (= (rouletteSelect $metaPop $probs $sum)
-    (let* (($rndfloat (rndfloat))
+    (let* (($rndfloat (randomFloat))
            ($ajstdSum (* $sum $rndfloat))
             ($index (roulette $probs 0 $ajstdSum)))
         (OS.getByIdx $index $metaPop)))

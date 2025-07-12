@@ -599,9 +599,10 @@
             (Error ($a or $b) "One of the argument is not a number")))
 
 ;; wrapping the built-in ininf-math with custom function because the return type is not bool, it is number
-;; using the type-cast function
-(: isInf (-> Number Bool))
-(= (isInf $x) (type-cast (isinf-math $x) Bool &self))
+;; using the type-cast function 
+;; obsolete in mettalong for now
+; (: isInf (-> Number Bool))
+; (= (isInf $x) (type-cast (isinf-math $x) Bool &self))
 
 ;; A trick to define composition function.
 ;; Takes a function and returns another function
@@ -714,3 +715,9 @@
 (= (int $x) (if (>= $x 0) (floor-math $x) (+ 1 (floor-math $x))))
 
 ! (bind! EXP 2.71828)
+
+;; random float  -- fake rnd number [0 1)
+! (bind! maxInt (pow-math 2 64)) ;; pseudo max integer not really the max integer that can be represented 
+;; the idea is to divide a random int taken from 0 upto this number by this number
+(: randomFloat (-> Number))
+(= (randomFloat) (let $rndInt (random-int &rng 0 maxInt) (/ $rndInt maxInt)))
