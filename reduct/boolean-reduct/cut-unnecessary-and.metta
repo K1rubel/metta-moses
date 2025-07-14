@@ -24,7 +24,7 @@
             (let*
                 (
                     (($grandLiterals $grandChildren) (getLiteralChildren (car-atom $child)))
-                    ($allLiterals (collapse (getGuardSet (superpose $grandChildren))))
+                    ($allLiterals  (collapse (let $el (superpose $grandChildren) (getGuardSet $el))))
                     ($common (intersections $allLiterals))
                     ($updatedParent (removeElement ($current) $parent))
                     ($updatedParent' (addChildren $updatedParent $grandChildren))
