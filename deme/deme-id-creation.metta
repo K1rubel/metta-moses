@@ -28,7 +28,7 @@
     (if (< $nDeme 0)
         $list
         (let* ((($str1 $str2)((numStr $nExpansion) (numStr $nDeme)))
-                ($demeId (mkDemeId (charsToString ($str1 "." $str2))))
+                ($demeId (mkDemeId (format-args"{}.{}" ($str1 $str2))))
                 ($newList (List.prepend $demeId $list)))
                 
                 (demeIdList $nExpansion (- $nDeme 1) $newList))))
