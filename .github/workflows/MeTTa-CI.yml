@@ -14,14 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # You can keep this if you want pip to match a specific version.
-      # Optional: Only if you need a guaranteed Python version before INSTALL.sh
       - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
           python-version: '3.12.3'
 
-      - name: Install Python test dependencies (for scripts/run-tests.py)
+      - name: Upgrade pip and install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install numpy pyswip janus ansi2html junit2html
@@ -36,26 +34,20 @@ jobs:
 
       - name: Install MeTTaLog (runs INSTALL.sh)
         run: |
-          # Clone into runner home directory
           git clone https://github.com/trueagi-io/metta-wam.git --depth 1 $HOME/metta-wam
           cd $HOME/metta-wam
-
-          # Run installer (assumes it sets up venv and installs bindings)
           chmod +x ./INSTALL.sh
           bash -c "source ./INSTALL.sh --allow-system-modifications"
 
-          # Add install paths to environment
-          echo "/home/runner/metta-wam" >> $GITHUB_PATH
-          echo "/home/runner/metta-wam/venv/bin" >> $GITHUB_PATH
+          # If INSTALL.sh installs into global Python (from setup-python), no need to use venv
           echo "SWIPL_BOOT_FLAGS=--no-pce" >> $GITHUB_ENV
           echo "METTALOG_DIR=/home/runner/metta-wam" >> $GITHUB_ENV
 
-      - name: Debug Environment
+      - name: Debug environment and test Python binding
         run: |
-          echo "PATH: $PATH"
-          echo "PYTHON: $(which python)"
-          /home/runner/metta-wam/venv/bin/python -c "import metta; print('metta imported!')"
+          echo "Using Python: $(which python)"
+          python -c "import metta; print('✅ metta Python module is available')"
 
-      - name: Run MeTTaLog Tests with venv Python
+      - name: Run MeTTaLog Tests
         run: |
-          /home/runner/metta-wam/venv/bin/python scripts/run-tests.py
+          python scripts/run-tests.py
