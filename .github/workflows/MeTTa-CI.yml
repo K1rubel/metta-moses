@@ -14,12 +14,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # You can keep this if you want pip to match a specific version.
+      # Optional: Only if you need a guaranteed Python version before INSTALL.sh
       - name: Set up Python 3.12
         uses: actions/setup-python@v4
         with:
           python-version: '3.12.3'
 
-      - name: Upgrade pip and install Python dependencies
+      - name: Install Python test dependencies (for scripts/run-tests.py)
         run: |
           python -m pip install --upgrade pip
           pip install numpy pyswip janus ansi2html junit2html
@@ -34,29 +36,26 @@ jobs:
 
       - name: Install MeTTaLog (runs INSTALL.sh)
         run: |
-          # 1) Clone into $HOME so INSTALL.sh installs here
+          # Clone into runner home directory
           git clone https://github.com/trueagi-io/metta-wam.git --depth 1 $HOME/metta-wam
           cd $HOME/metta-wam
 
-          # 2) Run the installer
+          # Run installer (assumes it sets up venv and installs bindings)
           chmod +x ./INSTALL.sh
           bash -c "source ./INSTALL.sh --allow-system-modifications"
 
-          # 3) Add the real install location to PATH
-          echo "/home/runner/metta-wam"       >> $GITHUB_PATH
+          # Add install paths to environment
+          echo "/home/runner/metta-wam" >> $GITHUB_PATH
           echo "/home/runner/metta-wam/venv/bin" >> $GITHUB_PATH
-
-          # 4) Preserve any other needed environment variables
-          echo "SWIPL_BOOT_FLAGS=--no-pce"        >> $GITHUB_ENV
+          echo "SWIPL_BOOT_FLAGS=--no-pce" >> $GITHUB_ENV
           echo "METTALOG_DIR=/home/runner/metta-wam" >> $GITHUB_ENV
 
-      - name: Debug mettalog installation
+      - name: Debug Environment
         run: |
-          echo "PATH is: $PATH"
-          which mettalog
-          ls -la /home/runner/metta-wam/libraries
+          echo "PATH: $PATH"
+          echo "PYTHON: $(which python)"
+          /home/runner/metta-wam/venv/bin/python -c "import metta; print('metta imported!')"
 
-      - name: Run MeTTaLog Tests
+      - name: Run MeTTaLog Tests with venv Python
         run: |
-          which mettalog
-          python3 scripts/run-tests.py
+          /home/runner/metta-wam/venv/bin/python scripts/run-tests.py
