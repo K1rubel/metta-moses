@@ -132,3 +132,6 @@
                             (Cons (Cons True Nil)
                             (Cons (Cons False Nil) Nil))
                             (Cons O Nil)))
+
+! (assertEqual (getInputLabels (Cons A (Cons B (Cons O Nil)))) (B A))                            
+! (assertEqual (getInputLabels (Cons A Nil)) ())                            

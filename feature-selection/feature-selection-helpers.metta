@@ -297,3 +297,15 @@
             
             (filterTable (map-atom $t $x (- $x 1)) (mkITable $filtered-data $filtered-label)))
         (mkITable $table $labels)))          
+
+(: getInputLabels (-> (List Symbol) Expression))
+(= (getInputLabels $labels)
+    (let $res (inputLables $labels) (List.foldl cons-atom () $res)))
+
+(: inputLables (-> (List Symbol) (List Symbol)))    
+(= (inputLables $labels)
+    (unify $labels Nil (Error $labels NoLabelsSpecified)
+        (unify $labels (Cons $a $as)
+            (if (== $as Nil)
+                Nil
+                (Cons $a (inputLables $as))) (Error $labels UnrecognizedFormat))))
