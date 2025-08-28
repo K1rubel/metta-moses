@@ -45,10 +45,10 @@
 ! (assertEqual (randomFeatureSelection table3 3) (3 0 1))
 
  ;; Test target size >= number of features - should return all indices
-! (assertEqual (randomFeatureSelection table1 4) (0 1 2 3)) ;; exactly all features
-! (assertEqual (randomFeatureSelection table1 5) (0 1 2 3)) ;; more than available
-! (assertEqual (randomFeatureSelection table1 10) (0 1 2 3)) ;; much more than available
+! (assertEqual (randomFeatureSelection table1 4) (0 (0 1 2 3))) ;; exactly all features
+! (assertEqual (randomFeatureSelection table1 5) (0 (0 1 2 3))) ;; more than available
+! (assertEqual (randomFeatureSelection table1 10) (0 (0 1 2 3))) ;; much more than available
 
-! (assertEqual (randomFeatureSelection table4 6) (0 1 2 3 4 5)) ;; exactly all features
-! (assertEqual (randomFeatureSelection table4 8) (0 1 2 3 4 5)) ;; more than available
+! (assertEqual (randomFeatureSelection table4 6) (0 (0 1 2 3 4 5))) ;; exactly all features
+! (assertEqual (randomFeatureSelection table4 8) (0 (0 1 2 3 4 5))) ;; more than available
 
