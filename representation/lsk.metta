@@ -19,17 +19,17 @@
    )
    (if (List.contains $subtree $childrenOfTarget) 
        (let $idOfSubtree (getSubtreeId $tree (mkNodeId $target) $subtree 0)
-           ($tree (mkLSK (mkDiscKnob (mkKnob $idOfSubtree) (mkMultip 3) (mkDiscSpec 1) (mkDiscSpec 1) Nil)))
+           ($tree (mkLSK (mkDiscKnob (mkKnob (updateID $idOfSubtree)) (mkMultip 3) (mkDiscSpec 1) (mkDiscSpec 1) Nil)))
        )
        (if (List.contains $reducedSubtree $childrenOfTarget)
            (let $idOfReducedSubtree (getSubtreeId $tree (mkNodeId $target) $reducedSubtree 0)
-                ($tree (mkLSK (mkDiscKnob (mkKnob $idOfReducedSubtree) (mkMultip 3) (mkDiscSpec 1) (mkDiscSpec 1) Nil))))
+                ($tree (mkLSK (mkDiscKnob (mkKnob (updateID $idOfReducedSubtree)) (mkMultip 3) (mkDiscSpec 1) (mkDiscSpec 1) Nil))))
            (let*
            (
             (($nullVexAppendedTree $nullVexId) (appendChild $tree (mkNodeId $target) (mkNullVex Nil)))
             (($subtreeAppendedTree $subtreeId) (appendChild $nullVexAppendedTree $nullVexId $subtree))
            )
-           ($subtreeAppendedTree (mkLSK (mkDiscKnob (mkKnob $nullVexId) (mkMultip 3))))
+           ($subtreeAppendedTree (mkLSK (mkDiscKnob (mkKnob (updateID $nullVexId)) (mkMultip 3))))
            )
        )
    )
@@ -87,3 +87,12 @@
 
                    (chain (appendChild $tree $parentId $treeToAppend) $treeChIdPair
                        (first $treeChIdPair))))))) ;; INFO: Just incase if the append fails and stores the result somewhere else, we need to add a test case here to cmpare between targetNode and appendChild node.
+
+;; helper function to remove leading zeros from a node id
+(: updateID (-> ($a $b) ($a $b)))
+(= (updateID (mkNodeId $id)) 
+    (if (== (car-atom $id) 0)
+        (mkNodeId (cdr-atom $id))
+        (mkNodeId $id)
+
+    ))                       
