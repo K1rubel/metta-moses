@@ -40,9 +40,9 @@
 ! (assertEqual (randomFeatureSelection table1 -5) ())
 
 ;; Test normal Features
-! (assertEqual (randomFeatureSelection table_xor 1) (0))
-! (assertEqual (randomFeatureSelection table1 2) (2 0))
-! (assertEqual (randomFeatureSelection table3 3) (3 0 1))
+! (assertEqual (randomFeatureSelection table_xor 1) (0 (0)))
+! (assertEqual (randomFeatureSelection table1 2) (0 (2 0)))
+! (assertEqual (randomFeatureSelection table3 3) (0 (3 0 1)))
 
  ;; Test target size >= number of features - should return all indices
 ! (assertEqual (randomFeatureSelection table1 4) (0 (0 1 2 3))) ;; exactly all features
