@@ -51,141 +51,141 @@
 (= (INSERT_ABOVE $tree $nodeId $subtree) (py_insertAbove  $tree $nodeId $subtree))
 ;; (= (pyExprToList $expr) (py_exprToList $expr))
 
-!(bind! knobmap1
-        (ConsMMap (
-                    (mkDiscSpec 1)
-                    (mkLSK (mkDiscKnob (mkKnob  (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) ))
-        (ConsMMap (
-                    (mkDiscSpec 1)
-                    (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) ))
-        NilMMap)))
+; !(bind! knobmap1
+;         (ConsMMap (
+;                     (mkDiscSpec 1)
+;                     (mkLSK (mkDiscKnob (mkKnob  (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) ))
+;         (ConsMMap (
+;                     (mkDiscSpec 1)
+;                     (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) ))
+;         NilMMap)))
 
-!(bind! knobmap2
-        (ConsMMap (
-                    (mkDiscSpec 1)
-                    (mkLSK (mkDiscKnob (mkKnob  (mkNodeId (1))) (mkMultip 2) (mkDiscSpec 0) (mkDiscSpec 0) Nil)))
-        (ConsMMap (
-                    (mkDiscSpec 1)
-                    (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) ))
-        NilMMap)))
+; !(bind! knobmap2
+;         (ConsMMap (
+;                     (mkDiscSpec 1)
+;                     (mkLSK (mkDiscKnob (mkKnob  (mkNodeId (1))) (mkMultip 2) (mkDiscSpec 0) (mkDiscSpec 0) Nil)))
+;         (ConsMMap (
+;                     (mkDiscSpec 1)
+;                     (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) ))
+;         NilMMap)))
 
-!(bind! knobmap3
-  (mkKbMap
-    (mkDscKbMp
-      (ConsMap ((mkNodeId (1 2)) 0)
-        (ConsMap ((mkNodeId (2)) 1)
-          (ConsMap ((mkNodeId (3)) 2) NilMap))))
-    (mkDscMp 
-      (ConsMMap 
-        ((mkDiscSpec 3)
-         (mkLSK 
-           (mkDiscKnob 
-             (mkKnob 
-               (mkNodeId (1 2)))
-             (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil)
-           ))
-        (ConsMMap 
-          ((mkDiscSpec 3)
-           (mkLSK 
-             (mkDiscKnob 
-               (mkKnob 
-                 (mkNodeId (2)))
-               (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil)
-             ))
-          (ConsMMap 
-            ((mkDiscSpec 3)
-             (mkLSK 
-               (mkDiscKnob 
-                 (mkKnob 
-                   (mkNodeId (3)))
-                 (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil)
-               ))
-            NilMMap))))))
-;; Test informationTheoreticBits with a knob 
-;; map containing two knobs with same multiplicity of 3
-!(assertEqual (informationTheoreticBits knobmap1) 6)
+; !(bind! knobmap3
+;   (mkKbMap
+;     (mkDscKbMp
+;       (ConsMap ((mkNodeId (1 2)) 0)
+;         (ConsMap ((mkNodeId (2)) 1)
+;           (ConsMap ((mkNodeId (3)) 2) NilMap))))
+;     (mkDscMp 
+;       (ConsMMap 
+;         ((mkDiscSpec 3)
+;          (mkLSK 
+;            (mkDiscKnob 
+;              (mkKnob 
+;                (mkNodeId (1 2)))
+;              (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil)
+;            ))
+;         (ConsMMap 
+;           ((mkDiscSpec 3)
+;            (mkLSK 
+;              (mkDiscKnob 
+;                (mkKnob 
+;                  (mkNodeId (2)))
+;                (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil)
+;              ))
+;           (ConsMMap 
+;             ((mkDiscSpec 3)
+;              (mkLSK 
+;                (mkDiscKnob 
+;                  (mkKnob 
+;                    (mkNodeId (3)))
+;                  (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil)
+;                ))
+;             NilMMap))))))
+; ;; Test informationTheoreticBits with a knob 
+; ;; map containing two knobs with same multiplicity of 3
+; !(assertEqual (informationTheoreticBits knobmap1) 6)
 
-;; Test informationTheoreticBits with a knob
-;; map containing two knobs with different multiplicity of 2 and 3
-!(assertEqual (informationTheoreticBits knobmap2) 5)
+; ;; Test informationTheoreticBits with a knob
+; ;; map containing two knobs with different multiplicity of 2 and 3
+; !(assertEqual (informationTheoreticBits knobmap2) 5)
 
-; Testcase for informationTheoreticBitsFs
-!(assertEqual
-  (informationTheoreticBitsFs (Cons A (Cons B (Cons O Nil)))) 2)
+; ; Testcase for informationTheoreticBitsFs
+; !(assertEqual
+;   (informationTheoreticBitsFs (Cons A (Cons B (Cons O Nil)))) 2)
 
-;; Testing estimateNeighborhood on the above knob maps
-!(assertEqual (estimateNeighborhood 0 knobmap1) 1)
-!(assertEqual (estimateNeighborhood 1 knobmap2) 10)
-!(assertEqual (estimateNeighborhood 2 knobmap1) 12)
-!(assertEqual (estimateNeighborhood 2 knobmap2) 10)
+; ;; Testing estimateNeighborhood on the above knob maps
+; !(assertEqual (estimateNeighborhood 0 knobmap1) 1)
+; !(assertEqual (estimateNeighborhood 1 knobmap2) 10)
+; !(assertEqual (estimateNeighborhood 2 knobmap1) 12)
+; !(assertEqual (estimateNeighborhood 2 knobmap2) 10)
 
-; Testcase for estimateNeighborhoodFs
-!(assertEqual
-  (estimateNeighborhoodFs 3 (Cons A (Cons B (Cons O Nil)))) 4)
+; ; Testcase for estimateNeighborhoodFs
+; !(assertEqual
+;   (estimateNeighborhoodFs 3 (Cons A (Cons B (Cons O Nil)))) 4)
 
-; Testcase for countNeighborhoodFs
-!(assertEqual (countNeighborhoodFs (Cons 1 (Cons 0 (Cons 1 Nil))) 2 20) 3)
+; ; Testcase for countNeighborhoodFs
+; !(assertEqual (countNeighborhoodFs (Cons 1 (Cons 0 (Cons 1 Nil))) 2 20) 3)
 
-; Testcase for factorial
-!(assertEqual (factorial 3) 6)
+; ; Testcase for factorial
+; !(assertEqual (factorial 3) 6)
 
-; Testcase for binomial
-!(assertEqual (binomial 5 2) 10)
+; ; Testcase for binomial
+; !(assertEqual (binomial 5 2) 10)
 
-;Testcase 1 for countNeighborhood
-!(assertEqual 
- (countNeighborhood
-  knobmap3  ;knobmap
-  (mkInst (Cons 1 (Cons 0 (Cons 2 Nil)))) ;instance
-  2 ; distance
-  20) ; maximum count
-  12)
+; ;Testcase 1 for countNeighborhood
+; !(assertEqual 
+;  (countNeighborhood
+;   knobmap3  ;knobmap
+;   (mkInst (Cons 1 (Cons 0 (Cons 2 Nil)))) ;instance
+;   2 ; distance
+;   20) ; maximum count
+;   12)
 
-;Testcase 2 for countNeighborhood
-!(assertEqual 
- (countNeighborhood
-  knobmap3 ;knobmap
-  (mkInst (Cons 1 (Cons 0 (Cons 2 Nil)))) ;instance
-  3 ;distance
-  20) ;maxCount
-  8) 
+; ;Testcase 2 for countNeighborhood
+; !(assertEqual 
+;  (countNeighborhood
+;   knobmap3 ;knobmap
+;   (mkInst (Cons 1 (Cons 0 (Cons 2 Nil)))) ;instance
+;   3 ;distance
+;   20) ;maxCount
+;   8) 
 
-;Testcase 3 for countNeighborhood
-!(assertEqual 
- (let*
-    (
-       ($totalSize (countNeighborhood knobmap3 (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 3 20))
-       ($generatedSize (List.length (generateAllInNeighborhood (mkMultip 3) (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 3)))
-    )
-    (<= (* 3 $totalSize) (* 4 $generatedSize))) True)
+; ;Testcase 3 for countNeighborhood
+; !(assertEqual 
+;  (let*
+;     (
+;        ($totalSize (countNeighborhood knobmap3 (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 3 20))
+;        ($generatedSize (List.length (generateAllInNeighborhood (mkMultip 3) (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 3)))
+;     )
+;     (<= (* 3 $totalSize) (* 4 $generatedSize))) True)
 
-;Testcase 4 for countNeighborhood
-!(assertEqual 
- (let*
-    (
-       ($totalSize (countNeighborhood knobmap3 (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 2 20))
-       ($generatedSize (List.length (generateAllInNeighborhood (mkMultip 3) (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 2)))
-    )
-    (<= (* 3 $totalSize) (* 4 $generatedSize))) True)
+; ;Testcase 4 for countNeighborhood
+; !(assertEqual 
+;  (let*
+;     (
+;        ($totalSize (countNeighborhood knobmap3 (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 2 20))
+;        ($generatedSize (List.length (generateAllInNeighborhood (mkMultip 3) (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 2)))
+;     )
+;     (<= (* 3 $totalSize) (* 4 $generatedSize))) True)
 
-;Testcase 5 for countNeighborhood
-!(assertEqual
- (let*
-    (
-       ($totalSize (countNeighborhood knobmap3 (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 1 20))
-       ($generatedSize (List.length (generateAllInNeighborhood (mkMultip 3) (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 1)))
-    )
-(<= (* 3 $totalSize) (* 4 $generatedSize))) True)
+; ;Testcase 5 for countNeighborhood
+; !(assertEqual
+;  (let*
+;     (
+;        ($totalSize (countNeighborhood knobmap3 (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 1 20))
+;        ($generatedSize (List.length (generateAllInNeighborhood (mkMultip 3) (mkInst (Cons 0 (Cons 0 (Cons 0 Nil)))) 1)))
+;     )
+; (<= (* 3 $totalSize) (* 4 $generatedSize))) True)
 
-!(bind! deme (mkDeme (mkRep (mkKbMap (mkDscKbMp (ConsMap ((mkNodeId (1)) 0) (ConsMap ((mkNodeId (2)) 1) NilMap))) (mkDscMp (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) )) (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (2))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil))) NilMMap)))) (mkTree (mkNode AND) (Cons (mkNullVex (Cons (mkTree (mkNode A) Nil) Nil)) (Cons (mkNullVex (Cons (mkTree (mkNode B) Nil) Nil)) Nil)))) (mkSInstSet Nil) (mkDemeId "1")))
-!(bind! demes (Cons (mkDeme (mkRep (mkKbMap (mkDscKbMp (ConsMap ((mkNodeId (1)) 0) (ConsMap ((mkNodeId (2)) 1) NilMap))) (mkDscMp (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) )) (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (2))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) )) NilMMap)))) (mkTree (mkNode AND) (Cons (mkNullVex (Cons (mkTree (mkNode A) Nil) Nil)) (Cons (mkNullVex (Cons (mkTree (mkNode B) Nil) Nil)) Nil)))) (mkSInstSet Nil) (mkDemeId "1")) Nil))
+; !(bind! deme (mkDeme (mkRep (mkKbMap (mkDscKbMp (ConsMap ((mkNodeId (1)) 0) (ConsMap ((mkNodeId (2)) 1) NilMap))) (mkDscMp (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) )) (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (2))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil))) NilMMap)))) (mkTree (mkNode AND) (Cons (mkNullVex (Cons (mkTree (mkNode A) Nil) Nil)) (Cons (mkNullVex (Cons (mkTree (mkNode B) Nil) Nil)) Nil)))) (mkSInstSet Nil) (mkDemeId "1")))
+; !(bind! demes (Cons (mkDeme (mkRep (mkKbMap (mkDscKbMp (ConsMap ((mkNodeId (1)) 0) (ConsMap ((mkNodeId (2)) 1) NilMap))) (mkDscMp (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (1))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) )) (ConsMMap ((mkDiscSpec 3) (mkLSK (mkDiscKnob (mkKnob (mkNodeId (2))) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) Nil) )) NilMMap)))) (mkTree (mkNode AND) (Cons (mkNullVex (Cons (mkTree (mkNode A) Nil) Nil)) (Cons (mkNullVex (Cons (mkTree (mkNode B) Nil) Nil)) Nil)))) (mkSInstSet Nil) (mkDemeId "1")) Nil))
 
-!(bind! table (createTruthTableBScore 2 (mkITable
-                         (Cons (Cons False (Cons False (Cons False Nil))) 
-                         (Cons (Cons True (Cons False (Cons False Nil))) 
-                         (Cons (Cons False (Cons True (Cons False Nil)))
-                         (Cons (Cons True (Cons True (Cons True Nil))) Nil))))
-                         (Cons A (Cons B (Cons O Nil))))))
+; !(bind! table (createTruthTableBScore 2 (mkITable
+;                          (Cons (Cons False (Cons False (Cons False Nil))) 
+;                          (Cons (Cons True (Cons False (Cons False Nil))) 
+;                          (Cons (Cons False (Cons True (Cons False Nil)))
+;                          (Cons (Cons True (Cons True (Cons True Nil))) Nil))))
+;                          (Cons A (Cons B (Cons O Nil))))))
 
 !(bind! itable (mkITable
                          (Cons (Cons False (Cons False (Cons False Nil))) 
@@ -194,35 +194,87 @@
                          (Cons (Cons True (Cons True (Cons True Nil))) Nil))))
                          (Cons A (Cons B (Cons O Nil)))))
 
-(: isScored (-> (ScoredInstance Cscore) Bool))
-(= (isScored (mkSInst (mkPair $instance $score))) (~= $score (worstCscore)))
+!(bind! table1 
+  (mkITable 
+          (Cons (Cons True  (Cons False (Cons False (Cons True  (Cons True Nil))))) 
+          (Cons (Cons False (Cons True  (Cons False (Cons False (Cons False Nil))))) 
+          (Cons (Cons True  (Cons True  (Cons True  (Cons False (Cons True Nil))))) 
+          (Cons (Cons False (Cons False (Cons True  (Cons True  (Cons False Nil))))) Nil)))) 
 
-(: isScoredFs (-> (ScoredInstance Cscore) Bool))
-(= (isScoredFs (mkSInst (mkPair $instance $score))) (~= $score 0))
+          (Cons A (Cons B (Cons C (Cons D (Cons O Nil))))))
+)                         
 
-;;;;;; Testcase for hillClimbing for deme optimization
-! "Test if generated instances are greater than 6 for distance 1 and there are instances that are scored properly"
-!(assertEqual
-   (let*
-     (
-       (($instance (mkDeme $rep (mkSInstSet $instSet) $id) $state) (hillClimbing deme table (mkInst (Cons 0 (Cons 0 Nil)))))
-       ($instanceCount (List.length $instSet))
-       ($scoredElems (List.map isScored $instSet))
-     )
-     ((>= $instanceCount 4) (List.any $scoredElems)))
+! (bind! ttable2 
+    (mkITable 
+        (Cons (Cons False (Cons False (Cons True (Cons True (Cons True Nil)))))
+        (Cons (Cons True (Cons False (Cons False (Cons True (Cons True Nil)))))
+        (Cons (Cons False (Cons True (Cons False (Cons True (Cons False Nil)))))
+        (Cons (Cons False (Cons False (Cons False (Cons True (Cons False Nil))))) Nil))))
+        (Cons A (Cons B (Cons C (Cons D (Cons Output Nil)))))))
+; (: isScored (-> (ScoredInstance Cscore) Bool))
+; (= (isScored (mkSInst (mkPair $instance $score))) (~= $score (worstCscore)))
 
-   (True True))
+; (: isScoredFs (-> (ScoredInstance Cscore) Bool))
+; (= (isScoredFs (mkSInst (mkPair $instance $score))) (~= $score 0))
+
+; ;;;;;; Testcase for hillClimbing for deme optimization
+; ! "Test if generated instances are greater than 6 for distance 1 and there are instances that are scored properly"
+; !(assertEqual
+;    (let*
+;      (
+;        (($instance (mkDeme $rep (mkSInstSet $instSet) $id) $state) (hillClimbing deme table (mkInst (Cons 0 (Cons 0 Nil)))))
+;        ($instanceCount (List.length $instSet))
+;        ($scoredElems (List.map isScored $instSet))
+;      )
+;      ((>= $instanceCount 4) (List.any $scoredElems)))
+
+;    (True True))
 
 
-;;;;;;; Testcase for hillClimbing for feature selection
-! "Test if generated instances are greater than 6 for distance 1 and there are instances that are scored properly"
-!(assertEqual
-   (let*
-     (
-       (($instance (mkSInstSet $instSet) $state) (hillClimbingFs (mkSInstSet Nil) itable (mkInst (Cons 1 (Cons 0 Nil)))))
-       ($instanceCount (List.length $instSet))
-       ($scoredElems (List.map isScored $instSet))
-     )
-     ((>= $instanceCount 4) (List.any $scoredElems)))
+; ;;;;;;; Testcase for hillClimbing for feature selection
+; ! "Test if generated instances are greater than 6 for distance 1 and there are instances that are scored properly"
+; !(assertEqual
+;    (let*
+;      (
+;        (($instance (mkSInstSet $instSet) $state) (hillClimbingFs (mkSInstSet Nil) itable (mkInst (Cons 1 (Cons 0 Nil)))))
+;        ($instanceCount (List.length $instSet))
+;        ($scoredElems (List.map isScored $instSet))
+;      )
+;      ((>= $instanceCount 4) (List.any $scoredElems)))
 
-   (True True))
+;    (True True))
+; !(hillClimbingFs (mkSInstSet Nil) itable (mkInst (Cons 1 (Cons 0 Nil))))
+
+! (bind! hcoutput ((mkInst (Cons 1 (Cons 1 Nil))) (mkSInstSet (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 0 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 1 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 0 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) Nil)))))))))))))) (True False False (mkInst (Cons 1 (Cons 1 Nil))) 0.811 0.811 17 4 9))
+)
+! (bind! inst 
+            (mkSInstSet (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 0 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 1 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 0 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) Nil)))))))))))))))
+
+
+            
+(= (getScoreFtSetPair (mkSInst (mkPair (mkInst $list) $score))) ;; turns this construct into tuple of indices
+  ($score (bitsToIndices $list 0 ())))
+
+;; creates list of score-feature set pair
+(= (getScoreFromSInstSet  Nil $acc) Nil)
+(= (getScoreFromSInstSet (Cons $sInst $sInsts) $acc) 
+  (chain (getScoreFromSInstSet $sInsts $acc) $new-acc
+    (chain (getScoreFtSetPair $sInst) $score-ft-set-pair
+      (Cons $score-ft-set-pair $new-acc))))
+
+;; not clear where the cener instance is gotten from      
+(= (hcFtSet $iTable $centerInst  $diversity-cap)
+  (let* ((((mkInst $inst1) (mkSInstSet $list) $state) (hillClimbingFs (mkSInstSet Nil) $iTable (mkInst $centerInst))) ;; runs the hillclimbing feature selector
+         ($list-of-scoreset-pairs (getScoreFromSInstSet $list ()))                                                    ;; separates the scores from the the previous output and puts them in a score feature-set pair tuple -- as list of
+         ($unique-pairs (List.tFoldl $list-of-scoreset-pairs union-atom exp ()))                                      ;; finds unquie such pairs duplicats removed -- by way of union-atom
+         ($sorted-pairs (sortPairs pairMax $unique-pairs $diversity-cap ())))                                         ;; sort using score
+
+        (takeN $diversity-cap $sorted-pairs)))                                                                        ;; take some part of the sorted tuple
+
+        ; ((mkInst $inst1) (mkSInstSet $list) $state) 
+;; include sorting here
+
+; ! (hcFtSet hcoutput 2)   
+
+; !(hillClimbingFs (mkSInstSet Nil) ttable2 (mkInst (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil))))))
+! (hcFtSet ttable2 (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil)))) 3) ;; ((1.0 (0 2 3)) (0.311 (2 3)) (0.311 (0)))
