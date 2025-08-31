@@ -451,3 +451,5 @@ NilMMap discSpec<=)
 ! (assertEqual (concatT (1 2 3) (4 5 6)) (1 2 3 4 5 6))
 ! (assertEqual (concatT (1 2 3) ()) (1 2 3))
 ! (assertEqual (concatT () (1 2 3)) (1 2 3))
+
+! (assertEqual (oneToOne (1 2) (3 4) ()) ((1 3) (2 4)))

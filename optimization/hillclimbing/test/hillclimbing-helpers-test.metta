@@ -263,7 +263,7 @@
       (Cons $score-ft-set-pair $new-acc))))
 
 ;; not clear where the cener instance is gotten from      
-(= (hcFtSet $iTable $centerInst  $diversity-cap)
+(= (hcFtSet $iTable $centerInst $diversity-cap)
   (let* ((((mkInst $inst1) (mkSInstSet $list) $state) (hillClimbingFs (mkSInstSet Nil) $iTable (mkInst $centerInst))) ;; runs the hillclimbing feature selector
          ($list-of-scoreset-pairs (getScoreFromSInstSet $list ()))                                                    ;; separates the scores from the the previous output and puts them in a score feature-set pair tuple -- as list of
          ($unique-pairs (List.tFoldl $list-of-scoreset-pairs union-atom exp ()))                                      ;; finds unquie such pairs duplicats removed -- by way of union-atom

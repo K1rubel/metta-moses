@@ -11,7 +11,7 @@
    (let (mkITable $data $labels) $itable
        (chain (- (List.length $labels) 1) $numFeatures
            (if (<= $targetSize 0)
-               ()
+               () ;; let's assume this doesnt happen 
                (if (>= $targetSize $numFeatures)
                    (0 (range 0 1 $numFeatures))
                    (0 (randomSelectHelper $numFeatures $targetSize ()))

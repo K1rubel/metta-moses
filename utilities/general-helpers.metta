@@ -786,3 +786,14 @@
 (= (randomFloat) (let $rndInt (random-int &rng 0 maxInt) (/ $rndInt maxInt)))
 ! (bind! rnd (py-atom random))
 ! ((py-dot rnd seed) 0)
+
+;; creates new tuple containing tuples of member of the two sets 
+;; (1 2) (3 4) --> ((1 3) (2 4))
+(: oneToOne (-> Expression Expression Expression))
+(= (oneToOne $a $b $acc)
+   (if-decons-expr $a $h-a $t-a
+      (if-decons-expr $b $h-b $t-b
+         (let $res (union-atom $acc (($h-a $h-b)))
+            (oneToOne $t-a $t-b $res))
+         (if (== $a ()) $acc (Error ($a $b) LengthMismatch)))
+   (if (== $b ()) $acc (Error ($a $b) LengthMismatch))))
