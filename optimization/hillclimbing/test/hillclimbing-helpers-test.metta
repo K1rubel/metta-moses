@@ -258,4 +258,6 @@
 ; ! (hcFtSet hcoutput 2)   
 
 ; !(hillClimbingFs (mkSInstSet Nil) ttable2 (mkInst (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil))))))
-! (hcFtSetPop ttable2 (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil))))) ;; ((1.0 (0 2 3)) (0.311 (2 3)) (0.311 (0)))
+! (hcFtSetPop ttable2 (Cons 0 (Cons 1 (Cons 0 (Cons 0 Nil))))) ;; ((1.0 (0 2 3)) (0.311 (2 3)) (0.311 (0)))
+; ((1.0 (0 2 3)) (0.311 (2 3)) (0.311 (0)) (0.311 (0 3)) (0.311 (2)))
+; ((1.0 (0 2 3)) (1.0 (0 2)) (0.311 (2 3)) (0 ()) (0.0 (3)))
