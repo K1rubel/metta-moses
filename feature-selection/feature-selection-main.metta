@@ -69,7 +69,8 @@
             $init-fts       ;; indices of initial features -- ne
             ) 
 	(case $algo
-		((hc (hcFtSet (mkITable $table $labels) $centerInst $diversity-cap))
+		((hc (let $init-instance (List.generate (- (List.length $labels) 1) 0) 
+                        (hcFtSet (mkITable $table $labels) $init-instance)))
 		 (rd (randomFeatureSelection (mkITable $table $labels) $target-size))                                       
 		 (sim (simpleFeatureSelector $th $target-size False (mkITable $table $labels) ()))                           ;; False -- default value for using exp distribution for selection of top N features -- and start with empty feature list as initial features -- th here refers to the minimum score required for feature set to be selected
 		 (inc (incrementatl .. ))
