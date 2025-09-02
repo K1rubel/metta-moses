@@ -41,6 +41,7 @@
 !(import! &self metta-moses:optimization/hillclimbing:hill-climbing-helpers)
 !(import! &self metta-moses:feature-selection:feature-selection-helpers)
 !(import! &self metta-moses:optimization/hillclimbing:cross-top-one-helpers)
+!(import! &self metta-moses:feature-selection:hc)
 
 (= (ARGS) args) 
 !(import! &self metta-moses:scoring:bscore)
@@ -251,30 +252,10 @@
             (mkSInstSet (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 0 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 1 Nil))) 0.811)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 1 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 1 (Cons 0 Nil))) 0.311)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) (Cons (mkSInst (mkPair (mkInst (Cons 0 (Cons 0 Nil))) 0)) Nil)))))))))))))))
 
 
-            
-(= (getScoreFtSetPair (mkSInst (mkPair (mkInst $list) $score))) ;; turns this construct into tuple of indices
-  ($score (bitsToIndices $list 0 ())))
-
-;; creates list of score-feature set pair
-(= (getScoreFromSInstSet  Nil $acc) Nil)
-(= (getScoreFromSInstSet (Cons $sInst $sInsts) $acc) 
-  (chain (getScoreFromSInstSet $sInsts $acc) $new-acc
-    (chain (getScoreFtSetPair $sInst) $score-ft-set-pair
-      (Cons $score-ft-set-pair $new-acc))))
-
-;; not clear where the cener instance is gotten from      
-(= (hcFtSet $iTable $centerInst $diversity-cap)
-  (let* ((((mkInst $inst1) (mkSInstSet $list) $state) (hillClimbingFs (mkSInstSet Nil) $iTable (mkInst $centerInst))) ;; runs the hillclimbing feature selector
-         ($list-of-scoreset-pairs (getScoreFromSInstSet $list ()))                                                    ;; separates the scores from the the previous output and puts them in a score feature-set pair tuple -- as list of
-         ($unique-pairs (List.tFoldl $list-of-scoreset-pairs union-atom exp ()))                                      ;; finds unquie such pairs duplicats removed -- by way of union-atom
-         ($sorted-pairs (sortPairs pairMax $unique-pairs $diversity-cap ())))                                         ;; sort using score
-
-        (takeN $diversity-cap $sorted-pairs)))                                                                        ;; take some part of the sorted tuple
-
         ; ((mkInst $inst1) (mkSInstSet $list) $state) 
 ;; include sorting here
 
 ; ! (hcFtSet hcoutput 2)   
 
 ; !(hillClimbingFs (mkSInstSet Nil) ttable2 (mkInst (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil))))))
-! (hcFtSet ttable2 (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil)))) 3) ;; ((1.0 (0 2 3)) (0.311 (2 3)) (0.311 (0)))
+! (hcFtSetPop ttable2 (Cons 1 (Cons 0 (Cons 0 (Cons 0 Nil))))) ;; ((1.0 (0 2 3)) (0.311 (2 3)) (0.311 (0)))
