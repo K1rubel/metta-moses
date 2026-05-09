@@ -56,7 +56,10 @@
 (= (List.length $xs) (size-atom $xs))
 
 ; (: List.map (-> (-> $a $b) (List $a) (List $b)))
-(= (List.map $f $xs) (map-atom $xs $f))
+(= (List.map $f ()) ())
+(= (List.map $f (cons $x $xs))
+   (let $evaled ($f $x)
+     (cons $evaled (List.map $f $xs))))
 
 ; (: List.mapOverArg (-> (-> $a $b $a) $b $arg (List $a)))
 (= (List.mapOverArg $f () $arg) ())
@@ -67,7 +70,12 @@
          (cons $new-head (List.mapOverArg $f $tail $arg)))))
 
 ; (: List.filter (-> (-> $a Bool) (List $a) (List $a)))
-(= (List.filter $p $xs) (filter-atom $xs $p))
+(= (List.filter $p ()) ())
+(= (List.filter $p (cons $x $xs))
+   (let $evaled ($p $x)
+     (if $evaled
+         (cons $x (List.filter $p $xs))
+         (List.filter $p $xs))))
 
 ; (: List.listToExpr (-> (List $a) Expression))
 (= (List.listToExpr $xs) $xs)

@@ -4,9 +4,10 @@
 ;; insert an element to the Ordered multimap using custom function
 (= (MultiMap.insert ($key $value) () $fn) (cons ($key $value) ()))
 (= (MultiMap.insert ($key $value) (cons ($curKey $curVal) $tail) $fn)
-   (if ($fn $key $curKey)
-       (cons ($key $value) (cons ($curKey $curVal) $tail))
-       (cons ($curKey $curVal) (MultiMap.insert ($key $value) $tail $fn))))
+   (let $cmp ($fn $key $curKey)
+     (if $cmp
+         (cons ($key $value) (cons ($curKey $curVal) $tail))
+         (cons ($curKey $curVal) (MultiMap.insert ($key $value) $tail $fn)))))
 
 ;; default insert function using <=
 (= (MultiMap.insert $newValue $mMap) (MultiMap.insert $newValue $mMap <=))
