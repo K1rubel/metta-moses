@@ -134,7 +134,7 @@
                             (if (isNullVertex $treeToAppend)
                                 ($tree $parentId $parentId)
                                 (chain (appendChild $tree $parentId $treeToAppend) $treeChIdPair
-                                        ((first $treeChIdPair) $newSrcId (if (== $parentId $newDstId) (second $treeChIdPair) $newDstId)))))))) ;; INFO: Just incase if the append fails and stores the result somewhere else, we need to add a test case here to cmpare between targetNode and appendChild node.
+                                        ((first-from-pair $treeChIdPair) $newSrcId (if (== $parentId $newDstId) (second $treeChIdPair) $newDstId)))))))) ;; INFO: Just incase if the append fails and stores the result somewhere else, we need to add a test case here to cmpare between targetNode and appendChild node.
 
 ;; appendTo for Strategy Subtree Knobs (SSK) - No negation for game moves
 ;; Params:
@@ -175,4 +175,4 @@
                             (if (isNullVertex $treeToAppend)
                                 ($tree $parentId $parentId)
                                 (chain (appendChild $tree $parentId $treeToAppend) $treeChIdPair
-                                        ((first $treeChIdPair) $newSrcId (if (== $parentId $newDstId) (second $treeChIdPair) $newDstId))))))))
+                                        ((first-from-pair $treeChIdPair) $newSrcId (if (== $parentId $newDstId) (second $treeChIdPair) $newDstId))))))))
