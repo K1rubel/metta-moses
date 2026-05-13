@@ -26,10 +26,11 @@
 ; ;; Table.pop        -- gets and removes a column from the current ttable structure
 ; ;;                  -- returns the remaining table and the culumn asked for
 (= (Table.pop $i ()) ())
-(= (Table.pop $i (cons (cons $d $ds) $rest))  ;; $d and $ds for data and rest of data
-    (if (== $i 0)
-        (cons $ds (Table.pop $i $rest))
-        (cons (cons $d (List.pop (- $i 1) $ds)) (Table.pop $i $rest))))
+(= (Table.pop $i (cons $row $rest))
+    (let (cons $d $ds) $row
+        (if (== $i 0)
+            (cons $ds (Table.pop $i $rest))
+            (cons (cons $d (List.pop (- $i 1) $ds)) (Table.pop $i $rest)))))
 ; removes the first column from table
 ; ; (: Table.pop (-> (List (List $a)) (List (List $a))))
 ; (= (Table.pop $rows)
@@ -200,7 +201,6 @@
 ; (: mutualInformation (-> (List $a) (List $a) Number))
 (= (mutualInformation $if $of)
     (chain (List.zip $if $of) $io-zip
-    (chain (println! ("List zip" $io-zip)) $_
     (chain (List.uniqueValuesCount $io-zip ()) $io-c
     (chain (List.length $if) $rowNum
     (chain (List.uniqueValuesCount $if ()) $ic         ;; input feature unique values count pairs
@@ -209,11 +209,11 @@
     (chain (collapse (chain (superpose $io-p) $io-prob-pair    ;; ((inout output)  prob) piar -- single -- superposed
         (if (= $io-prob-pair ($pair $prob))
                 (let* (($temp (/ $prob (* (/ (getCount $ic (first-from-pair $pair)) $rowNum) (/ (getCount $oc (second-from-pair $pair)) $rowNum))))
-                        ($log (log-math 2 $temp)))
+                        ($log (logMath 2 $temp)))
                         
                         (* $prob $log))
                 ()))) $probTuple
-        (chain (foldl-atom $probTuple 0 $acc $x (+ $acc $x)) $final-result (roundN $final-result 3)))))))))))
+        (chain (foldl-atom $probTuple 0 $acc $x (+ $acc $x)) $final-result (roundN $final-result 3))))))))))
 
 
 (= (calculateMutualInformation (mkITable $rows $labels) $featureIndices)
