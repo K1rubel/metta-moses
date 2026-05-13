@@ -1,9 +1,7 @@
-!(import! &self ../../../metta-moses/utilities/general-helpers)
-!(import! &self ../../../metta-moses/utilities/list-methods)
-!(import! &self ../../../metta-moses/representation/instance)
-!(import! &self ../../../metta-moses/scoring/cscore)
-
-
+!(import! &self ../general-helpers)
+!(import! &self ../list-methods)
+!(import! &self ../../representation/instance)
+!(import! &self ../../scoring/cscore)
 
 ;; Test cases for List.foldr
 !(assertEqual (List.foldr + 0 (cons 1 (cons 2 (cons 3 (cons 4 ()))))) 10)

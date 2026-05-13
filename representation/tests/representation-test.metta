@@ -37,13 +37,12 @@
 
 !(import! &self ../../feature-selection/simple)
 !(import! &self ../../feature-selection/smd)
+!(import! &self ../../feature-selection/stochasitc-maximum-dependency)
 !(import! &self ../../feature-selection/random-feature-selection)
-; !(import! &self ../../feature-selection/incremental)
+!(import! &self ../../feature-selection/incremental)
 !(import! &self ../../feature-selection/incremental-feature-selection)
-
 !(import! &self ../../feature-selection/similarity-scorers)
 !(import! &self ../../feature-selection/select-top-features)
-
 !(import! &self ../../feature-selection/feature-selection-main)
 
 !(import! &self ../../representation/representation)

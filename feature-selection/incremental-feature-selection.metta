@@ -131,9 +131,9 @@
                                          (get-redundant-features $fs $table $redThreshold)))
              (flatten-unique $redSubsets))))
 
-(= (range $start $end)
-   (if (>= $start $end) ()
-       (cons $start (range (+ $start 1) $end))))
+; (= (range $start $end)
+;    (if (>= $start $end) ()
+;        (cons $start (range (+ $start 1) $end))))
 
 
 ;; --- LRU Cache for mi-score ---
@@ -146,19 +146,19 @@
 ;;   !(lru-init 128)
 
 (= (lru-init $capacity)
-   (let* (($_ (add-atom &self (lru-tick 0)))
-          ($_ (add-atom &self (lru-capacity $capacity))))
+   (let* (($_1 (add-atom &self (lru-tick 0)))
+          ($_2 (add-atom &self (lru-capacity $capacity))))
           True))
 
 ;; Advance the tick counter and return the new value
 (= (lru-next-tick)
    (let $ticks (collapse (match &self (lru-tick $t) $t))
         (if (== $ticks ())
-            (let $_ (add-atom &self (lru-tick 1)) 1) ; This branch is simple, can stay as let
+            (let $_3 (add-atom &self (lru-tick 1)) 1) ; This branch is simple, can stay as let
             (let* (((cons $t $rest) $ticks)
                    ($nextT (+ $t 1))
-                   ($_ (remove-atom &self (lru-tick $t)))
-                   ($_ (add-atom &self (lru-tick $nextT))))
+                   ($_4 (remove-atom &self (lru-tick $t)))
+                   ($_5 (add-atom &self (lru-tick $nextT))))
                   $nextT))))
 
 ;; Get cache capacity (default 128 if not initialized)
@@ -183,7 +183,7 @@
                      True
                      ;; Use native msort to find the entry with the smallest tick
                      (let* (($sorted (msort $all))
-                            ((cons (cons $_ $oldKey) $_) $sorted))
+                            ((cons (cons $_6 $oldKey) $_7) $sorted))
                            (match &self (lru-entry $oldKey $vs $ts)
                                   (remove-atom &self (lru-entry $oldKey $vs $ts)))))))))
 
@@ -195,13 +195,13 @@
                ;; Cache MISS: compute, maybe evict oldest, insert new
                   (let* (($score (mi-score $table $sorted))
                         ($t (lru-next-tick))
-                        ($_ (lru-maybe-evict))
-                        ($_ (add-atom &self (lru-entry $sorted $score $t))))
+                        ($_8 (lru-maybe-evict))
+                        ($_9 (add-atom &self (lru-entry $sorted $score $t))))
                         $score)
                ;; Cache HIT: update timestamp to mark as recently used
                (let* (((cons (cons $score (cons $oldTick ())) $rest) $hits)
                      ($t (lru-next-tick))
-                     ($_ (remove-atom &self (lru-entry $sorted $score $oldTick)))
+                     ($_10 (remove-atom &self (lru-entry $sorted $score $oldTick)))
                      ($a (add-atom &self (lru-entry $sorted $score $t))))
                      $score))))
    
