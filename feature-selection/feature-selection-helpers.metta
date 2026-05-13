@@ -298,7 +298,7 @@
             0                                                                  ;; log_b(1) = 0 for any base
             (if (== $inputValue $baseValue)                                     ;; log_b(b) = 1 for any base
                 1                                                               
-                (roundN (/ (lnMercator $inputValue 0) (lnMercator $baseValue 0)) 3)))))    ;; log_b(x) = ln(x) / ln(b)
+                (/ (lnMercator $inputValue 0) (lnMercator $baseValue 0))))))    ;; log_b(x) = ln(x) / ln(b)
 ; (: lnMercator (-> Number Number Number))
 (= (lnMercator $inputNumber $reductionCount)
     (if (>= $inputNumber 2)
