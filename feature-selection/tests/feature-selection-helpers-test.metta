@@ -78,7 +78,7 @@
 !(assertEqual (marginalProbs 100 ()) ())
 
 !(assertEqual (mutualInformation (cons True (cons False ())) (cons True (cons False ()))) 1.0)
-!(assertEqual (mutualInformation (cons True (cons True ())) (cons False (cons False ()))) 0.0)
+!(assertEqual (mutualInformation (cons True (cons True ())) (cons False (cons False ()))) 0)
 !(assertEqual (mutualInformation (cons A (cons B (cons A ()))) (cons X (cons Y (cons X ())))) 0.918)
 !(assertEqual (mutualInformation (cons A (cons A (cons A ()))) (cons X (cons Y (cons Z ())))) 0.0)
 !(assertEqual (mutualInformation (cons A (cons B (cons C ()))) (cons X (cons Y (cons Z ())))) 1.585)
