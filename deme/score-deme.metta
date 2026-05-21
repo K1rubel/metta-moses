@@ -32,7 +32,9 @@
 (= (applyStrategyBasedScore $rep () $nGames $complexityRatio $listOfScoredInst) $listOfScoredInst)
 (= (applyStrategyBasedScore $rep (cons $i $is) $nGames $complexityRatio $listOfScoredInst)
     (let* (($strategyTree (getCandidate $rep $i))
+            ($_ (println! ("strategyTree" $strategyTree)))
            ($cscore (getCscore $strategyTree $nGames $complexityRatio &strategyScoreCache))
+           ($_ (println! ("cscore" $cscore)))
            ($scoredInst (mkSInst (mkPair $i $cscore))))
         (applyStrategyBasedScore $rep $is $nGames $complexityRatio (cons $scoredInst $listOfScoredInst))))
 

@@ -1,9 +1,9 @@
 !(import! &self ../../utilities/general-helpers)
 !(import! &self ../../utilities/list-methods)
-!(import! &self ../../feature-selection/feature-selection-helpers)
-!(import! &self ../../feature-selection/smd)
-!(import! &self ../../feature-selection/incremental-feature-selection)
-!(import! &self ../../feature-selection/stochasitc-maximum-dependency)
+!(import! &self ../feature-selection-helpers)
+!(import! &self ../smd)
+!(import! &self ../incremental-feature-selection)
+!(import! &self ../stochasitc-maximum-dependency)
 !(import! &self ../../moses/demo-problems)
 
 (= (clear-lru)

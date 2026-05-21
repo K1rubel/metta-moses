@@ -30,14 +30,25 @@
 
 (= (selectorIterator $th $rowNum $oc (cons $label $labels) $dataRows $counter $acc)
     (if (= (cons $label $labels) (cons $label ()))                                     ;; this means we are at the output label
-        $acc                                                                        ;; result -- pair of score and column index for consistent formatting across different feature selection algorithms
-        (chain (Table.getColumn 0 $dataRows) $if
-        (chain (Table.pop 0 $dataRows) $rem-table                            ;; remove the first column -- better than carrying around the whole table
-        (chain (mutualInformation $if $oc) $mi      
-            (chain (calculateConfidence (size-atom $if) (List.length $dataRows) 50.0) $confidence
-                (chain (* $mi $confidence) $actualScore
+        $acc     
+        (let* (($if (Table.getColumn 0 $dataRows))
+                ($rem-table (Table.pop 0 $dataRows))
+                ($mi (mutualInformation $if $oc))
+                ($confidence (calculateConfidence (size-atom $if) (List.length $dataRows) 50.0))
+                ($actualScore (* $mi $confidence)))
                     (if (>= $actualScore $th)
-                        (chain (insertPair > ($actualScore ($counter)) $acc) $new-acc
+                        (let $new-acc (insertPair > ($actualScore ($counter)) $acc)
                             (selectorIterator $th $rowNum $oc $labels $rem-table (+ $counter 1) $new-acc))
                         (selectorIterator $th $rowNum $oc $labels $rem-table (+ $counter 1) $acc)
-                        ))))))))
+                        ))))
+                                                                   ;; result -- pair of score and column index for consistent formatting across different feature selection algorithms
+        ; (chain (Table.getColumn 0 $dataRows) $if
+        ; (chain (Table.pop 0 $dataRows) $rem-table                            ;; remove the first column -- better than carrying around the whole table
+        ; (chain (mutualInformation $if $oc) $mi      
+        ;     (chain (calculateConfidence (size-atom $if) (List.length $dataRows) 50.0) $confidence
+        ;         (chain (* $mi $confidence) $actualScore
+        ;             (if (>= $actualScore $th)
+        ;                 (chain (insertPair > ($actualScore ($counter)) $acc) $new-acc
+        ;                     (selectorIterator $th $rowNum $oc $labels $rem-table (+ $counter 1) $new-acc))
+        ;                 (selectorIterator $th $rowNum $oc $labels $rem-table (+ $counter 1) $acc)
+        ;                 ))))))))

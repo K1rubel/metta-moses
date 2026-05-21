@@ -18,16 +18,16 @@
 
 !(import! &self ../../scoring/bscore)
 
-!(import! &self ../../representation/knob-representation)
-!(import! &self ../../representation/lsk)
-!(import! &self ../../representation/disc-probe)
-!(import! &self ../../representation/logical-probe)
-!(import! &self ../../representation/logical-canonize)
-!(import! &self ../../representation/sample-logical-perms)
-!(import! &self ../../representation/knob-representation)
-!(import! &self ../../representation/add-logical-knobs)
-!(import! &self ../../representation/build-logical)
-!(import! &self ../../representation/build-knobs)
+!(import! &self ../knob-representation)
+!(import! &self ../lsk)
+!(import! &self ../disc-probe)
+!(import! &self ../logical-probe)
+!(import! &self ../logical-canonize)
+!(import! &self ../sample-logical-perms)
+!(import! &self ../knob-representation)
+!(import! &self ../add-logical-knobs)
+!(import! &self ../build-logical)
+!(import! &self ../build-knobs)
 
 !(py-call (random.seed 0))
 

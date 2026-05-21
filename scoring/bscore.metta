@@ -74,6 +74,8 @@
                    ($outputs (eval (List.flatten (List.map (eval (List.drop (- $length 1))) $table))))
                    ($bScore (List.zipWith compareAndScore $scoreList $outputs))
                    ($result (mkBScore $bScore))
+                   ($_ (println! ("============ bscore" $result)))
+                   ($_ (println! (sumBScore $result)))
                    ($_ (add-atom $cacheSpace ($tree $result)))
                )
                $result)

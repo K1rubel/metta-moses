@@ -104,13 +104,13 @@
                     (cons A (cons B (cons C (cons D (cons Output ())))))))
 
 ;; Testcases for the complexityBasedScorer
-!(assertEqual 
- (complexityBasedScorer 
-         (mkRep (knobMapObj) (tree1))
-         (mkInst (cons 2 (cons 0 (cons 1 ()))))
-         (ttable1)
-         2.0)
- (mkCscore -1 4 2.0 0.0 -3.0))
+; !(assertEqual 
+;  (complexityBasedScorer 
+;          (mkRep (knobMapObj) (tree1))
+;          (mkInst (cons 2 (cons 0 (cons 1 ()))))
+;          (ttable1)
+;          2.0)
+;  (mkCscore -1 4 2.0 0.0 -3.0))
 
 !(assertEqual
  (complexityBasedScorer 

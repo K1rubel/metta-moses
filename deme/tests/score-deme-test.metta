@@ -30,7 +30,7 @@
 !(import! &self ../../representation/lsk)
 !(import! &self ../../representation/knob-mapper)
 !(import! &self ../../feature-selection/feature-selection-helpers)
-!(import! &self ../../representation/representation)
+; !(import! &self ../../representation/representation)
 
 !(import! &self ../../representation/instance)
 
@@ -102,6 +102,13 @@
 ;; NOTE: All the instances in the deme don't include lsk1 (or they all start with '0') because we are testing it using ttable2. 
 ;;       ttable2 is a truth table which doesn't have a 'D' column.
 ;; Testcases for applyComplexityBasedScore
+;!(bind! &bscoreCache (new-space))
+;!(println! ("++++++++++++++++++++++"))
+;!(treeComplexity (mkTree (mkNode AND) ((mkTree (mkNode NOT) ((mkTree (mkNode A) ()))) (mkTree (mkNode OR) ((mkTree (mkNode B) ()) (mkTree (mkNode C) ()))))))
+;!(treeComplexity (mkTree (mkNode AND) ((mkTree (mkNode OR) ((mkTree (mkNode B) ()) (mkTree (mkNode C) ()))))))
+;!(scoreTree (ttable1) (mkTree (mkNode AND) ((mkTree (mkNode OR) ((mkTree (mkNode B) ()) (mkTree (mkNode C) ()))))) &bscoreCache)
+; !(treeComplexity (mkTree (mkNode AND) ((mkTree (mkNode OR) ((mkTree (mkNode B) ()) (mkTree (mkNode C) ()))))))
+;!(treeComplexity (mkTree (mkNode AND) ((mkTree (mkNode OR) ((mkTree (mkNode B) ()) (mkTree (mkNode C) ()))))))
 !(assertEqual 
    (applyComplexityBasedScore 
       (mkRep (knobMapObj) (tree1))

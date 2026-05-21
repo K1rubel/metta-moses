@@ -13,7 +13,7 @@
         ;; ($_ (println! (Instance: $inst)))
         ;; ($_ (println! (GetCandid Params: $rep $inst)))
         ($tree (getCandidate $rep $inst))
-        ;; ($_ (println! (Tree: $tree)))
+        ; ($_ (println! (Tree: $tree)))
         ($score (getCscore $itable $tree $complexityRatio &bscoreCache))
         ;; ($_ (println! (Score: $score)))
       )

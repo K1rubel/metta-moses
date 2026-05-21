@@ -2,8 +2,8 @@
 !(import! &self ../../utilities/list-methods)
 !(import! &self ../../utilities/ordered-set)
 !(import! &self ../../utilities/lru-cache)
-!(import! &self ../../feature-selection/feature-selection-helpers)
-!(import! &self ../../feature-selection/incremental)
+!(import! &self ../feature-selection-helpers)
+!(import! &self ../incremental)
 
 (= (andTable) 
    (mkITable

@@ -524,3 +524,5 @@
 
 !(assertEqual (pruneExemplar (mkTree (mkNode AND) (cons (mkTree (mkNode A) ()) (cons (mkTree (mkNode B) ()) ()))) (A B)) 
            (mkTree (mkNode AND) ()))
+
+!(treeComplexity (mkTree (mkNode AND) ((mkTree (mkNode NOT) ((mkTree (mkNode A) ()))) (mkTree (mkNode OR) ((mkTree (mkNode B) ()) (mkTree (mkNode C) ()))))))

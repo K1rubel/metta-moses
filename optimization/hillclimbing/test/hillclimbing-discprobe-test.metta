@@ -169,8 +169,7 @@
       ($sub (mkTree (mkNode OR)  (cons (mkTree (mkNode A) ()) ())))
       (($t $nid) (appendChild $ex (mkNodeId (0)) (mkNullVex (cons $sub ()))))
       ($lsk (mkLSK (mkDiscKnob (mkKnob $nid) (mkMultip 3) (mkDiscSpec 0) (mkDiscSpec 0) ())))
-      ($pl  (discProbe $t (mkNodeId (0)) $lsk))
-      ($_ (println! (Probbed knob settings $pl))))
+      ($pl  (discProbe $t (mkNodeId (0)) $lsk)))
      (List.contains (mkDiscSpec 1) (getDisallowed $pl)))
    True)
 
