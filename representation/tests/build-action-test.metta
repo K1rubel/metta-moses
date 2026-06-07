@@ -15,6 +15,7 @@
 !(import! &self ../../representation/build-logical)
 !(import! &self ../../representation/build-knobs)
 !(import! &self ../../representation/build-action)
+!(import! &self ../../representation/representation)
 
 
 !(py-call (random.seed 42))
@@ -39,6 +40,8 @@
 !(assertEqual (isBuiltinAction turn_left) True)
 !(assertEqual (isBuiltinAction and_seq) False)
 !(assertEqual (isBuiltinAction action_bool_if) False)
+!(assertEqual (isBuiltinAction move_forward (move_forward turn_left)) True)
+!(assertEqual (isBuiltinAction ahead_blocked (move_forward turn_left)) False)
 
 ;; ===========================================================================
 ;; sampleActionPerms — returns all actions plus random pairs
@@ -48,6 +51,14 @@
     (and (is-member move_forward $perms)
          (is-member turn_left $perms)))
   True)
+
+!(assertEqual
+  (sampleActionPerms (move_forward) (A B))
+  (move_forward))
+
+!(assertEqual
+  (sampleActionPerms (move_forward turn_left) ())
+  (move_forward turn_left))
 
 ;; ===========================================================================
 ;; addActionKnobsAt — creates ASK and inserts into MMap
@@ -64,6 +75,27 @@
   (let ($tree $mmp) (addSimpleActionKnobsAt (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())) (mkNodeId (0)) (mkNodeId (1)) True () (move_forward turn_left) (A B))
     (> (MultiMap.length $mmp) 0))
   True)
+
+!(assertEqual
+  (let* (($origTree (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
+         (($updatedTree $mmp) (addSimpleActionKnobsAt $origTree (mkNodeId (0)) (mkNodeId (1)) True () (move_forward turn_left) (A B)))
+         ($ask (car-atom (MultiMap.values $mmp))))
+    ($updatedTree (getKnobDefault $ask)))
+  ((mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())) (mkDiscSpec 1)))
+
+!(assertEqual
+  (let* (($origTree (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
+         (($updatedTree $ask) (simpleActionSubtreeKnob $origTree (mkNodeId (1))))
+         (($candidate $srcId $dstId) (appendToASK $updatedTree $ask (mkTree (mkNode and_seq) ()) (mkNodeId (0)) 1)))
+    ($candidate $srcId $dstId))
+  ((mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())) (mkNodeId (1)) (mkNodeId (1))))
+
+!(assertEqual
+  (let* (($origTree (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
+         (($updatedTree $ask) (simpleActionSubtreeKnob $origTree (mkNodeId (1))))
+         (($candidate $srcId $dstId) (appendToASK $updatedTree $ask (mkTree (mkNode and_seq) ()) (mkNodeId (0)) 0)))
+    ($candidate $srcId $dstId))
+  ((mkTree (mkNode and_seq) ()) (mkNodeId (0)) (mkNodeId (0))))
 
 ;; ===========================================================================
 ;; actionProbe — empty perms returns knobs and tree unchanged
@@ -171,6 +203,19 @@
     (> (MultiMap.length $MMap) 0))
   True)
 
+;; buildKnobs 5-arity routes any action operator root to the action path.
+!(assertEqual
+  (let* (
+    ($mmp ())
+    ($argLabels ())
+    ($acts ())
+    ($percs ())
+    ($tree (mkTree (mkNode action_success) ()))
+    (($updatedTree $MMap) (buildKnobs $tree $mmp $argLabels $acts $percs))
+  )
+    $updatedTree)
+  (mkTree (mkNode and_seq) (cons (mkTree (mkNode action_success) ()) ())))
+
 ;; ===========================================================================
 ;; buildKnobs 5-arity — action path produces knobs for action_bool_if tree
 ;; ===========================================================================
@@ -263,6 +308,18 @@
 !(assertEqual
   (actionCleanup (mkTree (mkNode seq_exec) ()))
   (mkNullVex ()))
+
+!(assertEqual
+  (actionCleanup (mkTree (mkNode action_success) ()))
+  (mkTree (mkNode action_success) ()))
+
+!(assertEqual
+  (actionCleanup (mkTree (mkNode action_failure) ()))
+  (mkTree (mkNode action_failure) ()))
+
+!(assertEqual
+  (actionCleanup (mkTree (mkNode and_seq) (cons (mkNullVex ()) ())))
+  (mkTree (mkNode and_seq) (cons (mkNullVex ()) ())))
 
 !(assertEqual
   (actionCleanup (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
