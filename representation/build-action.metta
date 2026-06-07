@@ -37,11 +37,13 @@
 ;; replacement from the C++ ordered-pair index space n*(n-1).
 ;; -----------------------------------------------------------------
 (= (sampleActionPerms $actions $perceptions)
-   (sampleActionPerms $actions $perceptions (length $actions)))
+   (if (== $perceptions ())
+       $actions
+       (sampleActionPerms $actions $perceptions (length $actions))))
 
 (= (sampleActionPerms $actions $perceptions $n)
    (let $actionCount (length $actions)
-     (if (or (== $n 0) (== $perceptions ()) (< $actionCount 2))
+     (if (or (== $n 0) (< $actionCount 2))
          $actions
          (let*
            (

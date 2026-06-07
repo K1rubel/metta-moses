@@ -52,10 +52,12 @@
          (is-member turn_left $perms)))
   True)
 
+;; Single action: no pairs possible (need ≥ 2 actions), returns as-is
 !(assertEqual
   (sampleActionPerms (move_forward) (A B))
   (move_forward))
 
+;; No perceptions: pairs require a perception, returns actions only
 !(assertEqual
   (sampleActionPerms (move_forward turn_left) ())
   (move_forward turn_left))
