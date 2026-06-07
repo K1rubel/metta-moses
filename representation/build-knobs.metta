@@ -27,9 +27,10 @@
                    action_while bool_while return_success repeat_n)))
 
 ;; isBuiltinAction — True for user-defined (domain) action symbols.
-;; These are the leaf actions supplied by the caller (e.g. move_forward).
-;; Any symbol that is not a structural action operator is considered builtin.
+;; The two-argument form mirrors C++'s typed builtin_action check in MeTTa's
+;; untyped setting: only symbols explicitly supplied in $actions are actions.
 (= (isBuiltinAction $op) (not (isActionOperator $op)))
+(= (isBuiltinAction $op $actions) (is-member $op $actions))
 
 ;;; =============================================================================
 ;; buildKnobs — entry point for representation knob building
@@ -82,7 +83,7 @@
         ($t3 $m1)))
 
 (= (buildKnobs (mkTree (mkNode $op) $children) $mmp $argLabels $actions $perceptions)
-    (if (is-member $op $actions)
+    (if (or (isActionOperator $op) (is-member $op $actions))
         (let* (($canonized (actionCanonize (mkTree (mkNode $op) $children)))
                (($t1 $m1) (buildAction $canonized (mkNodeId (0)) $mmp $actions $perceptions))
                ($t2 (actionCleanup $t1))
