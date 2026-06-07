@@ -120,12 +120,58 @@
                            (let* (
                                     ;; ($_ (println! (Building representation for arg labels: $argLabels)))
                                     ;; ($_ (println! (" done buildknobs (:) ")))            ;; BUILD representations on 
-                                    (($updatedTree $dscMp) (buildKnobs $xmplr () $argLabels $disable-discprobe))            ;; BUILD representations on
-                                    ;; ($_ (println! (Building representation for arg labels: $argLabels)))
-                                    ;; ($_ (println! (updated tereeeeee dddddddddddd disc mappppp ($updatedTree $dscMp))))
-                                    ;; ($_ (println! ""))
-                                    ($dscKbMp (crtDiscKnobMap (mkDscMp $dscMp) (mkDscKbMp ()) 0)))        ;; MULITPLE args selected using the feature selection
-                                 (mkRep (mkKbMap $dscKbMp (mkDscMp $dscMp)) $updatedTree)))))
+                                     (($updatedTree $dscMp) (buildKnobs $xmplr () $argLabels $disable-discprobe))            ;; BUILD representations on
+                                     ;; ($_ (println! (Building representation for arg labels: $argLabels)))
+                                     ;; ($_ (println! (updated tereeeeee dddddddddddd disc mappppp ($updatedTree $dscMp))))
+                                     ;; ($_ (println! ""))
+                                     ($dscKbMp (crtDiscKnobMap (mkDscMp $dscMp) (mkDscKbMp ()) 0)))        ;; MULITPLE args selected using the feature selection
+                                  (mkRep (mkKbMap $dscKbMp (mkDscMp $dscMp)) $updatedTree)))))
+
+;; Representation constructor for action domains
+;; Params: standard params + $actions and $perceptions lists
+(= (representation
+            $nDeme
+            $exemplar
+            (mkITable $table $labels)
+            $ft-selection-algo
+            $prune-exemplar
+            $enforced-fts
+            $scorerType
+            $disable-discprobe
+            $actions
+            $perceptions
+        )
+        (let* (
+                  ($exemplar-fts  (filter-atom (treeFtsIndices $exemplar $labels) $x (not (== $x -1))))
+                  ($all-labels (getInputLabels $labels))
+                  ($ft-set-pop (if (== $ft-selection-algo None)
+                                   ((genList 0 (- (List.length $labels) 2)))
+                                   (featureSelector $ft-selection-algo (mkITable $table $labels) 0.0 $exemplar 2 2 False () False 2 False ja $nDeme 50.0 1.0 0.5 1.0 True $scorerType)))
+                  ($exemplar-arg-seq
+                      (if $prune-exemplar
+                           (map-atom $ft-set-pop $ft-set
+                              (let* (($diff-ft (subtraction-atom $exemplar-fts $ft-set))
+                                      ($ft-names (fsToNames $labels $diff-ft))
+                                      ($pruned-xmplr (pruneExemplar $exemplar $ft-names))
+                                      ($final-args (subtraction-atom $ft-set $exemplar-fts)))
+                                  ($pruned-xmplr (fsToNames $labels $final-args))))
+                           (map-atom $ft-set-pop $ft-set
+                                  (let* (($agg (union-atom-set $ft-set $exemplar-fts))
+                                         ($final-args (fsToNames $labels $agg)))
+                                     ($exemplar $final-args)))))
+                  ($with-enforced-fts
+                      (if (== $enforced-fts ())
+                           $exemplar-arg-seq
+                           (let $sampled-enforced-fts (sampleEnforcedFts $enforced-fts)
+                                     (map-atom $exemplar-arg-seq ($xmplr $args)
+                                              (let $acc (concatT $args $sampled-enforced-fts) ($xmplr $acc))))))
+                  ($filter-empty-args (filter-atom $with-enforced-fts ($xmplr $args) (not (== $args ()))))
+              )
+                     (map-atom $filter-empty-args ($xmplr $argLabels)
+                           (let* (
+                                     (($updatedTree $dscMp) (buildKnobs $xmplr () $argLabels $actions $perceptions))
+                                     ($dscKbMp (crtDiscKnobMap (mkDscMp $dscMp) (mkDscKbMp ()) 0)))
+                                  (mkRep (mkKbMap $dscKbMp (mkDscMp $dscMp)) $updatedTree)))))
 
 ;; Helper function to extract tree from representation
 (= (getRepTree (mkRep $knobMapObj $tree)) $tree)
