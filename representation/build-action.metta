@@ -32,43 +32,44 @@
 ;; -----------------------------------------------------------------
 ;; sampleActionPerms — port of C++ build_knobs::sample_action_perms
 ;;
-;; Creates perms from all $actions plus $n random action_bool_if combos
-;; using $perceptions for the condition.
-;;
-;; FIX vs. original: addRandomActionPairs now guarantees actA ≠ actB,
-;; matching C++'s lazy_random_selector(n*(n-1)) which always indexes
-;; distinct pairs (a ≠ b enforced by the modular arithmetic at line 1194).
+;; Creates perms from all $actions plus up to $n random action_bool_if combos
+;; using $perceptions for the condition. The action pairs are sampled without
+;; replacement from the C++ ordered-pair index space n*(n-1).
 ;; -----------------------------------------------------------------
 (= (sampleActionPerms $actions $perceptions)
    (sampleActionPerms $actions $perceptions (length $actions)))
 
 (= (sampleActionPerms $actions $perceptions $n)
-   (if (== $n 0)
-       $actions
-       (let $pairs (addRandomActionPairs () $perceptions $actions $n)
-         (concatT $actions $pairs))))
+   (let $actionCount (length $actions)
+     (if (or (== $n 0) (== $perceptions ()) (< $actionCount 2))
+         $actions
+         (let*
+           (
+             ($pairCount (* $actionCount (- $actionCount 1)))
+             ($sampleCount (if (> $n $pairCount) $pairCount $n))
+             ($pairIdxs (lazyRandomSelector 0 (- $pairCount 1) $sampleCount))
+             ($pairs (actionPairsFromIndexes $pairIdxs $perceptions $actions $actionCount))
+           )
+           (concatT $actions $pairs)))))
 
-;; addRandomActionPairs — build $n random action_bool_if($perception $a $b) perms
-;; where $a ≠ $b (mirrors C++ deduplication via lazy_random_selector).
-(= (addRandomActionPairs $perms $perceptions $actions $n)
-   (if (== $n 0)
-       $perms
-       (let*
-         (
-           ($perception (randElement $perceptions))
-           ($actA       (randElement $actions))
-           ;; Exclude actA from actB candidates to guarantee a ≠ b,
-           ;; mirroring C++ build_knobs::sample_action_perms (line 1194):
-           ;;   if (b == a) b = number_of_actions - 1;
-           ($candidates (filter-atom $actions $x (not (== $x $actA))))
-           ;; If only one action exists, fall back to actA (degenerate case).
-           ($actB       (if (== $candidates ())
-                            $actA
-                            (randElement $candidates)))
-           ($newPerm    (action_bool_if $perception $actA $actB))
-         )
-         (addRandomActionPairs (cons $newPerm $perms)
-                               $perceptions $actions (- $n 1)))))
+;; actionPairFromIndex — map C++ lazy_random_selector index to an ordered pair.
+(= (actionPairFromIndex $perceptions $actions $actionCount $pairIdx)
+   (let*
+     (
+       ($width (- $actionCount 1))
+       ($aIdx (int (/ $pairIdx $width)))
+       ($bRaw (- $pairIdx (* $aIdx $width)))
+       ($bIdx (if (== $bRaw $aIdx) (- $actionCount 1) $bRaw))
+       ($perception (randElement $perceptions))
+       ($actA (List.getByIdx $actions $aIdx))
+       ($actB (List.getByIdx $actions $bIdx))
+     )
+     (action_bool_if $perception $actA $actB)))
+
+(= (actionPairsFromIndexes () $perceptions $actions $actionCount) ())
+(= (actionPairsFromIndexes (cons $pairIdx $rest) $perceptions $actions $actionCount)
+   (cons (actionPairFromIndex $perceptions $actions $actionCount $pairIdx)
+         (actionPairsFromIndexes $rest $perceptions $actions $actionCount)))
 
 ;; -----------------------------------------------------------------
 ;; addActionKnobsAt — port of C++ build_knobs::add_action_knobs
@@ -90,21 +91,14 @@
 ;; -----------------------------------------------------------------
 ;; addSimpleActionKnobsAt — port of C++ build_knobs::add_simple_action_knobs
 ;;
-;; Creates an ASK with a single perm (the subtree already at $tgtId).
-;;
-;; FIX vs. original: Uses the full subtree at $tgtId rather than
-;; buildTree(getNodeValue(subtree)), which stripped children.
-;; C++ simple_action_subtree_knob(tr, it) takes 'it' pointing at
-;; the existing child — the whole sub-tree is preserved.
+;; Creates an ASK over the existing subtree at $tgtId. Unlike actionProbe,
+;; this does not append a placeholder; default/current are present.
 ;; -----------------------------------------------------------------
 (= (addSimpleActionKnobsAt $tree $probeRootId (mkNodeId $tgtId) $addIfInExemplar $MMap $actions $perceptions)
    (let*
      (
-       ;; Preserve the full subtree rooted at $tgtId (may have children).
-       ;; C++ equivalent: simple_action_subtree_knob(tr, it) — 'it' is the
-       ;; existing child node, not just its label.
        ($subtree   (getNodeById $tree (mkNodeId $tgtId)))
-       (($knobs $updatedTree) (actionProbe $tree $probeRootId (cons $subtree ()) $addIfInExemplar ()))
+       (($knobs $updatedTree) (simpleActionProbe $tree (mkNodeId $tgtId) $subtree $addIfInExemplar ()))
        ($pairs     (pairKnobWithSpec $knobs))
        ($mmp       (expToMMap $pairs $MMap discSpec<))
      )
@@ -122,7 +116,7 @@
 ;; -----------------------------------------------------------------
 (= (processActionChildAt $tree (mkNodeId $parentId) (mkNodeId $childId) $child $MMap $actions $perceptions $p)
    (let (mkTree (mkNode $childOp) $_) $child
-      (if (isBuiltinAction $childOp)
+      (if (isBuiltinAction $childOp $actions)
           (if (> (randint 99) $p)
               (addSimpleActionKnobsAt $tree $parentId (mkNodeId $childId) True $MMap $actions $perceptions)
               (let $wrappedTree (insertNodeAtPosition $tree (mkNodeId $childId) (mkNode and_seq))
@@ -160,7 +154,7 @@
 ;; -----------------------------------------------------------------
 (= (processActionBoolIfChildAt $tree (mkNodeId $parentId) (mkNodeId $childId) $child $MMap $actions $perceptions)
    (let (mkTree (mkNode $childOp) $_) $child
-      (if (isBuiltinAction $childOp)
+      (if (isBuiltinAction $childOp $actions)
           (let
             $wrappedTree (insertNodeAtPosition $tree (mkNodeId $childId) (mkNode and_seq))
             (addActionKnobsAt $wrappedTree $parentId (mkNodeId $childId) False $MMap $actions $perceptions))
@@ -262,31 +256,36 @@
 ;; C++ uses post_order_iterator which naturally processes leaves first;
 ;; the recursive descent here is equivalent.
 ;;
-;; The guard below uses isActionOperator, which now covers all structural
-;; action operators (including or_seq, seq_exec, etc.) as well as and_seq
-;; and action_bool_if — matching the C++ intent.
-;;
 ;; NOTE: C++ also resets the root to sequential_and if the tree becomes
 ;; empty — we return mkNullVex here and the caller (buildKnobs) handles
 ;; this edge case by keeping the original exemplar.
 ;; -----------------------------------------------------------------
-(= (actionCleanup (mkNullVex $children))
-   (mkNullVex $children))
+(= (isCleanupActionOperator $op)
+   (is-member $op (and_seq or_seq seq_exec)))
 
-(= (actionCleanup (mkTree (mkNode $rootOp) $children))
-   (if (== $children ())
-       (if (isActionOperator $rootOp)
-           (mkNullVex ())
-           (mkTree (mkNode $rootOp) ()))
-       (let* (($processed (map-atom $children $child (actionCleanup $child)))
-              ;; Rebuild tree with cleaned children; remove childless action ops
-              ($cleaned (filter-atom $processed $c (not (isNullVertex $c)))))
-              
-              (if (== $cleaned ())
-                  (if (isActionOperator $rootOp)
-                      (mkNullVex ())
-                      (mkTree (mkNode $rootOp) ()))
-                  (mkTree (mkNode $rootOp) $cleaned)))))
+(= (actionCleanup $tree)
+   (let ($cleaned $keep) (actionCleanupNode $tree)
+     (if $keep $cleaned (mkNullVex ()))))
+
+(= (actionCleanupNode (mkNullVex $children))
+   ((mkNullVex $children) True))
+
+(= (actionCleanupNode (mkTree (mkNode $rootOp) $children))
+   (let $cleanedChildren (actionCleanupChildren $children)
+     (if (and (== $cleanedChildren ()) (isCleanupActionOperator $rootOp))
+         ((mkNullVex ()) False)
+         ((mkTree (mkNode $rootOp) $cleanedChildren) True))))
+
+(= (actionCleanupChildren ()) ())
+(= (actionCleanupChildren (cons $child $rest))
+   (let*
+     (
+       (($cleanedChild $keep) (actionCleanupNode $child))
+       ($cleanedRest (actionCleanupChildren $rest))
+     )
+     (if $keep
+         (cons $cleanedChild $cleanedRest)
+         $cleanedRest)))
 
 ;; -----------------------------------------------------------------
 ;; actionCanonize — canonizes an action tree.
@@ -299,4 +298,3 @@
      (if (== $rootOp and_seq)
          $tree
          (insertNodeAtPosition $tree (mkNodeId (0)) (mkNode and_seq)))))
-
