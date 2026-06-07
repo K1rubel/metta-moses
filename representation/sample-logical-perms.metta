@@ -98,25 +98,33 @@
 ;;          $arity: the number of moves in the strategy sequence
 ;;          $moveLabels: list of move labels (playcenter, playblock, playcorner, etc.)
 ;; Returns:
-;;          Union of original moves with alternative move strategy expressions
+;;          Union of original moves with alternative move strategy expressions.
+;;          Falls back to individual move labels when fewer than 3 moves are available
+;;          (genTriplet requires ≥ 3 distinct elements to produce any valid triplets).
 ;; (: sampleStrategyPerms (-> Atom Number Expression Expression))
 ;; TODO: Rewrite using iterative logic
 (= (sampleStrategyPerms $op $arity $moveLabels)
     (let*
         (
-            ($list (genList (- (length $moveLabels) 1)))
+            ($nMoves (length $moveLabels))
+            ($list (genList (- $nMoves 1)))
             ($idxPairs (collapse (genTriplet $list)))
             ($nPairs $arity)
         )
         (if (<= $nPairs 1)
             ($op (car-atom $moveLabels))
-            (let*
-                (
-                    ($upperbound (- (length $idxPairs) 1))
-                    ($picked (lazyRandomSelector 0 $upperbound $nPairs))
-                    ($perms (collapse (getMoveArgs $op $idxPairs $picked $moveLabels)))
+            ;; genTriplet requires ≥ 3 distinct elements; fall back to returning
+            ;; the individual move labels when fewer than 3 moves are available.
+            (if (< $nMoves 3)
+                $moveLabels
+                (let*
+                    (
+                        ($upperbound (- (length $idxPairs) 1))
+                        ($picked (lazyRandomSelector 0 $upperbound $nPairs))
+                        ($perms (collapse (getMoveArgs $op $idxPairs $picked $moveLabels)))
+                    )
+                    $perms
                 )
-                   $perms
             )
         )
 ))
