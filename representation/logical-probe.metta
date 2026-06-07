@@ -66,7 +66,15 @@
 ;; Wraps a single action in an ASK with multiplicity 2 (present/absent).
 ;; ---------------------------------------------------------------------------
 (= (simpleActionProbe $exemplar (mkNodeId $targetId) $action $addIfInExemplar $knobs)
-   (actionProbe $exemplar (mkNodeId $targetId) (cons $action ()) $addIfInExemplar $knobs))
+   (let*
+     (
+       (($updatedTree $ask) (simpleActionSubtreeKnob $exemplar (mkNodeId $targetId)))
+       ($discKnob (getDiscKnob $ask))
+     )
+     (if (or $addIfInExemplar (not (inExemplar $discKnob)))
+         (let $updatedKnobs (concatT $knobs ($ask))
+           ($updatedKnobs $updatedTree))
+         ($knobs $exemplar))))
 
 ;; Game-specific probe that uses strategySubtreeKnob instead of logicalSubtreeKnob
 ;; strategyProbe -> builds SSKs by processing game move permutations

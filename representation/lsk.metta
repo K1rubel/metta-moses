@@ -210,9 +210,10 @@
                         (let (mkNullVex (cons $child ())) $targetTree ($child (mkNodeId (union-atom $targetId (1)))))
                         ($targetTree (mkNodeId $targetId))
                     ))
-        ((mkMultip $effectiveMultip) (getKnobMultip $ask))
-        ((mkASK $discKnob $perms) $ask)
-       )
+	        ((mkMultip $effectiveMultip) (getKnobMultip $ask))
+	        ((mkDiscSpec $defaultSetting) (getKnobDefault $ask))
+	        ((mkASK $discKnob $perms) $ask)
+	       )
       (if (>= $d $effectiveMultip)
           (Error $d "Invalid effective disc specification for action knob.")
           (let $actualD (mapEffectiveDiscSpec $ask $d)
@@ -223,12 +224,14 @@
                       ($expressionToAppend (mkNodeId (union-atom $dstId ($newPosition))))))
               (if (isNullVertex $treeToAppend)
                   ($tree $parentId $parentId)
-                  (chain (appendChild $tree $parentId $treeToAppend) $treeChIdPair
-                          ((first $treeChIdPair)
-                           (second $treeChIdPair)
-                           (if (== $parentId $newDstId)
-                                (second $treeChIdPair)
-                                $newDstId)))))))))
+	                  (chain (appendChild $tree $parentId $treeToAppend) $treeChIdPair
+	                          ((first $treeChIdPair)
+	                           (if (== $defaultSetting 1)
+	                               $newSrcId
+	                               (second $treeChIdPair))
+	                           (if (== $parentId $newDstId)
+	                                (second $treeChIdPair)
+	                                $newDstId)))))))))
 
 ;; ---------------------------------------------------------------------------
 ;; actionSubtreeKnob — Create an Action Subtree Knob (ASK)
@@ -249,3 +252,19 @@
                           (mkDiscSpec 0)
                           (mkDiscSpec 0) ())
               $perms))))
+
+;; ---------------------------------------------------------------------------
+;; simpleActionSubtreeKnob — Create an ASK for an existing action subtree
+;;
+;; Port of C++ simple_action_subtree_knob.
+;; The target is already present in the exemplar, so no placeholder is added.
+;; Setting 0 means absent; setting 1 means preserve the existing subtree.
+;; ---------------------------------------------------------------------------
+(= (simpleActionSubtreeKnob $tree (mkNodeId $target))
+   (let $subtree (getNodeById $tree (mkNodeId $target))
+     ($tree
+       (mkASK (mkDiscKnob (mkKnob (updateID (mkNodeId $target)))
+                          (mkMultip 2)
+                          (mkDiscSpec 1)
+                          (mkDiscSpec 1) ())
+              (cons $subtree ()))))) 
