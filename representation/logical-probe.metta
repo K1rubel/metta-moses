@@ -39,6 +39,35 @@
     (logicalProbeAt $exemplar $probeRootId (mkNodeId $targetId) $tailPerms $addIfInExemplar $knobs $disable-discprobe))))
     ;; (trace! (skipping $discKnob because addInExemplar: $addIfInExemplar inExemplar: (inExemplar $discKnob)) (logicalProbe $exemplar (mkNodeId $targetId) $tailPerms $addIfInExemplar $knobs)))))
 
+;; ---------------------------------------------------------------------------
+;; actionProbe — Build Action Subtree Knob (ASK) for a list of perms
+;;
+;; Port of C++ build_knobs::action_probe.
+;; Creates a SINGLE ASK for ALL perms, adds conditionally by exemplar status.
+;; NOTE: disc_probe was explicitly commented out in C++ — intentionally omitted.
+;; ---------------------------------------------------------------------------
+(= (actionProbe $exemplar (mkNodeId $targetId) $perms $addIfInExemplar $knobs)
+   (if (== $perms ())
+       ($knobs $exemplar)
+       (let*
+         (
+           (($updatedTree $ask) (actionSubtreeKnob $exemplar (mkNodeId $targetId) $perms))
+           ($discKnob (getDiscKnob $ask))
+         )
+         (if (or $addIfInExemplar (not (inExemplar $discKnob)))
+             (let $updatedKnobs (concatT $knobs ($ask))
+               ($updatedKnobs $updatedTree))
+             ($knobs $exemplar)))))
+
+;; ---------------------------------------------------------------------------
+;; simpleActionProbe — Build an ASK for a single action perm
+;;
+;; Port of C++ build_knobs::simple_action_probe.
+;; Wraps a single action in an ASK with multiplicity 2 (present/absent).
+;; ---------------------------------------------------------------------------
+(= (simpleActionProbe $exemplar (mkNodeId $targetId) $action $addIfInExemplar $knobs)
+   (actionProbe $exemplar (mkNodeId $targetId) (cons $action ()) $addIfInExemplar $knobs))
+
 ;; Game-specific probe that uses strategySubtreeKnob instead of logicalSubtreeKnob
 ;; strategyProbe -> builds SSKs by processing game move permutations
 ;; Params:
