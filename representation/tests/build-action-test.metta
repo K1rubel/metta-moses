@@ -260,23 +260,21 @@
   (let $tree (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ()))
     (actionCanonize $tree))
   (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
-
 ;; ===========================================================================
 ;; actionCanonize — wraps tree in and_seq if root is not and_seq
 ;; ===========================================================================
 !(assertEqual
   (let $tree (mkTree (mkNode move_forward) ()) (actionCanonize $tree))
     (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
-
 ;; ===========================================================================
-;; buildKnobs 4-arity — action path delegation to 5-arity (no infinite loop)
+;; buildKnobs 4-arity — logical path only (no action selection)
 ;; ===========================================================================
 !(assertEqual
   (let* (
-    ($tree (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
-    (($updatedTree $MMap) (buildKnobs $tree () () True))
+    ($tree (mkTree (mkNode OR) (cons (mkTree (mkNode A) ()) ())))
+    (($updatedTree $MMap) (buildKnobs $tree () (A B) True))
   )
-    (== $MMap ()))
+    (> (MultiMap.length $MMap) 0))
   True)
 ;; ===========================================================================
 ;; actionCleanup — removes empty action structural nodes
