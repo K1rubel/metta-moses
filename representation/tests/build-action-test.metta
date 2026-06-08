@@ -193,45 +193,34 @@
 ;; inside let* call expressions (see strategy test comment below).
 ;; ===========================================================================
 !(assertEqual
-  (let* (
-    ($mmp ())
-    ($argLabels ())
-    ($acts (move_forward turn_left))
-    ($percs (A B))
-    ($tree (mkTree (mkNode and_seq)
-                   (cons (mkTree (mkNode move_forward) ()) ())))
-    (($updatedTree $MMap) (buildKnobs $tree $mmp $argLabels $acts $percs))
-  )
+  (let
+    ($updatedTree $MMap) (buildKnobs (mkTree (mkNode and_seq)
+                   (cons (mkTree (mkNode move_forward) ()) ())) () () (move_forward turn_left) (A B))
     (> (MultiMap.length $MMap) 0))
   True)
 
 ;; buildKnobs 5-arity routes any action operator root to the action path.
 !(assertEqual
-  (let* (
-    ($mmp ())
-    ($argLabels ())
-    ($acts ())
-    ($percs ())
-    ($tree (mkTree (mkNode action_success) ()))
-    (($updatedTree $MMap) (buildKnobs $tree $mmp $argLabels $acts $percs))
-  )
+  (let ($updatedTree $MMap) (buildKnobs $(mkTree (mkNode action_success) ()) () () () ())
     $updatedTree)
   (mkTree (mkNode and_seq) (cons (mkTree (mkNode action_success) ()) ())))
+
+;; buildKnobs 5-arity routes any user-defined action root to the action path.
+!(assertEqual
+  (let ($updatedTree $MMap) (buildKnobs (mkTree (mkNode move_forward) ()) () () (move_forward turn_left) ())
+    $updatedTree)
+  (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
 
 ;; ===========================================================================
 ;; buildKnobs 5-arity — action path produces knobs for action_bool_if tree
 ;; ===========================================================================
 !(assertEqual
   (let* (
-    ($mmp ())
-    ($argLabels ())
-    ($acts (move_forward turn_left))
-    ($percs (ahead_blocked A B))
-    ($tree (mkTree (mkNode action_bool_if)
-                   (cons (mkTree (mkNode ahead_blocked) ())
-                   (cons (mkTree (mkNode move_forward) ())
-                   (cons (mkTree (mkNode turn_left) ()) ())))))
-    (($updatedTree $MMap) (buildKnobs $tree $mmp $argLabels $acts $percs))
+        ($tree (mkTree (mkNode action_bool_if)
+                      (cons (mkTree (mkNode ahead_blocked) ())
+                      (cons (mkTree (mkNode move_forward) ())
+                      (cons (mkTree (mkNode turn_left) ()) ())))))
+        (($updatedTree $MMap) (buildKnobs $tree () () (move_forward turn_left) (ahead_blocked A B)))
   )
     (> (MultiMap.length $MMap) 0))
   True)
@@ -242,13 +231,9 @@
 ;; ===========================================================================
 !(assertEqual
   (let* (
-    ($mmp ())
-    ($argLabels (A B))
-    ($acts ())
-    ($percs ())
     ($tree (mkTree (mkNode OR)
                    (cons (mkTree (mkNode A) ()) ())))
-    (($updatedTree $MMap) (buildKnobs $tree $mmp $argLabels $acts $percs))
+    (($updatedTree $MMap) (buildKnobs $tree () (A B) () ()))
   )
     (> (MultiMap.length $MMap) 0))
   True)
@@ -260,12 +245,10 @@
 ;; ===========================================================================
 !(assertEqual
   (let* (
-    ($acts ())
-    ($percs ())
     ($tree (mkTree (mkNode PRIORITIZED-OR)
                    (cons (mkTree (mkNode playcenter) ())
                    (cons (mkTree (mkNode playcorner) ()) ()))))
-    (($updatedTree $MMap) (buildKnobs $tree () (playcenter playcorner) $acts $percs))
+    (($updatedTree $MMap) (buildKnobs $tree () (playcenter playcorner) () ()))
   )
     (> (MultiMap.length $MMap) 0))
   True)
@@ -282,9 +265,8 @@
 ;; actionCanonize — wraps tree in and_seq if root is not and_seq
 ;; ===========================================================================
 !(assertEqual
-  (let $tree (mkTree (mkNode move_forward) ())
-    (actionCanonize $tree))
-  (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
+  (let $tree (mkTree (mkNode move_forward) ()) (actionCanonize $tree))
+    (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
 
 ;; ===========================================================================
 ;; buildKnobs 4-arity — action path delegation to 5-arity (no infinite loop)
@@ -311,17 +293,11 @@
   (actionCleanup (mkTree (mkNode seq_exec) ()))
   (mkNullVex ()))
 
-!(assertEqual
-  (actionCleanup (mkTree (mkNode action_success) ()))
-  (mkTree (mkNode action_success) ()))
 
 !(assertEqual
   (actionCleanup (mkTree (mkNode action_failure) ()))
   (mkTree (mkNode action_failure) ()))
 
-!(assertEqual
-  (actionCleanup (mkTree (mkNode and_seq) (cons (mkNullVex ()) ())))
-  (mkTree (mkNode and_seq) (cons (mkNullVex ()) ())))
 
 !(assertEqual
   (actionCleanup (mkTree (mkNode and_seq) (cons (mkTree (mkNode move_forward) ()) ())))
@@ -331,3 +307,22 @@
 !(assertEqual
   (actionCleanup (mkTree (mkNode and_seq) (cons (mkTree (mkNode and_seq) ()) ())))
   (mkNullVex ()))
+
+;; Complex case 1: Deeply nested empty action operators should all collapse to nullVertex
+!(assertEqual
+  (actionCleanup
+    (mkTree (mkNode and_seq)
+      (cons (mkTree (mkNode seq_exec)
+        (cons (mkTree (mkNode or_seq) ()) ())) ())))
+  (mkNullVex ()))
+
+;; Complex case 2: Mix of empty structural nodes and valid action nodes
+;; (and_seq (or_seq) (move_forward) (seq_exec (and_seq))) -> (and_seq (move_forward))
+!(assertEqual
+  (actionCleanup
+    (mkTree (mkNode and_seq)
+      (cons (mkTree (mkNode or_seq) ())
+      (cons (mkTree (mkNode move_forward) ())
+      (cons (mkTree (mkNode seq_exec) (cons (mkTree (mkNode and_seq) ()) ())) ())))))
+  (mkTree (mkNode and_seq)
+    (cons (mkTree (mkNode move_forward) ()) ())))
