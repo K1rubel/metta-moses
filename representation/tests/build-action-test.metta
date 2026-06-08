@@ -13,6 +13,7 @@
 !(import! &self ../../representation/sample-logical-perms)
 !(import! &self ../../representation/add-logical-knobs)
 !(import! &self ../../representation/build-logical)
+!(import! &self ../../representation/logical-canonize)
 !(import! &self ../../representation/build-knobs)
 !(import! &self ../../representation/build-action)
 !(import! &self ../../representation/representation)
