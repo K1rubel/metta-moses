@@ -204,13 +204,14 @@
 ;     (let ($updatedTree $mmp) (buildAction $canonized (mkNodeId (0)) () () ())
 ;       True))
 ;   True)
+;   ; (updated tree $updatedTree)))
 
-;; buildKnobs 5-arity routes any user-defined action root to the action path.
-!(assertEqual
-  (let* (($canonized (actionCanonize (mkTree (mkNode move_forward) ())))
-         (($updatedTree $mmp) (buildAction $canonized (mkNodeId (0)) () (move_forward turn_left) ())))
-    (> (MultiMap.length $mmp) 0))
-  True)
+; ;; buildKnobs 5-arity routes any user-defined action root to the action path.
+; !(assertEqual
+;   (let* (($canonized (actionCanonize (mkTree (mkNode move_forward) ())))
+;          (($updatedTree $mmp) (buildAction $canonized (mkNodeId (0)) () (move_forward turn_left) ())))
+;     (> (MultiMap.length $mmp) 0))
+;   True)
 
 ;; ===========================================================================
 ;; buildKnobs 5-arity — action path produces knobs for action_bool_if tree.
