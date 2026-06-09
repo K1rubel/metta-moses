@@ -96,9 +96,7 @@
        ($discKnob (getDiscKnob $ssk))
    )
    (if (or $addIfInExemplar (not (inExemplar $discKnob) ))
-       (let* (
-           ($updatedKnobs (concatT $knobs ($ssk)))
-       )
-       (strategyProbe $updatedTree (mkNodeId $targetId) $tailPerms $addIfInExemplar $updatedKnobs)
+       (let $updatedKnobs (concatT $knobs ($ssk))
+         (strategyProbe $updatedTree (mkNodeId $targetId) $tailPerms $addIfInExemplar $updatedKnobs)
        )
        (strategyProbe $exemplar (mkNodeId $targetId) $tailPerms $addIfInExemplar $knobs))))
