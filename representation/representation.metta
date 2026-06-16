@@ -337,13 +337,17 @@
 (= (getCandidateHelper (mkInst $inst) (mkKnob $controlledSubtree (mkASK $discKnob $perms) $i))
    (let*
       (
-         ($setting (if (!= (getDisallowedSpecs (mkASK $discKnob $perms)) ())
-                     (mapEffectiveDiscSpec (mkASK $discKnob $perms) (index-atom $inst $i))
+         ($ask (mkASK $discKnob $perms))
+         ((mkDiscSpec $defaultSetting) (getKnobDefault $ask))
+         ($setting (if (!= (getDisallowedSpecs $ask) ())
+                     (mapEffectiveDiscSpec $ask (index-atom $inst $i))
                      (index-atom $inst $i)))
       )
       (if (== $setting 0)
          ()
-         (getCandidateHelper (mkInst $inst) (List.getByIdx $perms (- $setting 1))))))
+         (if (== $defaultSetting 0)
+             (getCandidateHelper (mkInst $inst) (List.getByIdx $perms (- $setting 1)))
+             (getCandidateHelper (mkInst $inst) $controlledSubtree)))))
 
 ;; Null-vertex unwrapping clause threads the embedded LSK to the inner knob.
 (= (getCandidateHelper $inst (mkKnob (mkNullVex ($child)) $lsk $i))
