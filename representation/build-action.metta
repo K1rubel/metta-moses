@@ -4,6 +4,7 @@
 ;; Action-domain knob building, mirroring the action section of C++ build_knobs.cc.
 ;; =============================================================================
 
+;; Pick a random element from a non-empty action/perception list.
 (= (randElement $list)
    (if (== $list ())
        ()
@@ -11,10 +12,13 @@
               ($idx (py-call (random.randint 0 (- $len 1)))))
          (List.getByIdx $list $idx))))
 
+;; Pick a random integer in the inclusive range used by the C++ action policy.
 (= (randint $max) (py-call (random.randint 0 $max)))
 
+;; Check whether an operator belongs to the caller-provided action domain.
 (= (isDomainAction $op $actions) (is-member $op $actions))
 
+;; Build the sampled action choices for an action-selection ASK.
 (= (sampleActionPerms $actions $perceptions)
    (if (== $perceptions ())
        $actions
@@ -33,6 +37,7 @@
            )
            (concatT $actions $pairs)))))
 
+;; Turn one sampled pair index into an action_bool_if permutation.
 (= (actionPairFromIndex $perceptions $actions $actionCount $pairIdx)
    (let*
      (
@@ -46,6 +51,7 @@
      )
      (action_bool_if $perception $actA $actB)))
 
+;; Convert sampled pair indexes into action_bool_if action choices.
 (= (actionPairsFromIndexes () $perceptions $actions $actionCount) ())
 (= (actionPairsFromIndexes (cons $pairIdx $rest) $perceptions $actions $actionCount)
    (cons (actionPairFromIndex $perceptions $actions $actionCount $pairIdx)
@@ -90,6 +96,7 @@
                   (buildAction $tree (mkNodeId $childId) $MMap $actions $perceptions))
               ($tree $MMap)))))
 
+;; Iterate over and_seq children while threading tree and knob-map updates.
 (= (processActionChildren $tree (mkNodeId $parentId) () $childIdx $MMap $actions $perceptions $p)
    ($tree $MMap))
 
@@ -111,6 +118,7 @@
               (buildAction $tree (mkNodeId $childId) $MMap $actions $perceptions)
               ($tree $MMap)))))
 
+;; Iterate over action_bool_if branches, skipping the perception child.
 (= (processActionBoolIfChildren $tree (mkNodeId $parentId) () $childIdx $MMap $actions $perceptions)
    ($tree $MMap))
 
@@ -151,9 +159,11 @@
                 (addActionKnobsAt $t2 (mkNodeId $nodeId) $newId False $m1 $actions $perceptions))
               ($t1 $m1))))))
 
+;; Build action-selection knobs inside action_bool_if branches.
 (= (buildActionBoolIf $tree (mkNodeId $nodeId) $children $MMap $actions $perceptions)
    (processActionBoolIfChildren $tree (mkNodeId $nodeId) $children 1 $MMap $actions $perceptions))
 
+;; Dispatch action knob building for the subtree at a NodeId.
 (= (buildAction $tree (mkNodeId $nodeId) $MMap $actions $perceptions)
   (let $subtree (getNodeById $tree (mkNodeId $nodeId))
     (case $subtree
@@ -184,13 +194,16 @@
                           (buildActionBoolIf $tree (mkNodeId $nodeId) $children $MMap $actions $perceptions))
                         ($tree $MMap))))))))))
 
+;; Identify empty structural action operators removed by cleanup.
 (= (isCleanupActionOperator $op)
    (is-member $op (and_seq or_seq seq_exec)))
 
+;; Remove empty structural action nodes while preserving embedded knobs.
 (= (actionCleanup $tree)
    (let ($cleaned $keep) (actionCleanupNode $tree)
      (if $keep $cleaned (mkNullVex ()))))
 
+;; Recursively clean one action node and report whether it should remain.
 (= (actionCleanupNode (mkNullVex $children))
    ((mkNullVex $children) True))
 (= (actionCleanupNode (mkKnob $subtree $knob $i))
@@ -201,6 +214,7 @@
          ((mkNullVex ()) False)
          ((mkTree (mkNode $rootOp) $cleanedChildren) True))))
 
+;; Clean action children and drop children removed by cleanup.
 (= (actionCleanupChildren ()) ())
 (= (actionCleanupChildren (cons $child $rest))
    (let*
@@ -212,6 +226,7 @@
          (cons $cleanedChild $cleanedRest)
          $cleanedRest)))
 
+;; Ensure action exemplars start from and_seq, matching C++ action_canonize.
 (= (actionCanonize $tree)
    (let (mkTree (mkNode $rootOp) $children) $tree
      (if (== $rootOp and_seq)

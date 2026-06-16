@@ -92,6 +92,7 @@
                        ())
            $perms)))
 
+;; Simple-action knobs keep one controlled subtree that can be present or absent.
 (= (simpleActionSubtreeKnob $subtree)
    ($subtree
     (mkASK (mkDiscKnob (mkMultip 2)
@@ -115,6 +116,7 @@
                          ())
              $perms))))
 
+;; Compatibility simple-action form uses a NodeId reference for old callers.
 (= (simpleActionSubtreeKnob $tree (mkNodeId $target))
    (let $subtree (getNodeById $tree (mkNodeId $target))
      ($tree

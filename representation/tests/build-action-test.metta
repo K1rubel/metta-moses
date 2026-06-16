@@ -21,6 +21,7 @@
 
 !(py-call (random.seed 12))
 
+;; Reusable action trees for action-selection test fixtures.
 (= (moveTree) (mkTree (mkNode move_forward) ()))
 (= (turnTree) (mkTree (mkNode turn_left) ()))
 (= (actionPerms) ((moveTree) (turnTree)))
@@ -31,6 +32,7 @@
 !(assertEqual (isActionOperator seq_exec) True)
 !(assertEqual (isActionOperator move_forward) False)
 
+;; Domain-action classification comes only from the supplied action set.
 !(assertEqual (isBuiltinAction move_forward (move_forward turn_left)) True)
 !(assertEqual (isBuiltinAction ahead_blocked (move_forward turn_left)) False)
 !(assertEqual (isBuiltinAction and_seq (move_forward turn_left)) False)
@@ -43,10 +45,12 @@
          (is-member turn_left $perms)))
   True)
 
+;; One-action domains do not synthesize conditional action pairs.
 !(assertEqual
   (sampleActionPerms (move_forward) (A B))
   (move_forward))
 
+;; Without perceptions, sampling returns only the base actions.
 !(assertEqual
   (sampleActionPerms (move_forward turn_left) ())
   (move_forward turn_left))
@@ -219,6 +223,7 @@
          (not (== $updatedTree $origTree))))
   True)
 
+;; Empty action sequences still receive an action-selection knob.
 !(assertEqual
   (let ($updatedTree $mmp) (buildAction (mkTree (mkNode and_seq) ()) (mkNodeId (0)) () (move_forward turn_left) (A B))
     (> (MultiMap.length $mmp) 0))
@@ -230,6 +235,7 @@
     (> (MultiMap.length $mmp) 0))
   True)
 
+;; Strategy roots still dispatch away from the action builder.
 !(assertEqual
   (let* (($tree (mkTree (mkNode PRIORITIZED-OR)
                   (cons (mkTree (mkNode playcenter) ())

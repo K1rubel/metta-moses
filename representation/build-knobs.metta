@@ -27,6 +27,7 @@
                  (let (mkTree (mkNode $canonRootOp) $canonChildren) $canonized
                       (buildLogical $canonized $canonRootOp $mmp $argLabels $disable-discprobe $canonized (mkNodeId (0)))))))))
 
+;; Five-arity entry point routes action roots through action knob construction.
 (= (buildKnobs (mkTree (mkNode $rootOp) $children) $mmp $argLabels $actions $perceptions)
     (if (== $rootOp PRIORITIZED-OR)
         (buildStrategy (mkTree (mkNode PRIORITIZED-OR) $children) (mkNodeId (0)) $mmp $argLabels)

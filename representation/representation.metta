@@ -334,6 +334,7 @@
 
 ;; getCandidateRec (mkRep $knobMapObj $tree) (mkInst $inst)
 
+;; Embedded ASK reconstruction: default 0 selects perms, default 1 recurses.
 (= (getCandidateHelper (mkInst $inst) (mkKnob $controlledSubtree (mkASK $discKnob $perms) $i))
    (let*
       (

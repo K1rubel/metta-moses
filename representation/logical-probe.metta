@@ -104,6 +104,7 @@
 (= (actionProbe $exemplar (mkNodeId $targetId) $perms $addIfInExemplar $knobs)
    (actionProbe $exemplar (mkNodeId $targetId) $perms $addIfInExemplar $knobs 0))
 
+;; Indexed action probe embeds the ASK wrapper at the supplied disc-map slot.
 (= (actionProbe $exemplar (mkNodeId $targetId) $perms $addIfInExemplar $knobs $idx)
    (if (== $perms ())
        ($knobs $exemplar)
@@ -121,9 +122,11 @@
                ($updatedKnobs $updatedTree))
              ($knobs $exemplar)))))
 
+;; Simple-action probe wraps an existing subtree in a present/absent ASK.
 (= (simpleActionProbe $exemplar (mkNodeId $targetId) $addIfInExemplar $knobs)
    (simpleActionProbe $exemplar (mkNodeId $targetId) $addIfInExemplar $knobs 0))
 
+;; Indexed simple-action probe replaces the target with an embedded ASK wrapper.
 (= (simpleActionProbe $exemplar (mkNodeId $targetId) $addIfInExemplar $knobs $idx)
    (let*
      (
