@@ -49,20 +49,24 @@
 )
 
 
- ;; Evaluate a boolean expression to a grounded True/False value.
- ;; Handles: grounded literals, singleton wrappers like (True),
- ;; n-ary AND/OR via short-circuit helpers, and NOT in both the flat
- ;; (NOT A) and wrapped (NOT (A)) forms produced by preOrderExp.
+ ;; A function to evaluateuate the boolean expression
+ ;;     - If the input expression is a grounded value (True or False), it returns the value directly.
+ ;;     - Otherwise, it extracts the operator from the expression and applies the corresponding evaluation function:
+ ;;         - evaluateAnd for AND expressions
+ ;;         - evaluateOr for OR expressions
+ ;;         - not for NOT expressions
+ ;;         - If the operator is unknown, it returns an error message.
+
 (= (evaluate $expr)
-    (if (== (get-metatype $expr) Grounded)
+    (if (== (get-metatype $expr) Grounded) ;; T / F
         $expr
-        (if (== (cdr-atom $expr) ())
-            (evaluate (car-atom $expr))
-            (case (car-atom $expr)
+        (if (== (cdr-atom $expr) ())  ;;  Handle (True) or (False)
+            (evaluate (car-atom $expr))  ;; Extract the actual boolean value
+            (case (car-atom $expr) 
                 (
                     (AND (evaluateAnd (cdr-atom $expr)))
-                    (OR  (evaluateOr  (cdr-atom $expr)))
-                    (NOT (not (evaluate (cdr-atom $expr))))
+                    (OR (evaluateOr (cdr-atom $expr)))
+                    (NOT (not (evaluate (cdr-atom $expr)))) 
                     ($_ ERROR)
                 )
             )
@@ -185,27 +189,32 @@
              (car-atom $hit)))))
 
 
- ;; Per-row behavioral score: 0 if the expression matches the target, -1 if
- ;; it doesn't (or if any variable is undefined).  This matches the C++ MOSES
- ;; convention where the behavioral score is a list of 0s (correct) and -1s
- ;; (incorrect), so that sum(bScore) = -(#wrong) and penalizedScore =
- ;; sum(bScore) - lambda * complexity.
+ ;; Evaluates the accuracy of the expression for a single input row (target, inputs) pair.
+ ;; This function determines whether the given boolean expression produces the expected result.
  ;;
  ;; Parameters:
  ;; - $expr: The boolean expression to evaluate.
- ;; - $row: (target . inputs) where target is True/False and inputs are
- ;;   variable bindings like ((A True) (B False) ...).
+ ;; - $row: A pair consisting of:
+ ;;    - $target: The expected output.
+ ;;    - $inputs: A set of truth assignments for variables.
  ;;
- ;; Flow: bind inputs → substitute truth values → evaluate → compare to target.
+ ;; approach:
+ ;;     - Extract $target (expected output) and $inputs (variable assignments).
+ ;;     - Add the $inputs to the space using `add-reduct`.
+ ;;     - Replace variables in $expr with their truth values from the space.
+ ;;     - Evaluate the substituted expression.
+ ;;     - Remove the added $inputs from the space to restore the original state.
+ ;;     - If the evaluated result matches the $target, return 1 (correct); otherwise, return 0
+
 (= (rowFitness $expr $row )
     (let*
       (
         ($target (car-atom $row))
         ($inputs (cdr-atom $row))
         ($add (map-atom $inputs $z (add-atom &space $z)))
-        ($replacedExpr (let $acc (replaceWithTruth $expr &space (collapse (match &space $x $x))) (if (== (get-metatype $acc) Symbol) ($acc) $acc))) ;; Guard: prevents a bare symbol from propagating when no variables are defined.
-        ($isFaulty  (findX $replacedExpr undefined))
-        ($evaluateuatedResult  (if (not $isFaulty) (evaluate $replacedExpr) null ))
+        ($replacedExpr (let $acc (replaceWithTruth $expr &space (collapse (match &space $x $x))) (if (== (get-metatype $acc) Symbol) ($acc) $acc))) ;; This is a guard added to prevent a symbol being returned here which will cause the rest of the logic to fail. It is an edge case that happens if none of the variables are defined or the first variable explored is an undefined variable.
+        ($isFaulty  (findX $replacedExpr undefined))  ;; Check if there are any undefined variables in the expression
+        ($evaluateuatedResult  (if (not $isFaulty) (evaluate $replacedExpr) null )) ;; No need to evaluate if there are undefined variables in the experession
         ($remove (map-atom $inputs $z (remove-atom &space $z)))
       )
       (if (== $evaluateuatedResult $target) 0 -1)
@@ -213,14 +222,13 @@
 )
 
 
- ;; Sum the per-row behavioral scores across all data rows.
- ;; Returns a value in [-N, 0] where N is the number of rows:
- ;; 0 = all correct, -N = all wrong.  Matches the C++ MOSES
- ;; composite score convention (sum of behavioral score vector).
+ ;; Measure the accuracy of the expression based on the given dataset.
+ ;; The function evaluates how well the boolean expression matches the given truth table.
  ;;
  ;; Args:
- ;;   $expr: The boolean expression to evaluate.
- ;;   $data: List of (target . inputs) rows.
+ ;;     - $expr: The boolean expression to be evaluated.
+ ;;     - $data: A dataset containing multiple rows of input-output mappings.
+
 (= (fitness $expr $data)
     (if (== $data ())
         0
@@ -228,19 +236,15 @@
     )
 )
 
- ;; Penalized fitness: accuracy minus a complexity penalty.
- ;; Formula: penalizedScore = sum(bScore) - lambda * treeComplexity
- ;; where treeComplexity counts variable leaves (AND/OR/NOT = 0, each
- ;; argument = 1), matching the C++ MOSES tree_complexity() definition.
- ;; Lambda controls the accuracy-vs-simplicity trade-off.
+;  ;; Computes the penalized fitness of an expression by balancing accuracy and complexity.
+;  ;; The penalty factor $lambda(just like learning rate) controls the trade-off between correctness and simplicity.
+
 (= (penalizedFitness $expr $data $lambda)
     (let*
       (
-        ($score (fitness $expr $data))
+        ($accuracy (fitness $expr $data))
         ($complexity (treeComplexity (buildTree $expr)))
       )
-        (- $score (* $lambda $complexity))
+        (- $accuracy (* $lambda $complexity))
     )
 )
-
-
