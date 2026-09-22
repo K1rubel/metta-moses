@@ -55,7 +55,7 @@
 (= (actionTreeToExpression (mkNullVex $children)) ())
 (= (actionTreeToExpression (mkTree (mkNode $rootOp) $children))
    (if (== $children ())
-       (if (once (is-member $rootOp (and_seq or_seq exec_seq AND OR)))
+       (if (is-member $rootOp (and_seq or_seq exec_seq AND OR))
            ($rootOp)
            $rootOp)
        (let* (($exprChildren (map-atom $children $child (actionTreeToExpression $child)))

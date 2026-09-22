@@ -32,9 +32,9 @@
 ;; actions Unknown unless a domain-specific vocabulary imports stronger facts.
 
 (= (alwaysSucceeds $action)
-   (once (is-member $action (turn_left turn_right))))
+   (is-member $action (turn_left turn_right)))
 
 ;; referenceAntAlwaysSucceeds records the original C++ ant-vocabulary facts for
 ;; reference/parity fixtures. Generic reducers intentionally do not call it.
 (= (referenceAntAlwaysSucceeds $action)
-   (once (is-member $action (move_forward turn_left turn_right))))
+   (is-member $action (move_forward turn_left turn_right)))

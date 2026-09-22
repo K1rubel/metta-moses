@@ -21,7 +21,7 @@
        (cons-atom $action $args)))
 
 (= (isActionSeqOp $op)
-   (once (is-member $op (and_seq or_seq exec_seq))))
+   (is-member $op (and_seq or_seq exec_seq)))
 
 ;; ---------------------------------------------------------------------------
 ;; reduceIdempotent (C++ reduce_idempotent)
@@ -129,8 +129,8 @@
        $seenAdditive
        (if (or (== $argsA ()) (== $argsB ()))
            False
-           (let* ((($aHead $aTail) (decons-atom $argsA))
-                  (($bHead $bTail) (decons-atom $argsB))
+           (let* ((($aHead $aTail) (decons $argsA))
+                  (($bHead $bTail) (decons $argsB))
                   ($isAdditiveArg (isAdditive $action $idx)))
              (if $isAdditiveArg
                  (canMergeAdditiveArgs $action $aTail $bTail (+ $idx 1) True)

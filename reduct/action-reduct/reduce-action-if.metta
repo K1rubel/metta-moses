@@ -3,9 +3,7 @@
 ;; ---------------------------------------------------------------------------
 
 (= (isActionResultIfOp $op)
-   (once
-     (is-member $op
-       (action_action_if bool_action_if contin_action_if))))
+   (is-member $op (action_action_if bool_action_if contin_action_if)))
 
 ;; reduceActionIf: constant-condition and identical-branch folding for
 ;; action_bool_if (the action analogue of a boolean if-then-else).
@@ -24,6 +22,7 @@
              $elseBranch
              (if (== $thenBranch $elseBranch) $thenBranch $expr)))
      $expr))
+
 ;; reduceConstCondActionIf (C++ reduce_const_cond_action_if, Rule 3):
 ;; Folds X_action_if expressions whose condition is a *constant action result*.
 ;; Applies to action_action_if, bool_action_if, and contin_action_if (all three

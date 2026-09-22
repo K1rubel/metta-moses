@@ -139,13 +139,17 @@
 ;; exec_seq runs actions for their effects and does not branch on action result,
 ;; so both action_success and action_failure are no-op constants here. Other
 ;; actions are preserved in their original order.
-(= (pruneExecSeqArgs $args)
-   (if (== $args ())
-       ()
-       (let ($h $t) (decons-atom $args)
-         (if (or (== $h action_success) (== $h action_failure))
-             (pruneExecSeqArgs $t)
-             (cons-atom $h (pruneExecSeqArgs $t))))))
+;;(= (pruneExecSeqArgs $args)
+;;   (if (== $args ())
+;;       ()
+;;       (let ($h $t) (decons-atom $args)
+;;         (if (or (== $h action_success) (== $h action_failure))
+;;             (pruneExecSeqArgs $t)
+;;             (cons-atom $h (pruneExecSeqArgs $t))))))
+
+(= (notActionResult $r) (not (is-member $r (action_failure action_success))))
+
+(= (pruneExecSeqArgs $args) (filter-atom $args (notActionResult)))
 
 ;; truncateAtAlwaysFails: keep arguments up to and including the first child
 ;; whose static action result is False. This is useful for reductions where
