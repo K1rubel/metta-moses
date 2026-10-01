@@ -73,11 +73,13 @@
 
 ;; C++ tree_complexity stops at *(0 subtree) during knob probing. Match numeric
 ;; zero (both integer and float), not an arbitrary variable label or expression.
+;; XXX -- the if clause could be avoided
 (= (continZeroProduct $op $children)
    (case ($op $children)
      (((c_mul (cons (mkTree (mkNode $value) ()) $rest))
        (if (== (get-type $value) Number)
-           (and (<= $value 0) (>= $value 0)) False))
+           (and (<= $value 0) (>= $value 0)) 
+           False))
       ($other False))))
 
 (= (continTreeComplexity (mkTree (mkNode $op) $children))
@@ -103,17 +105,16 @@
 ;; Invariant: result is always <= 0.  The sum of all row scores is raw_score.
 
 (= (continRowScore squared_error $pred $target)
-   (let $d (- $pred $target)
-     (- 0 (* $d $d))))
+   (let $d (- $pred $target) (- 0 (* $d $d))))
 
 (= (continRowScore abs_error $pred $target)
    (let $d (- $pred $target)
-     ;; Use built-in subtraction to get absolute value without a helper.
      (if (< $d 0) $d (- 0 $d))))
 
 ;; ------------------------------------------------------------------------------
 ;; Penalized Score: continPenalizedScore
 ;; ------------------------------------------------------------------------------
+;; XXX -- there is a similar function for calculating penalized score
 (= (continPenalizedScore $rawScore $complexityRatio $treeComplexity)
    (- $rawScore (* $complexityRatio $treeComplexity)))
 
@@ -175,20 +176,22 @@
    (case $targets
      ((() (mkContinBehavior () $total))
       ((cons $target $rest)
-       (case (continEval $tree (continRowEnvironment $labels $columns))
-         (((mkCEvalError $reason) (mkCEvalError $reason))
-          ((mkCEvalOk $prediction)
-           (case (continCheckedNumber (catch (continRowScore $error $prediction $target)))
-             (((mkCEvalError $rowError) (mkCEvalError $rowError))
-              ((mkCEvalOk $contribution)
-               (case (continCheckedNumber (catch (+ $total $contribution)))
-                 (((mkCEvalError $sumError) (mkCEvalError $sumError))
-                  ((mkCEvalOk $sum)
-                   (case (continScoreRowsWithBehavior $tree $labels (continNextColumns $columns)
-                                    $rest $error $sum)
-                     (((mkCEvalError $tailError) (mkCEvalError $tailError))
-                      ((mkContinBehavior $tailScores $raw)
-                       (mkContinBehavior (cons $contribution $tailScores) $raw)))))))))))))))))
+              (case (continEval $tree (continRowEnvironment $labels $columns))
+                (
+                  ((mkCEvalError $reason) (mkCEvalError $reason)) 
+                  ((mkCEvalOk $prediction)
+                    (case (continCheckedNumber (catch (continRowScore $error $prediction $target)))
+                      (
+                      ((mkCEvalError $rowError) (mkCEvalError $rowError))
+                      ((mkCEvalOk $contribution)
+                        (case (continCheckedNumber (catch (+ $total $contribution)))
+                          (
+                          ((mkCEvalError $sumError) (mkCEvalError $sumError))
+                          ((mkCEvalOk $sum)
+                                (case (continScoreRowsWithBehavior $tree $labels (continNextColumns $columns) $rest $error $sum)
+                                  (
+                                    ((mkCEvalError $tailError) (mkCEvalError $tailError))
+                                    ((mkContinBehavior $tailScores $raw) (mkContinBehavior (cons $contribution $tailScores) $raw)))))))))))))))))
 
 (= (continScoreRows $tree $labels $columns $targets $error $total)
    (case (continScoreRowsWithBehavior $tree $labels $columns $targets $error $total)
