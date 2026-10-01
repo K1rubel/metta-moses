@@ -1,0 +1,411 @@
+{
+  "case": "parity3",
+  "seed": 121,
+  "algorithm": "boa",
+  "command": [
+    "C:/Program Files/swipl/bin/swipl.exe",
+    "--stack_limit=8g",
+    "-q",
+    "-s",
+    "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+    "--",
+    "moses.metta",
+    "-s",
+    "--problem=parity3",
+    "--continDepth=2",
+    "--continStep=1",
+    "--continExpansion=2",
+    "--continComplexityRatio=0",
+    "--continImprovementThreshold=-0.0001",
+    "--continSearchMode=linear",
+    "--maxGen=3",
+    "--nDeme=1",
+    "--maxEvals=200",
+    "--optimizerMaxProposals=100000",
+    "--optimizerMaxGenerations=1000",
+    "--optimizerTimeLimitSec=-1",
+    "--hcWidenSearch=True",
+    "--hcCrossover=True",
+    "--maxDist=4",
+    "--minXoverNeighbors=400",
+    "--hcCrossoverPopSize=120",
+    "--hcFractionOfNN=2",
+    "--hcMinDemeSize=50",
+    "--revisit=0",
+    "--discardDominated=False",
+    "--capCoef=50",
+    "--complexityTemperature=6",
+    "--maxCandPerDeme=100",
+    "--minPoolSize=20",
+    "--nToKeep=50",
+    "--nEval=10000",
+    "--maxCandOutput=10",
+    "--diagnostics=True",
+    "--continTrace=False",
+    "--edaPopulationSize=32",
+    "--edaSelectionSize=16",
+    "--edaOffspringSize=16",
+    "--edaTournamentSize=2",
+    "--edaPseudocount=1",
+    "--edaExploration=0.1",
+    "--edaMaxRefillAttempts=256",
+    "--edaStagnationGenerations=10",
+    "--boaMaxParents=2",
+    "--boaMaxTableCells=256",
+    "--boaMaxIterations=16",
+    "--boaMaxScoreCalls=256",
+    "--boaFitTimeLimitSec=10",
+    "--seed=121",
+    "--optAlgo=boa"
+  ],
+  "process_wall_seconds": 12.058524599997327,
+  "exit_code": 0,
+  "success": false,
+  "held_out_success": false,
+  "raw_champion": {
+    "program": [
+      "AND",
+      "X1",
+      "X2",
+      "X3"
+    ],
+    "raw": -3
+  },
+  "actual_evaluations": 200,
+  "proposals": 218,
+  "cache_hits": 18,
+  "invalid_evaluations": 0,
+  "optimizer_trace": [
+    {
+      "deme": [
+        "mkDemeId",
+        1
+      ],
+      "stop": "stopStagnation",
+      "actualEvaluations": 190,
+      "proposals": 208,
+      "cacheHits": 18,
+      "invalids": 0,
+      "modelSize": 52
+    },
+    {
+      "deme": [
+        "mkDemeId",
+        2
+      ],
+      "stop": "stopBudgetExhausted",
+      "actualEvaluations": 10,
+      "proposals": 10,
+      "cacheHits": 0,
+      "invalids": 0,
+      "modelSize": 0
+    }
+  ],
+  "returned_programs": [
+    {
+      "program": [
+        "AND",
+        "X1",
+        "X2",
+        "X3"
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X2",
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X2"
+          ],
+          [
+            "AND",
+            "X1",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        "X2",
+        "X1",
+        "X3"
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X2",
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          [
+            "NOT",
+            "X2"
+          ],
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X1"
+          ],
+          "X2",
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          "X2",
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "AND",
+            "X2",
+            [
+              "NOT",
+              "X3"
+            ],
+            [
+              "NOT",
+              "X1"
+            ]
+          ],
+          "X1"
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "NOT",
+        "X3"
+      ],
+      "raw": -4
+    }
+  ],
+  "fit_trace": [
+    {
+      "algorithm": "boa",
+      "seconds": 0.6049357000738382,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7136150998994708,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.733483700081706,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6511268999893218,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6306855001021177,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7208459998946637,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7207826999947429,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7790268000680953,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.5253336997702718,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6872649001888931,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6400359000544995,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    }
+  ],
+  "population_trace": [
+    {
+      "generations": 12,
+      "population": 32,
+      "archive": 208,
+      "unretainedProposals": 0,
+      "stagnation": 10
+    },
+    {
+      "generations": 1,
+      "population": 10,
+      "archive": 10,
+      "unretainedProposals": 0,
+      "stagnation": 0
+    }
+  ],
+  "model_fitting_seconds": 7.407136900117621,
+  "fits": 11,
+  "max_learned_edges": 1,
+  "max_model_parameters": 52,
+  "local_fits": 3080,
+  "score_cache_hits": 0,
+  "unretained_proposals": 0,
+  "fitting_stops": {
+    "fitScoreLimit": 11
+  }
+}

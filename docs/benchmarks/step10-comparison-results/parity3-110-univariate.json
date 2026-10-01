@@ -1,0 +1,356 @@
+{
+  "case": "parity3",
+  "seed": 110,
+  "algorithm": "univariate",
+  "command": [
+    "C:/Program Files/swipl/bin/swipl.exe",
+    "--stack_limit=8g",
+    "-q",
+    "-s",
+    "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+    "--",
+    "moses.metta",
+    "-s",
+    "--problem=parity3",
+    "--continDepth=2",
+    "--continStep=1",
+    "--continExpansion=2",
+    "--continComplexityRatio=0",
+    "--continImprovementThreshold=-0.0001",
+    "--continSearchMode=linear",
+    "--maxGen=3",
+    "--nDeme=1",
+    "--maxEvals=200",
+    "--optimizerMaxProposals=100000",
+    "--optimizerMaxGenerations=1000",
+    "--optimizerTimeLimitSec=-1",
+    "--hcWidenSearch=True",
+    "--hcCrossover=True",
+    "--maxDist=4",
+    "--minXoverNeighbors=400",
+    "--hcCrossoverPopSize=120",
+    "--hcFractionOfNN=2",
+    "--hcMinDemeSize=50",
+    "--revisit=0",
+    "--discardDominated=False",
+    "--capCoef=50",
+    "--complexityTemperature=6",
+    "--maxCandPerDeme=100",
+    "--minPoolSize=20",
+    "--nToKeep=50",
+    "--nEval=10000",
+    "--maxCandOutput=10",
+    "--diagnostics=True",
+    "--continTrace=False",
+    "--edaPopulationSize=32",
+    "--edaSelectionSize=16",
+    "--edaOffspringSize=16",
+    "--edaTournamentSize=2",
+    "--edaPseudocount=1",
+    "--edaExploration=0.1",
+    "--edaMaxRefillAttempts=256",
+    "--edaStagnationGenerations=10",
+    "--boaMaxParents=2",
+    "--boaMaxTableCells=256",
+    "--boaMaxIterations=16",
+    "--boaMaxScoreCalls=256",
+    "--boaFitTimeLimitSec=10",
+    "--seed=110",
+    "--optAlgo=univariate"
+  ],
+  "process_wall_seconds": 4.751409899909049,
+  "exit_code": 0,
+  "success": false,
+  "held_out_success": false,
+  "raw_champion": {
+    "program": [
+      "AND",
+      [
+        "OR",
+        [
+          "NOT",
+          "X1"
+        ],
+        [
+          "NOT",
+          "X2"
+        ],
+        "X3"
+      ]
+    ],
+    "raw": -3
+  },
+  "actual_evaluations": 200,
+  "proposals": 256,
+  "cache_hits": 56,
+  "invalid_evaluations": 0,
+  "optimizer_trace": [
+    {
+      "deme": [
+        "mkDemeId",
+        1
+      ],
+      "stop": "stopStagnation",
+      "actualEvaluations": 186,
+      "proposals": 240,
+      "cacheHits": 54,
+      "invalids": 0,
+      "modelSize": 0
+    },
+    {
+      "deme": [
+        "mkDemeId",
+        2
+      ],
+      "stop": "stopBudgetExhausted",
+      "actualEvaluations": 14,
+      "proposals": 16,
+      "cacheHits": 2,
+      "invalids": 0,
+      "modelSize": 0
+    }
+  ],
+  "returned_programs": [
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X2"
+          ],
+          "X3"
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X2"
+          ],
+          "X1",
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X2"
+          ],
+          "X3"
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X2"
+          ],
+          [
+            "NOT",
+            "X2"
+          ],
+          "X3"
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X3"
+          ],
+          [
+            "AND",
+            "X2",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X2",
+          [
+            "AND",
+            "X3",
+            [
+              "NOT",
+              "X1"
+            ],
+            [
+              "NOT",
+              "X2"
+            ]
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "NOT",
+        "X1"
+      ],
+      "raw": -4
+    },
+    {
+      "program": "X3",
+      "raw": -4
+    },
+    {
+      "program": "X1",
+      "raw": -4
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X2",
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X2"
+          ],
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    }
+  ],
+  "fit_trace": [
+    {
+      "algorithm": "univariate",
+      "seconds": 0.023011300014331937
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02655930002219975
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02232039999216795
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.022531900089234114
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02757870010100305
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.025897299870848656
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.030291900038719177
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.027872399892657995
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.025990300113335252
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02595770009793341
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02776690013706684
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02978469990193844
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.023782200179994106
+    }
+  ],
+  "population_trace": [
+    {
+      "generations": 14,
+      "population": 32,
+      "archive": 240,
+      "unretainedProposals": 0,
+      "stagnation": 10
+    },
+    {
+      "generations": 1,
+      "population": 16,
+      "archive": 16,
+      "unretainedProposals": 0,
+      "stagnation": 0
+    }
+  ],
+  "model_fitting_seconds": 0.3393450004514307,
+  "fits": 13,
+  "max_learned_edges": 0,
+  "max_model_parameters": 0,
+  "local_fits": 0,
+  "score_cache_hits": 0,
+  "unretained_proposals": 0,
+  "fitting_stops": {
+    "univariate": 13
+  }
+}

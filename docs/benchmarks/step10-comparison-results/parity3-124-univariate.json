@@ -1,0 +1,407 @@
+{
+  "case": "parity3",
+  "seed": 124,
+  "algorithm": "univariate",
+  "command": [
+    "C:/Program Files/swipl/bin/swipl.exe",
+    "--stack_limit=8g",
+    "-q",
+    "-s",
+    "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+    "--",
+    "moses.metta",
+    "-s",
+    "--problem=parity3",
+    "--continDepth=2",
+    "--continStep=1",
+    "--continExpansion=2",
+    "--continComplexityRatio=0",
+    "--continImprovementThreshold=-0.0001",
+    "--continSearchMode=linear",
+    "--maxGen=3",
+    "--nDeme=1",
+    "--maxEvals=200",
+    "--optimizerMaxProposals=100000",
+    "--optimizerMaxGenerations=1000",
+    "--optimizerTimeLimitSec=-1",
+    "--hcWidenSearch=True",
+    "--hcCrossover=True",
+    "--maxDist=4",
+    "--minXoverNeighbors=400",
+    "--hcCrossoverPopSize=120",
+    "--hcFractionOfNN=2",
+    "--hcMinDemeSize=50",
+    "--revisit=0",
+    "--discardDominated=False",
+    "--capCoef=50",
+    "--complexityTemperature=6",
+    "--maxCandPerDeme=100",
+    "--minPoolSize=20",
+    "--nToKeep=50",
+    "--nEval=10000",
+    "--maxCandOutput=10",
+    "--diagnostics=True",
+    "--continTrace=False",
+    "--edaPopulationSize=32",
+    "--edaSelectionSize=16",
+    "--edaOffspringSize=16",
+    "--edaTournamentSize=2",
+    "--edaPseudocount=1",
+    "--edaExploration=0.1",
+    "--edaMaxRefillAttempts=256",
+    "--edaStagnationGenerations=10",
+    "--boaMaxParents=2",
+    "--boaMaxTableCells=256",
+    "--boaMaxIterations=16",
+    "--boaMaxScoreCalls=256",
+    "--boaFitTimeLimitSec=10",
+    "--seed=124",
+    "--optAlgo=univariate"
+  ],
+  "process_wall_seconds": 4.884749399963766,
+  "exit_code": 0,
+  "success": false,
+  "held_out_success": false,
+  "raw_champion": {
+    "program": [
+      "AND",
+      [
+        "OR",
+        [
+          "AND",
+          "X1",
+          [
+            "NOT",
+            "X2"
+          ],
+          [
+            "NOT",
+            "X3"
+          ]
+        ],
+        [
+          "AND",
+          [
+            "NOT",
+            "X1"
+          ],
+          "X2"
+        ],
+        "X3"
+      ]
+    ],
+    "raw": -2
+  },
+  "actual_evaluations": 200,
+  "proposals": 207,
+  "cache_hits": 7,
+  "invalid_evaluations": 0,
+  "optimizer_trace": [
+    {
+      "deme": [
+        "mkDemeId",
+        1
+      ],
+      "stop": "stopStagnation",
+      "actualEvaluations": 185,
+      "proposals": 192,
+      "cacheHits": 7,
+      "invalids": 0,
+      "modelSize": 0
+    },
+    {
+      "deme": [
+        "mkDemeId",
+        2
+      ],
+      "stop": "stopBudgetExhausted",
+      "actualEvaluations": 15,
+      "proposals": 15,
+      "cacheHits": 0,
+      "invalids": 0,
+      "modelSize": 0
+    }
+  ],
+  "returned_programs": [
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "AND",
+            "X1",
+            [
+              "NOT",
+              "X2"
+            ],
+            [
+              "NOT",
+              "X3"
+            ]
+          ],
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X2"
+          ],
+          "X3"
+        ]
+      ],
+      "raw": -2
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "AND",
+            "X1",
+            [
+              "NOT",
+              "X3"
+            ],
+            [
+              "NOT",
+              "X2"
+            ]
+          ],
+          "X3",
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X2"
+          ]
+        ]
+      ],
+      "raw": -2
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X3"
+          ],
+          [
+            "AND",
+            "X1",
+            "X2"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "NOT",
+          "X1"
+        ],
+        "X2",
+        [
+          "NOT",
+          "X3"
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X2"
+          ],
+          "X3",
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X2"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X1"
+          ],
+          [
+            "NOT",
+            "X2"
+          ],
+          [
+            "AND",
+            "X1",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        "X2",
+        [
+          "OR",
+          [
+            "AND",
+            "X1",
+            "X3"
+          ],
+          [
+            "NOT",
+            "X1"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": "X1",
+      "raw": -4
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          [
+            "AND",
+            "X1",
+            "X3"
+          ],
+          [
+            "AND",
+            [
+              "NOT",
+              "X2"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "AND",
+            [
+              "NOT",
+              "X3"
+            ],
+            [
+              "OR",
+              [
+                "NOT",
+                "X1"
+              ],
+              "X2"
+            ]
+          ],
+          "X1",
+          [
+            "NOT",
+            "X2"
+          ]
+        ]
+      ],
+      "raw": -3
+    }
+  ],
+  "fit_trace": [
+    {
+      "algorithm": "univariate",
+      "seconds": 0.031197500182315707
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.029655999969691038
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.022083699936047196
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.02919629984535277
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.03174929996021092
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.029548499966040254
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.028308600187301636
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.03327239979989827
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.022034699795767665
+    },
+    {
+      "algorithm": "univariate",
+      "seconds": 0.023687999928370118
+    }
+  ],
+  "population_trace": [
+    {
+      "generations": 11,
+      "population": 32,
+      "archive": 192,
+      "unretainedProposals": 0,
+      "stagnation": 10
+    },
+    {
+      "generations": 1,
+      "population": 15,
+      "archive": 15,
+      "unretainedProposals": 0,
+      "stagnation": 0
+    }
+  ],
+  "model_fitting_seconds": 0.28073499957099557,
+  "fits": 10,
+  "max_learned_edges": 0,
+  "max_model_parameters": 0,
+  "local_fits": 0,
+  "score_cache_hits": 0,
+  "unretained_proposals": 0,
+  "fitting_stops": {
+    "univariate": 10
+  }
+}

@@ -1,0 +1,432 @@
+{
+  "case": "parity3",
+  "seed": 111,
+  "algorithm": "boa",
+  "command": [
+    "C:/Program Files/swipl/bin/swipl.exe",
+    "--stack_limit=8g",
+    "-q",
+    "-s",
+    "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+    "--",
+    "moses.metta",
+    "-s",
+    "--problem=parity3",
+    "--continDepth=2",
+    "--continStep=1",
+    "--continExpansion=2",
+    "--continComplexityRatio=0",
+    "--continImprovementThreshold=-0.0001",
+    "--continSearchMode=linear",
+    "--maxGen=3",
+    "--nDeme=1",
+    "--maxEvals=200",
+    "--optimizerMaxProposals=100000",
+    "--optimizerMaxGenerations=1000",
+    "--optimizerTimeLimitSec=-1",
+    "--hcWidenSearch=True",
+    "--hcCrossover=True",
+    "--maxDist=4",
+    "--minXoverNeighbors=400",
+    "--hcCrossoverPopSize=120",
+    "--hcFractionOfNN=2",
+    "--hcMinDemeSize=50",
+    "--revisit=0",
+    "--discardDominated=False",
+    "--capCoef=50",
+    "--complexityTemperature=6",
+    "--maxCandPerDeme=100",
+    "--minPoolSize=20",
+    "--nToKeep=50",
+    "--nEval=10000",
+    "--maxCandOutput=10",
+    "--diagnostics=True",
+    "--continTrace=False",
+    "--edaPopulationSize=32",
+    "--edaSelectionSize=16",
+    "--edaOffspringSize=16",
+    "--edaTournamentSize=2",
+    "--edaPseudocount=1",
+    "--edaExploration=0.1",
+    "--edaMaxRefillAttempts=256",
+    "--edaStagnationGenerations=10",
+    "--boaMaxParents=2",
+    "--boaMaxTableCells=256",
+    "--boaMaxIterations=16",
+    "--boaMaxScoreCalls=256",
+    "--boaFitTimeLimitSec=10",
+    "--seed=111",
+    "--optAlgo=boa"
+  ],
+  "process_wall_seconds": 17.1353100000415,
+  "exit_code": 0,
+  "success": false,
+  "held_out_success": false,
+  "raw_champion": {
+    "program": [
+      "AND",
+      [
+        "NOT",
+        "X3"
+      ],
+      [
+        "NOT",
+        "X1"
+      ],
+      "X2"
+    ],
+    "raw": -3
+  },
+  "actual_evaluations": 200,
+  "proposals": 231,
+  "cache_hits": 31,
+  "invalid_evaluations": 0,
+  "optimizer_trace": [
+    {
+      "deme": [
+        "mkDemeId",
+        1
+      ],
+      "stop": "stopBudgetExhausted",
+      "actualEvaluations": 200,
+      "proposals": 231,
+      "cacheHits": 31,
+      "invalids": 0,
+      "modelSize": 52
+    }
+  ],
+  "returned_programs": [
+    {
+      "program": [
+        "AND",
+        [
+          "NOT",
+          "X3"
+        ],
+        [
+          "NOT",
+          "X1"
+        ],
+        "X2"
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          [
+            "NOT",
+            "X2"
+          ],
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          [
+            "AND",
+            [
+              "NOT",
+              "X2"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X2"
+          ],
+          "X1",
+          [
+            "NOT",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          [
+            "NOT",
+            "X3"
+          ],
+          [
+            "AND",
+            [
+              "NOT",
+              "X2"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          "X1",
+          "X2",
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X2"
+          ],
+          [
+            "NOT",
+            "X3"
+          ],
+          [
+            "AND",
+            "X1",
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "AND",
+        [
+          "OR",
+          [
+            "NOT",
+            "X3"
+          ],
+          [
+            "AND",
+            [
+              "NOT",
+              "X1"
+            ],
+            [
+              "NOT",
+              "X2"
+            ],
+            "X3"
+          ]
+        ]
+      ],
+      "raw": -3
+    },
+    {
+      "program": [
+        "NOT",
+        "X3"
+      ],
+      "raw": -4
+    },
+    {
+      "program": "X2",
+      "raw": -4
+    }
+  ],
+  "fit_trace": [
+    {
+      "algorithm": "boa",
+      "seconds": 0.7096211998723447,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7382916000206023,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 1.711111299926415,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7425886997953057,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7521855002269149,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6449317999649793,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.8583217000123113,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 1.382131100166589,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.7654813001863658,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 1.0317364998627454,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6922202999703586,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6275651000905782,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "boa",
+      "seconds": 0.6878460999578238,
+      "learnedEdges": 1,
+      "parameters": 52,
+      "tableCells": 78,
+      "iterations": 1,
+      "localFits": 280,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    }
+  ],
+  "population_trace": [
+    {
+      "generations": 14,
+      "population": 32,
+      "archive": 231,
+      "unretainedProposals": 0,
+      "stagnation": 4
+    }
+  ],
+  "model_fitting_seconds": 11.344032200053334,
+  "fits": 13,
+  "max_learned_edges": 1,
+  "max_model_parameters": 52,
+  "local_fits": 3640,
+  "score_cache_hits": 0,
+  "unretained_proposals": 0,
+  "fitting_stops": {
+    "fitScoreLimit": 13
+  }
+}
