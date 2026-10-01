@@ -139,12 +139,17 @@
    (let $bs (scoreActionTree $tree $nTrials $scoreSpace)
      (if-error $bs   ;; parity with getCscore; scoreActionTree never errors
         (worstCscore)
-        (let* (($bsum (sumBScore $bs))
-               ($cpxy (actionTreeComplexity $tree))
-               ($cCoef (getComplexityCoef $complexityRatio)))
-          (updatePenalizedScore
-            (mkCscore $bsum $cpxy (* $cpxy $cCoef) 0.0 (* -1 (pow-math 10 308)))
-            False)))))
+        (actionCscoreFromBscore $tree $complexityRatio $bs))))
+
+;; Shared with status-aware candidate evaluation: inspect behavioral failures
+;; before the legacy getActionCscore projection turns them into worstCscore.
+(= (actionCscoreFromBscore $tree $complexityRatio $bs)
+   (let* (($bsum (sumBScore $bs))
+          ($cpxy (actionTreeComplexity $tree))
+          ($cCoef (getComplexityCoef $complexityRatio)))
+     (updatePenalizedScore
+       (mkCscore $bsum $cpxy (* $cpxy $cCoef) 0.0 (* -1 (pow-math 10 308)))
+       False)))
 
 ;; The public action context carries the raw termination target through the
 ;; lifecycle. Scoring consumes only trials and penalty.
