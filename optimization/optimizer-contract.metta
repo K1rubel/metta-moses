@@ -75,9 +75,12 @@
 ;;   $maxGenerations : Number - Maximum population generations (for EDA / GA)
 ;;   $timeLimitSec   : Number - Maximum wall-clock seconds (-1 for unlimited)
 ;; Counts must be integers >= 0 or -1 for unlimited; time must be >= 0 or -1.
-;; Zero grants no work in that category. Validation/enforcement comes in O0.
+;; Zero grants no work in that category. optimizer-runtime validates this;
+;; the common HC adapter enforces it (legacy direct calls retain their API).
 (: OptimizerLimits Type)
 (: mkOptimizerLimits (-> Number Number Number Number OptimizerLimits))
+(: OptimizerConfig Type)
+(: mkOptimizerConfig (-> Atom OptimizerConfig))
 
 (= (limitsMaxEvals (mkOptimizerLimits $evals $props $gens $time)) $evals)
 (= (limitsMaxProposals (mkOptimizerLimits $evals $props $gens $time)) $props)
@@ -141,7 +144,7 @@
 ;; Fields:
 ;;   $optimizedDeme     : Deme   - The deme containing final scored candidates
 ;;   $bestInstance      : Atom   - Instance of the top penalized individual, or ()
-;;                                when no evaluated candidates exist. The deme
+;;                                when no valid evaluated candidates exist. The deme
 ;;                                must also retain the raw champion.
 ;;   $actualEvaluations : Number - Exact count of novel scoring calls consumed
 ;;   $stopReason        : OptimizerStopReason - Declared reason for halting search
@@ -166,7 +169,7 @@
 ;;   $proposals : Number — total candidate vectors generated (including duplicates)
 ;;   $cacheHits : Number — scorer calls avoided via cache lookup
 ;;   $invalids  : Number — candidates that returned mkCEvalError on evaluation
-;;   $modelSize : Number — learned edges (BOA) or tree nodes (hBOA); 0 for HC
+;;   $modelSize : Number — maximum fitted free probabilities (BOA/hBOA); 0 for HC/univariate
 ;; An inert record, not a function that rewrites itself into a different type.
 (: OptimizerDiagnostics Type)
 (: mkOptimizerDiag (-> Number Number Number Number OptimizerDiagnostics))
