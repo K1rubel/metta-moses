@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "purpose": "Step 8 HC affine baseline; not BOA/hBOA qualification",
+  "development_seeds": [0],
+  "seeds": [100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129],
+  "training_error_targets": [1.0, 0.1, 0.01, 0.00000001],
+  "evaluation_checkpoints": [1,10,25,50,100,250,500,1000],
+  "acceptance_error": 0.00000001,
+  "parameters": {
+    "problem": "linear", "optAlgo": "hc", "continDepth": 2,
+    "continStep": 1.0, "continExpansion": 2.0, "continComplexityRatio": 0.0,
+    "continImprovementThreshold": -0.0001, "continSearchMode": "linear",
+    "maxGen": 10, "nDeme": 1, "maxEvals": 1000,
+    "optimizerMaxProposals": 100000, "optimizerMaxGenerations": 1000,
+    "optimizerTimeLimitSec": -1, "hcWidenSearch": true, "hcCrossover": true,
+    "maxDist": 4, "minXoverNeighbors": 400, "hcCrossoverPopSize": 120,
+    "hcFractionOfNN": 2.0, "hcMinDemeSize": 50,
+    "revisit": 0, "discardDominated": false, "capCoef": 50,
+    "complexityTemperature": 6, "maxCandPerDeme": 100, "minPoolSize": 20,
+    "nToKeep": 50, "nEval": 10000, "maxCandOutput": 10,
+    "diagnostics": true, "continTrace": true
+  },
+  "cases": [
+    {"name": "linear", "loss": "squared_error", "equation": "1 + 2*x", "identifiable": true, "coefficients": {"bias": 1.0, "x": 2.0}},
+    {"name": "multivariate", "loss": "squared_error", "equation": "1 + 2*x - z", "identifiable": true, "coefficients": {"bias": 1.0, "x": 2.0, "z": -1.0}},
+    {"name": "absolute", "loss": "abs_error", "equation": "-1 + 0.5*x", "identifiable": true, "coefficients": {"bias": -1.0, "x": 0.5}},
+    {"name": "correlated", "loss": "squared_error", "equation": "1 + 3*x, with z=2*x", "identifiable": false, "note": "Assess prediction on the z=2*x manifold; no unique coefficient recovery or off-manifold claim."}
+  ]
+}
