@@ -17,20 +17,42 @@
 ;; one tree can score differently for another table, horizon, or ratio.
 !(bind! &candidateScoreCache (new-space))
 
-;; Return a cached complete-program score for this context, or () on a miss.
-(= (cachedCandidateScore $context $tree)
+;; Scores and evaluation status are cached together, including failed calls.
+;; () denotes a miss; it is never inferred from the numeric score.
+(= (cachedCandidateEvaluation $context $tree)
    (let $matches
         (collapse
           (match &candidateScoreCache
-                 (candidateScore $context $tree $score)
-                 $score))
+                 (candidateEvaluation $context $tree $score $status)
+                 (mkCandidateScore $score $status)))
      (if (== $matches ()) () (car-atom $matches))))
 
-;; Store a complete-program score only when the context/tree key is new.
-(= (cacheCandidateScore $context $tree $score)
-   (if (== (cachedCandidateScore $context $tree) ())
+(= (cacheCandidateEvaluation $context $tree (mkCandidateScore $score $status))
+   (if (== (cachedCandidateEvaluation $context $tree) ())
        (add-atom &candidateScoreCache
-                 (candidateScore $context $tree $score))
+                 (candidateEvaluation $context $tree $score $status))
+       True))
+
+;; Legacy score-only API. Attached scores supplied here are already evaluated.
+(= (cachedCandidateScore $context $tree)
+   (case (cachedCandidateEvaluation $context $tree)
+     ((() ()) ((mkCandidateScore $score $status) $score))))
+(= (cacheCandidateScore $context $tree $score)
+   (cacheCandidateEvaluation $context $tree (mkCandidateScore $score candidateValid)))
+
+;; No tree exists after a decoding failure. Keep these keys separate from the
+;; phenotype cache, scoped by representation identity AND value. Callers supply
+;; canonical instances (including continuous STOP-tail normalization).
+(= (cachedCandidateDecodeFailure $context $rep $id $inst)
+   (let $matches
+        (collapse (match &candidateScoreCache
+          (candidateDecodeFailure $context $rep $id $inst $reason)
+          (candidateInvalid $reason)))
+     (if (== $matches ()) () (car-atom $matches))))
+(= (cacheCandidateDecodeFailure $context $rep $id $inst $reason)
+   (if (== (cachedCandidateDecodeFailure $context $rep $id $inst) ())
+       (add-atom &candidateScoreCache
+         (candidateDecodeFailure $context $rep $id $inst $reason))
        True))
 
 ;; Remove every candidate-cache entry supplied by the reset traversal.
