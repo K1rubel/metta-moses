@@ -36,8 +36,9 @@
 !(add-atom &params (maxGen   50))
 !(add-atom &params (nDeme    1))
 
-;; ---- Input table (boolean CSV path) ----
-;; inputFile: filesystem path to a CSV with boolean-valued columns. When
+;; ---- Input table ----
+;; inputFile: filesystem path to a CSV (numeric for --problem=linear,
+;;   Boolean otherwise). When
 ;;   non-empty, (moses) loads the table from this file instead of
 ;;   dispatching to the demo problem function named by `problem`.
 ;;   Accepted cell formats: True/False, 1/0, yes/no, t/f (case-insensitive).
@@ -47,6 +48,28 @@
 ;; maxGen rather than by hitting the perfect-classifier target.
 !(add-atom &params (inputFile     ""))
 !(add-atom &params (targetFeature ""))
+
+;; ---- Continuous affine runs (--problem=linear) ----
+;; Column-major mkITable, target last; () selects the built-in linear example.
+;; --inputFile selects finite numeric CSV; do not also set continTable.
+;; sr selects nonlinear mode and the order-two demo when no table is supplied.
+!(add-atom &params (continTable ()))
+!(add-atom &params (continStep 1.0))
+!(add-atom &params (continExpansion 2.0))
+!(add-atom &params (continDepth 5))
+!(add-atom &params (continErrorType squared_error))
+!(add-atom &params (continSearchMode linear))
+;; Bounded nonlinear scaffold. Operators are an explicit allowlist; pass a
+;; quoted CLI argument, e.g. "--continOperators=(c_add c_mul c_sin)".
+;; Degree limits newly introduced monomials, not the degree of existing trees.
+!(add-atom &params (continPolyDegree 2))
+!(add-atom &params (continScaffoldDepth 1))
+!(add-atom &params (continOperators (c_add c_mul)))
+!(add-atom &params (continMaxScaffoldNodes 10000))
+!(add-atom &params (continComplexityRatio 0.0))
+!(add-atom &params (continImprovementThreshold -0.0001))
+;; Optional counted-scorer telemetry for reproducible baseline experiments.
+!(add-atom &params (continTrace False))
 
 ;; ---- Action-run binding (the params-based fitness contract) ----
 ;; An ACTION experiment binds its fitness through these four params instead
@@ -95,9 +118,8 @@
 
 ;; ---- Algorithm selection ----
 ;; optAlgo: which deme-local optimizer to dispatch to inside runMoses.
-;;   Recognized values: hc (hill climbing).
-;;   sa / univariate exist in the tree but are not integration-tested;
-;;   passing them will halt with a clear error.
+;;   Recognized values: hc (default), univariate, boa, hboa.
+;;   The legacy univariate and SA files are not the production adapters.
 ;; fsAlgo: which feature-selection algorithm runMoses pipes into expandDeme.
 ;;   Recognized values include: None, smd, sim, inc, rd, mi, hc.
 !(add-atom &params (optAlgo hc))
@@ -127,6 +149,11 @@
 ;; maxEvals is the complete-run budget of actual new scorer calls, including
 ;; initialization. Zero disables expansion; a negative value is unlimited.
 !(add-atom &params (maxEvals 25000))
+;; Per-deme optimizer safeguards; -1 means unlimited. HC initialization counts
+;; as one generation. Proposal counts include duplicates before deduplication.
+!(add-atom &params (optimizerMaxProposals 100000))
+!(add-atom &params (optimizerMaxGenerations 1000))
+!(add-atom &params (optimizerTimeLimitSec -1))
 ;; nEval currently limits retained merge candidates. Despite its historical
 ;; name, it is not an evaluator-call budget and must not be conflated with
 ;; maxEvals until that interface is renamed.
@@ -135,6 +162,38 @@
 ;; with the initial $maxGen of the run; this default is a safety floor so
 ;; that a forgotten seed doesn't make (param genCount) collapse to ().
 !(add-atom &params (genCount 1000))
+
+;; ---- Population EDA (univariate; shared foundation for BOA/hBOA) ----
+;; Explicit initial settings, not a claim of benchmark-optimal tuning.
+!(add-atom &params (edaPopulationSize 32))
+!(add-atom &params (edaSelectionSize 16))
+!(add-atom &params (edaOffspringSize 16))
+!(add-atom &params (edaTournamentSize 2))
+!(add-atom &params (edaPseudocount 1.0))
+!(add-atom &params (edaExploration 0.1))
+!(add-atom &params (edaMaxRefillAttempts 256))
+!(add-atom &params (edaStagnationGenerations 10))
+
+;; ---- BOA: add-only BIC structure search, bounded per generation ----
+!(add-atom &params (boaMaxParents 2))
+!(add-atom &params (boaMaxTableCells 256))
+!(add-atom &params (boaMaxIterations 16))
+;; Candidate local fits, in addition to one mandatory root fit per field.
+!(add-atom &params (boaMaxScoreCalls 256))
+!(add-atom &params (boaFitTimeLimitSec 10.0))
+
+;; hBOA local decision trees; bounded greedy BIC splits, no hidden HC hybrid.
+!(add-atom &params (hboaMaxParents 3))
+!(add-atom &params (hboaMaxDepth 3))
+!(add-atom &params (hboaMaxLeaves 8))
+!(add-atom &params (hboaMinSupport 2))
+!(add-atom &params (hboaMaxIterations 16))
+!(add-atom &params (hboaMaxScoreCalls 256))
+!(add-atom &params (hboaFitTimeLimitSec 10.0))
+!(add-atom &params (hboaLearnDependencies True))
+;; auto = RTR for hBOA, elitist for BOA/univariate. Explicit for ablations.
+!(add-atom &params (edaReplacement auto))
+!(add-atom &params (edaRTRWindow 8))
 
 ;; ---- Hill climbing ----
 ;; hcMaxDist: maximum Hamming distance from the center instance the

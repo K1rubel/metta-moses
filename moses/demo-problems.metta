@@ -269,6 +269,8 @@
         ($_ (println! "For a boolean table run, pass --problem=<name>, e.g.:"))
         ($_ (println! "    sh run.sh moses.metta -s --problem=parity3"))
         ($_ (println! "or programmatically:  !(set-param problem parity3)"))
+        ($_ (println! "For continuous regression, pass --problem=linear (affine) or --problem=sr (nonlinear)."))
+        ($_ (println! "Use --inputFile=<numeric.csv> (optional --targetFeature=<header>), or configure continTable."))
         ($_ (println! "For an action run, bind a fitness function instead:"))
         ($_ (println! "    --fitness=tttActionFitness  (or !(set-param fitness <fn>))"))
         ($_ (println! "plus the vocabulary params -- see parameters/defaults.metta."))
@@ -303,7 +305,9 @@
 
 (= (problem-context)
    (case (param problem)
-     ((ant
+     ((linear (let $setup linearProblemContext ($setup)))
+      (sr (let $setupSr srProblemContext ($setupSr)))
+      (ant
         (let* (
                ($_        (configure-ant-action-params))
                ($nTrials  (param nTrials))
@@ -447,21 +451,22 @@
       ()))
 
 ;; Maps the optAlgo symbol to the concrete optimizer function used by
-;; runMoses. Only hill climbing is integration-tested today; the SA and
-;; univariate implementations under optimization/ exist but have never
-;; been wired into the deme-expansion path. Add a clause here when a new
-;; algorithm becomes ready.
-(= (optimizer-for hc)
+;; runMoses. The new EDA adapter is independent of the legacy univariate file.
+;; hBOA and SA remain unavailable until separately integrated and tested.
+(= (optimizer-for $optimizer)
      (case $optimizer
           (
-            (hc hillClimbing)
+            (hc hillClimbingOptimizer)
+            (univariate (let $configured configuredUnivariateOptimizer ($configured)))
+            (boa (let $configuredBOA configuredBOAOptimizer ($configuredBOA)))
+            (hboa (let $configuredHBOA configuredHBOAOptimizer ($configuredHBOA)))
             ;; (sa simulated-annealing)
             ($other (let*
                       (
                         ($_ (println! ""))
                         ($_ (println! (Error: unsupported optAlgo $other)))
-                        ($_ (println! "Recognized optAlgo values: hc"))
-                        ($_ (println! "(simulated annealing and univariate exist in the tree but are not integration-tested.)"))
+                        ($_ (println! "Recognized optAlgo values: hc, univariate, boa, hboa"))
+                        ($_ (println! "hBOA and simulated annealing are not enabled."))
                         ($_ (callPredicate (Predicate (halt 1))))
                       )
                       ())))))

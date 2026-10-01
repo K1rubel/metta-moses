@@ -88,6 +88,9 @@
 !(import! &self scoring/cscore)
 ;; Action-domain behavioral + composite scoring (needs bscore/cscore above).
 !(import! &self scoring/action-score)
+;; Numerical scoring for explicit continuous contexts (--problem=linear).
+!(import! &self scoring/contin-eval)
+!(import! &self scoring/contin-score)
 
 ;; ---- Feature selection ----
 !(import! &self feature-selection/feature-selection-helpers)
@@ -102,6 +105,22 @@
 
 ;; ---- Representation ----
 !(import! &self representation/knob-representation)
+!(import! &self representation/contin-spec)
+!(import! &self representation/contin-stepper)
+!(import! &self representation/contin-representation)
+!(import! &self representation/field-schema)
+!(import! &self reduct/contin-reduct/contin-helpers)
+!(import! &self reduct/contin-reduct/reduce-identities)
+!(import! &self reduct/contin-reduct/reorder-commutative)
+!(import! &self reduct/contin-reduct/reduce-nary)
+!(import! &self reduct/contin-reduct/reduce-division)
+!(import! &self reduct/contin-reduct/fold-constants)
+!(import! &self reduct/contin-reduct/reduce-nonlinear)
+!(import! &self reduct/contin-reduct/contin-reduction)
+!(import! &self representation/contin-canonize)
+!(import! &self representation/build-contin)
+!(import! &self representation/contin-nonlinear)
+!(import! &self representation/build-nonlinear)
 !(import! &self representation/lsk)
 !(import! &self representation/disc-probe)
 !(import! &self representation/logical-probe)
@@ -135,10 +154,25 @@
 ;; ---- Ant action-domain example ----
 !(import! &self examples/ant/ant-action-domain)
 
-;; ---- Optimization (hill climbing is the only production-ready algorithm) ----
+;; ---- Optimization (HC and schema-aware univariate EDA) ----
+!(import! &self representation/instance)
 !(import! &self optimization/hillclimbing/crossover-helpers)
 !(import! &self optimization/hillclimbing/crossover)
+!(import! &self optimization/optimizer-contract)
+!(import! &self scoring/candidate-evaluation)
+!(import! &self optimization/optimizer-runtime)
+!(import! &self optimization/legal-instance-sampling)
 !(import! &self optimization/hillclimbing/hill-climbing-helpers)
+!(import! &self optimization/eda/univariate-model)
+!(import! &self optimization/eda/population)
+!(import! &self optimization/eda/univariate-optimizer)
+!(import! &self optimization/boa/graph)
+!(import! &self optimization/boa/local-model)
+!(import! &self optimization/boa/structure-learning)
+!(import! &self optimization/boa/boa)
+!(import! &self optimization/hboa/local-structure)
+!(import! &self optimization/hboa/structure-learning)
+!(import! &self optimization/hboa/hboa)
 
 ;; ---- Deme + metapopulation pipeline ----
 !(import! &self deme/create-deme)
@@ -148,7 +182,6 @@
 !(import! &self metapopulation/exemplar-selection)
 !(import! &self metapopulation/metapopulation)
 
-!(import! &self representation/instance)
 
 !(import! &self deme/deme-id-creation)
 !(import! &self deme/score-deme)
@@ -156,6 +189,7 @@
 ;; Domain-specific representation and scorer dispatch is assembled here at
 ;; the production entry point, before the shared expansion lifecycle uses it.
 !(import! &self deme/expand-deme)
+!(import! &self moses/contin-pipeline)
 
 ;; ---- Top-level entry point: defines (moses), (optimizer-for ...) ----
 !(import! &self moses/demo-problems)
