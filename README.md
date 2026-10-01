@@ -54,7 +54,7 @@ A few common ones:
     --maxGen=30 \              # max generations
     --nDeme=2 \                # number of demes per expansion
     --fsAlgo=smd \             # feature-selection algorithm (None | smd | sim | inc | rd | mi | hc)
-    --optAlgo=hc \             # optimizer (currently only hc; sa / univariate are stubs)
+    --optAlgo=hc \             # optimizer (hc | univariate | boa | hboa; hc remains the default)
     --capCoef=80 \             # metapopulation cap coefficient
     --complexityRatio=2.5 \    # complexity/fitness trade-off
     --maxEvals=20000           # total actual new scorer-call budget
@@ -69,6 +69,85 @@ stateful action domains and is harmlessly unused by Boolean scorers.
 If you run `./PeTTa/run.sh moses.metta -s` with **no** `--problem` (or
 without an in-script `(set-param problem …)`), MOSES prints the help and
 exits rather than silently running a default problem.
+
+### Continuous affine regression
+
+The explicit linear route uses the same MOSES loop, with HC by default:
+
+```sh
+./PeTTa/run.sh moses.metta -s --problem=linear --continDepth=2 --maxGen=2 --maxEvals=100
+```
+
+Without custom data, this runs a small in-memory `y = 2*x + 1` example. Load a
+finite numeric CSV with an optional named target column:
+
+```sh
+./PeTTa/run.sh moses.metta -s --problem=linear --inputFile=data.csv --targetFeature=y
+```
+
+The default target is the last column. Headers are preserved exactly as string
+labels; non-finite values, missing cells, ragged rows and duplicate/empty headers
+are rejected. Boolean CSV parsing is unchanged on the Boolean route.
+Alternatively, bind a column-major table in a `--domainFile` module:
+
+```metta
+!(set-param continTable (mkITable ((-1.0 0.0 1.0) (-1.0 1.0 3.0)) (x y)))
+```
+
+For an in-memory table, the target is the last column; do not also set `inputFile`.
+Continuous options include `continStep`,
+`continExpansion`, `continDepth`, `continErrorType` (`squared_error` or
+`abs_error`), `continComplexityRatio`, and `continImprovementThreshold`.
+`bestScore` is the raw-score target (default zero). Seed scoring consumes the
+shared `maxEvals` allowance; zero allowance returns an empty result.
+Nonlinear `sr` is enabled; BOA and hBOA are available as opt-ins.
+See [the continuous contract](docs/continuous-contract.md) for scope and limits.
+The [Step 8 HC baseline](docs/benchmarks/continuous-hc-baseline.md) records the
+fixtures, explicit search settings, seeds, output quality and resource traces.
+
+Select the new schema-aware population optimizer with `--optAlgo=univariate`:
+
+```powershell
+..\PeTTa\run.bat moses.metta -s --problem=linear --optAlgo=univariate --continDepth=2 --maxGen=10 --maxEvals=1000
+```
+
+See [the Step 9 optimizer](docs/univariate-optimizer.md) for settings, stopping
+rules and tests. It is a clean implementation under `optimization/eda/`; the
+legacy `optimization/univariate/` implementation and tests remain untouched.
+
+Select Bayesian-network learning with `--optAlgo=boa`; keep `--optAlgo=hc` for
+the default without dependency learning. See [BOA settings and implementation](docs/boa-optimizer.md)
+and the [HC/univariate/BOA comparison](docs/benchmarks/continuous-boa-comparison.md).
+BOA learns how to sample the current representation; it does not add nonlinear
+operators or silently run HC on its offspring.
+
+Select conditional decision trees and restricted tournament replacement with
+`--optAlgo=hboa`. Use `--hboaLearnDependencies=False` for the no-dependency
+control, or `--edaReplacement=rtr|elitist` to compare replacement policies.
+See [hBOA settings and limitations](docs/hboa-optimizer.md) and the
+[default-HC/hBOA comparison](docs/benchmarks/continuous-hboa-comparison.md).
+
+### Nonlinear symbolic regression
+
+`sr` uses nonlinear construction and, without a CSV/table, learns `x + x*x`:
+
+```powershell
+..\PeTTa\run.bat moses.metta -s --problem=sr --continDepth=2 --maxEvals=500 --optAlgo=hc
+..\PeTTa\run.bat moses.metta -s --problem=sr --inputFile=tests/fixtures/continuous/sr-interaction-train.csv --continDepth=2 --maxEvals=500 --optAlgo=hboa
+```
+
+All four optimizers share the same scaffold, scoring and counted evaluation
+budget. `continPolyDegree` (1–4, default 2) bounds new polynomial terms;
+`continScaffoldDepth` (0–2, default 1) bounds recursive argument expansion.
+The default vocabulary is polynomial-only. Opt into functions explicitly, e.g.
+`"--continOperators=(c_add c_mul c_sin)"`; `c_log`, `c_exp` and `c_div` are also
+supported. Division/log are not protected substitutions: invalid candidates fail
+scoring. `linear` remains affine-only.
+
+See [nonlinear scope, examples and tests](docs/nonlinear-continuous.md). This is
+a bounded C++-inspired scaffold, not full C++ algebraic/search parity. The
+[Step 13 exploratory comparison](docs/benchmarks/continuous-nonlinear-smoke.md)
+separates harder-regression results from Step 14's full qualification.
 
 ### Running the test suite
 
