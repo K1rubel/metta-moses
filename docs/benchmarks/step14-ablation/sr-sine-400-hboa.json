@@ -1,0 +1,5403 @@
+{
+  "case": "sr-sine",
+  "seed": 400,
+  "algorithm": "hboa",
+  "command": [
+    "C:/Program Files/swipl/bin/swipl.exe",
+    "--stack_limit=8g",
+    "-q",
+    "-s",
+    "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+    "--",
+    "moses.metta",
+    "-s",
+    "--problem=sr",
+    "--continDepth=2",
+    "--continStep=1",
+    "--continExpansion=2",
+    "--continPolyDegree=2",
+    "--continScaffoldDepth=1",
+    "--continOperators=(c_add c_mul c_sin)",
+    "--continMaxScaffoldNodes=10000",
+    "--continComplexityRatio=0",
+    "--continImprovementThreshold=-0.0001",
+    "--maxGen=10",
+    "--nDeme=1",
+    "--maxEvals=500",
+    "--optimizerMaxProposals=100000",
+    "--optimizerMaxGenerations=1000",
+    "--optimizerTimeLimitSec=-1",
+    "--hcWidenSearch=False",
+    "--hcCrossover=True",
+    "--maxDist=4",
+    "--revisit=0",
+    "--diagnostics=True",
+    "--continTrace=True",
+    "--edaPopulationSize=32",
+    "--edaSelectionSize=16",
+    "--edaOffspringSize=16",
+    "--edaTournamentSize=2",
+    "--edaPseudocount=1",
+    "--edaExploration=0.1",
+    "--edaMaxRefillAttempts=256",
+    "--edaStagnationGenerations=10",
+    "--boaMaxParents=2",
+    "--boaMaxTableCells=256",
+    "--boaMaxIterations=16",
+    "--boaMaxScoreCalls=256",
+    "--boaFitTimeLimitSec=10",
+    "--hboaMaxParents=3",
+    "--hboaMaxDepth=3",
+    "--hboaMaxLeaves=8",
+    "--hboaMinSupport=2",
+    "--hboaMaxIterations=16",
+    "--hboaMaxScoreCalls=256",
+    "--hboaFitTimeLimitSec=10",
+    "--hboaLearnDependencies=True",
+    "--edaRTRWindow=8",
+    "--edaReplacement=auto",
+    "--optAlgo=hboa",
+    "--seed=400",
+    "--continErrorType=squared_error",
+    "--inputFile=tests/fixtures/continuous/sr-sine-train.csv"
+  ],
+  "process_wall_seconds": 21.288151699816808,
+  "exit_code": 0,
+  "success": false,
+  "held_out_success": false,
+  "actual_evaluations": 500,
+  "invalid_evaluations": 0,
+  "proposals": 618,
+  "cache_hits": 117,
+  "raw_champion": {
+    "program": [
+      "c_add",
+      0.1411200080598672,
+      [
+        "c_mul",
+        -1.0,
+        [
+          "c_sin",
+          [
+            "c_add",
+            [
+              "c_mul",
+              1.5,
+              "x"
+            ],
+            [
+              "c_mul",
+              -3.0,
+              [
+                "c_mul",
+                "x",
+                "x"
+              ]
+            ],
+            [
+              "c_mul",
+              -1.0,
+              [
+                "c_sin",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "raw": -0.20245786927563053,
+    "complexity": 11,
+    "penalized": -0.20245786927563053,
+    "train": {
+      "sse": 0.20245786927563053,
+      "sae": 0.8209466814546075,
+      "rmse": 0.20122518196072306,
+      "mae": 0.1641893362909215,
+      "raw": -0.20245786927563053,
+      "rows": 5,
+      "valid_rows": 5
+    },
+    "validation": {
+      "sse": 5.256104645512067,
+      "sae": 3.8559904431115717,
+      "rmse": 1.1463098016583548,
+      "mae": 0.9639976107778929,
+      "raw": -5.256104645512067,
+      "rows": 4,
+      "valid_rows": 4
+    },
+    "test": {
+      "sse": 2.530969982207491,
+      "sae": 2.9505351833726707,
+      "rmse": 0.649483125545164,
+      "mae": 0.4917558638954451,
+      "raw": -2.530969982207491,
+      "rows": 6,
+      "valid_rows": 6
+    }
+  },
+  "penalized_champion": {
+    "program": [
+      "c_add",
+      0.1411200080598672,
+      [
+        "c_mul",
+        -1.0,
+        [
+          "c_sin",
+          [
+            "c_add",
+            [
+              "c_mul",
+              1.5,
+              "x"
+            ],
+            [
+              "c_mul",
+              -3.0,
+              [
+                "c_mul",
+                "x",
+                "x"
+              ]
+            ],
+            [
+              "c_mul",
+              -1.0,
+              [
+                "c_sin",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "raw": -0.20245786927563053,
+    "complexity": 11,
+    "penalized": -0.20245786927563053,
+    "train": {
+      "sse": 0.20245786927563053,
+      "sae": 0.8209466814546075,
+      "rmse": 0.20122518196072306,
+      "mae": 0.1641893362909215,
+      "raw": -0.20245786927563053,
+      "rows": 5,
+      "valid_rows": 5
+    },
+    "validation": {
+      "sse": 5.256104645512067,
+      "sae": 3.8559904431115717,
+      "rmse": 1.1463098016583548,
+      "mae": 0.9639976107778929,
+      "raw": -5.256104645512067,
+      "rows": 4,
+      "valid_rows": 4
+    },
+    "test": {
+      "sse": 2.530969982207491,
+      "sae": 2.9505351833726707,
+      "rmse": 0.649483125545164,
+      "mae": 0.4917558638954451,
+      "raw": -2.530969982207491,
+      "rows": 6,
+      "valid_rows": 6
+    }
+  },
+  "returned_programs": [
+    {
+      "program": [
+        "c_add",
+        0.1411200080598672,
+        [
+          "c_mul",
+          -1.0,
+          [
+            "c_sin",
+            [
+              "c_add",
+              [
+                "c_mul",
+                1.5,
+                "x"
+              ],
+              [
+                "c_mul",
+                -3.0,
+                [
+                  "c_mul",
+                  "x",
+                  "x"
+                ]
+              ],
+              [
+                "c_mul",
+                -1.0,
+                [
+                  "c_sin",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "raw": -0.20245786927563053,
+      "complexity": 11,
+      "penalized": -0.20245786927563053,
+      "train": {
+        "sse": 0.20245786927563053,
+        "sae": 0.8209466814546075,
+        "rmse": 0.20122518196072306,
+        "mae": 0.1641893362909215,
+        "raw": -0.20245786927563053,
+        "rows": 5,
+        "valid_rows": 5
+      },
+      "validation": {
+        "sse": 5.256104645512067,
+        "sae": 3.8559904431115717,
+        "rmse": 1.1463098016583548,
+        "mae": 0.9639976107778929,
+        "raw": -5.256104645512067,
+        "rows": 4,
+        "valid_rows": 4
+      },
+      "test": {
+        "sse": 2.530969982207491,
+        "sae": 2.9505351833726707,
+        "rmse": 0.649483125545164,
+        "mae": 0.4917558638954451,
+        "raw": -2.530969982207491,
+        "rows": 6,
+        "valid_rows": 6
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.1411200080598672,
+        [
+          "c_mul",
+          0.5,
+          [
+            "c_sin",
+            [
+              "c_add",
+              [
+                "c_mul",
+                2.0,
+                "x"
+              ],
+              -0.5
+            ]
+          ]
+        ]
+      ],
+      "raw": -0.24548050186850306,
+      "complexity": 6,
+      "penalized": -0.24548050186850306,
+      "train": {
+        "sse": 0.24548050186850306,
+        "sae": 1.0506950030453817,
+        "rmse": 0.22157639850331673,
+        "mae": 0.21013900060907634,
+        "raw": -0.24548050186850306,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.1411200080598672,
+        [
+          "c_mul",
+          0.5,
+          [
+            "c_sin",
+            [
+              "c_add",
+              [
+                "c_mul",
+                0.5,
+                "x"
+              ],
+              -1.0,
+              [
+                "c_mul",
+                -3.0,
+                [
+                  "c_mul",
+                  "x",
+                  "x"
+                ]
+              ],
+              [
+                "c_mul",
+                -3.0,
+                [
+                  "c_sin",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "raw": -0.6720009120341168,
+      "complexity": 12,
+      "penalized": -0.6720009120341168,
+      "train": {
+        "sse": 0.6720009120341168,
+        "sae": 1.5307589639546877,
+        "rmse": 0.36660630437408376,
+        "mae": 0.3061517927909375,
+        "raw": -0.6720009120341168,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.1411200080598672,
+        [
+          "c_mul",
+          -1.0,
+          [
+            "c_sin",
+            [
+              "c_add",
+              3.0,
+              [
+                "c_mul",
+                "x",
+                "x"
+              ],
+              [
+                "c_sin",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "raw": -0.7417357517159586,
+      "complexity": 8,
+      "penalized": -0.7417357517159586,
+      "train": {
+        "sse": 0.7417357517159586,
+        "sae": 1.5363746390875836,
+        "rmse": 0.38515860414015385,
+        "mae": 0.30727492781751675,
+        "raw": -0.7417357517159586,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.6411200080598671,
+        [
+          "c_sin",
+          [
+            "c_add",
+            [
+              "c_mul",
+              -3.0,
+              [
+                "c_mul",
+                "x",
+                "x"
+              ]
+            ],
+            [
+              "c_mul",
+              -3.0,
+              [
+                "c_sin",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "raw": -0.8056102811032475,
+      "complexity": 8,
+      "penalized": -0.8056102811032475,
+      "train": {
+        "sse": 0.8056102811032475,
+        "sae": 1.754487125805178,
+        "rmse": 0.40140011985629687,
+        "mae": 0.3508974251610356,
+        "raw": -0.8056102811032475,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.1411200080598672,
+        [
+          "c_mul",
+          -1.0,
+          [
+            "c_sin",
+            [
+              "c_add",
+              [
+                "c_mul",
+                4.5,
+                "x"
+              ],
+              [
+                "c_mul",
+                -3.0,
+                [
+                  "c_mul",
+                  "x",
+                  "x"
+                ]
+              ],
+              [
+                "c_mul",
+                -0.5,
+                [
+                  "c_sin",
+                  "x"
+                ]
+              ],
+              3.0
+            ]
+          ]
+        ],
+        [
+          "c_mul",
+          -0.5,
+          "x"
+        ],
+        [
+          "c_mul",
+          -0.5,
+          [
+            "c_sin",
+            [
+              "c_add",
+              [
+                "c_mul",
+                -2.0,
+                "x"
+              ],
+              -0.5,
+              [
+                "c_mul",
+                -1.0,
+                [
+                  "c_mul",
+                  "x",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "raw": -0.9377953689198676,
+      "complexity": 22,
+      "penalized": -0.9377953689198676,
+      "train": {
+        "sse": 0.9377953689198676,
+        "sae": 2.0339394145243963,
+        "rmse": 0.4330809090504608,
+        "mae": 0.40678788290487927,
+        "raw": -0.9377953689198676,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": 0.1411200080598672,
+      "raw": -1.3968729187773925,
+      "complexity": 1,
+      "penalized": -1.3968729187773925,
+      "train": {
+        "sse": 1.3968729187773925,
+        "sae": 2.2391303599101566,
+        "rmse": 0.5285589690426968,
+        "mae": 0.44782607198203134,
+        "raw": -1.3968729187773925,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": 0.4999999999999999,
+      "raw": -1.4425372860449284,
+      "complexity": 1,
+      "penalized": -1.4425372860449284,
+      "train": {
+        "sse": 1.4425372860449284,
+        "sae": 2.5980103518502893,
+        "rmse": 0.5371289018559564,
+        "mae": 0.5196020703700579,
+        "raw": -1.4425372860449284,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": 0.5,
+      "raw": -1.4425372860449284,
+      "complexity": 1,
+      "penalized": -1.4425372860449284,
+      "train": {
+        "sse": 1.4425372860449284,
+        "sae": 2.5980103518502893,
+        "rmse": 0.5371289018559564,
+        "mae": 0.5196020703700579,
+        "raw": -1.4425372860449284,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_mul",
+        0.5,
+        [
+          "c_sin",
+          [
+            "c_add",
+            "x",
+            [
+              "c_mul",
+              -0.5,
+              [
+                "c_mul",
+                "x",
+                "x"
+              ]
+            ],
+            [
+              "c_mul",
+              -0.5,
+              [
+                "c_sin",
+                "x"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "raw": -1.462447688419502,
+      "complexity": 9,
+      "penalized": -1.462447688419502,
+      "train": {
+        "sse": 1.462447688419502,
+        "sae": 2.0832129139843785,
+        "rmse": 0.540823018818449,
+        "mae": 0.4166425827968757,
+        "raw": -1.462447688419502,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    }
+  ],
+  "targets": {
+    "1": {
+      "evaluations": 245,
+      "search_elapsed_seconds": 9.030181499896571
+    },
+    "0.1": null,
+    "0.01": null,
+    "1e-08": null
+  },
+  "evaluation_curve": [
+    {
+      "evaluation_budget": 1,
+      "best_raw": -1.731716641497366,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 10,
+      "best_raw": -1.731716641497366,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 25,
+      "best_raw": -1.731716641497366,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 50,
+      "best_raw": -1.6906501417999817,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 100,
+      "best_raw": -1.6906501417999817,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 250,
+      "best_raw": -0.20245786927563053,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 500,
+      "best_raw": -0.20245786927563053,
+      "run_already_ended": false
+    }
+  ],
+  "evaluation_trace": [
+    {
+      "scorerCallIndex": 1,
+      "elapsed": 0.008836699882522225,
+      "status": "candidateValid",
+      "raw": -1.731716641497366,
+      "penalized": -1.731716641497366,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 2,
+      "elapsed": 0.024612699868157506,
+      "status": "candidateValid",
+      "raw": -22.090677915880327,
+      "penalized": -22.090677915880327,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 3,
+      "elapsed": 0.030250299954786897,
+      "status": "candidateValid",
+      "raw": -19.663392404787533,
+      "penalized": -19.663392404787533,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 4,
+      "elapsed": 0.03580409986898303,
+      "status": "candidateValid",
+      "raw": -102.21842132598422,
+      "penalized": -102.21842132598422,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 5,
+      "elapsed": 0.04588469979353249,
+      "status": "candidateValid",
+      "raw": -54.72663911238142,
+      "penalized": -54.72663911238142,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 6,
+      "elapsed": 0.05202759988605976,
+      "status": "candidateValid",
+      "raw": -69.30206128196603,
+      "penalized": -69.30206128196603,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 7,
+      "elapsed": 0.057316399877890944,
+      "status": "candidateValid",
+      "raw": -14.107001307978237,
+      "penalized": -14.107001307978237,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 8,
+      "elapsed": 0.06374489981681108,
+      "status": "candidateValid",
+      "raw": -85.34610206435937,
+      "penalized": -85.34610206435937,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 9,
+      "elapsed": 0.06970729981549084,
+      "status": "candidateValid",
+      "raw": -9.878637245738094,
+      "penalized": -9.878637245738094,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 10,
+      "elapsed": 0.0755224998574704,
+      "status": "candidateValid",
+      "raw": -25.187957948190935,
+      "penalized": -25.187957948190935,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 11,
+      "elapsed": 0.08171009994111955,
+      "status": "candidateValid",
+      "raw": -68.50416138703282,
+      "penalized": -68.50416138703282,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 12,
+      "elapsed": 0.08808169979602098,
+      "status": "candidateValid",
+      "raw": -7.47115618856163,
+      "penalized": -7.47115618856163,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 13,
+      "elapsed": 0.09371319995261729,
+      "status": "candidateValid",
+      "raw": -4.339748168862083,
+      "penalized": -4.339748168862083,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 14,
+      "elapsed": 0.09904429991729558,
+      "status": "candidateValid",
+      "raw": -82.92294610215616,
+      "penalized": -82.92294610215616,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 15,
+      "elapsed": 0.10392189980484545,
+      "status": "candidateValid",
+      "raw": -427.11343802883476,
+      "penalized": -427.11343802883476,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 16,
+      "elapsed": 0.11008489993400872,
+      "status": "candidateValid",
+      "raw": -286.3792142108323,
+      "penalized": -286.3792142108323,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 17,
+      "elapsed": 0.11540789995342493,
+      "status": "candidateValid",
+      "raw": -102.8544751749432,
+      "penalized": -102.8544751749432,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 18,
+      "elapsed": 0.12067149998620152,
+      "status": "candidateValid",
+      "raw": -72.4012238407975,
+      "penalized": -72.4012238407975,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 19,
+      "elapsed": 0.12501899991184473,
+      "status": "candidateValid",
+      "raw": -37.49664050878274,
+      "penalized": -37.49664050878274,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 20,
+      "elapsed": 0.13131059985607862,
+      "status": "candidateValid",
+      "raw": -409.8504119269031,
+      "penalized": -409.8504119269031,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 21,
+      "elapsed": 0.13807599991559982,
+      "status": "candidateValid",
+      "raw": -37.15912430409526,
+      "penalized": -37.15912430409526,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 22,
+      "elapsed": 0.1443853999953717,
+      "status": "candidateValid",
+      "raw": -110.71453949007291,
+      "penalized": -110.71453949007291,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 23,
+      "elapsed": 0.15091029996983707,
+      "status": "candidateValid",
+      "raw": -186.1813870979038,
+      "penalized": -186.1813870979038,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 24,
+      "elapsed": 0.1568593999836594,
+      "status": "candidateValid",
+      "raw": -235.88355092769928,
+      "penalized": -235.88355092769928,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 25,
+      "elapsed": 0.16316739981994033,
+      "status": "candidateValid",
+      "raw": -317.44521369171736,
+      "penalized": -317.44521369171736,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 26,
+      "elapsed": 0.17026899987831712,
+      "status": "candidateValid",
+      "raw": -33.71666163368931,
+      "penalized": -33.71666163368931,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 27,
+      "elapsed": 0.1762006999924779,
+      "status": "candidateValid",
+      "raw": -5.407786220425736,
+      "penalized": -5.407786220425736,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 28,
+      "elapsed": 0.1837857998907566,
+      "status": "candidateValid",
+      "raw": -10.82013375671957,
+      "penalized": -10.82013375671957,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 29,
+      "elapsed": 0.1886812997981906,
+      "status": "candidateValid",
+      "raw": -16.873818505955175,
+      "penalized": -16.873818505955175,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 30,
+      "elapsed": 0.1950228998903185,
+      "status": "candidateValid",
+      "raw": -19.28302441776373,
+      "penalized": -19.28302441776373,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 31,
+      "elapsed": 0.20015489985235035,
+      "status": "candidateValid",
+      "raw": -42.589366924162775,
+      "penalized": -42.589366924162775,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 32,
+      "elapsed": 0.4212942998856306,
+      "status": "candidateValid",
+      "raw": -22.32554503155168,
+      "penalized": -22.32554503155168,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 33,
+      "elapsed": 0.4270378998480737,
+      "status": "candidateValid",
+      "raw": -1.6906501417999817,
+      "penalized": -1.6906501417999817,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 34,
+      "elapsed": 0.43348669982515275,
+      "status": "candidateValid",
+      "raw": -18.51843991837226,
+      "penalized": -18.51843991837226,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 35,
+      "elapsed": 0.43828959995880723,
+      "status": "candidateValid",
+      "raw": -5.6998450647209,
+      "penalized": -5.6998450647209,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 36,
+      "elapsed": 0.44283590000122786,
+      "status": "candidateValid",
+      "raw": -3.653357930592491,
+      "penalized": -3.653357930592491,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 37,
+      "elapsed": 0.45074299979023635,
+      "status": "candidateValid",
+      "raw": -13.654664543924127,
+      "penalized": -13.654664543924127,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 38,
+      "elapsed": 0.45622859988361597,
+      "status": "candidateValid",
+      "raw": -9.55031149514873,
+      "penalized": -9.55031149514873,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 39,
+      "elapsed": 0.4620480998419225,
+      "status": "candidateValid",
+      "raw": -9.810075352402242,
+      "penalized": -9.810075352402242,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 40,
+      "elapsed": 0.46818279987201095,
+      "status": "candidateValid",
+      "raw": -13.796958416397672,
+      "penalized": -13.796958416397672,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 41,
+      "elapsed": 0.4746678997762501,
+      "status": "candidateValid",
+      "raw": -48.88891117069181,
+      "penalized": -48.88891117069181,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 42,
+      "elapsed": 0.48169679986312985,
+      "status": "candidateValid",
+      "raw": -22.14145370970775,
+      "penalized": -22.14145370970775,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 43,
+      "elapsed": 0.4885778999887407,
+      "status": "candidateValid",
+      "raw": -9.078094240897938,
+      "penalized": -9.078094240897938,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 44,
+      "elapsed": 0.496939699864015,
+      "status": "candidateValid",
+      "raw": -112.93012995439375,
+      "penalized": -112.93012995439375,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 45,
+      "elapsed": 0.5038801999762654,
+      "status": "candidateValid",
+      "raw": -123.42318011475086,
+      "penalized": -123.42318011475086,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 46,
+      "elapsed": 0.5113277998752892,
+      "status": "candidateValid",
+      "raw": -32.097450010067305,
+      "penalized": -32.097450010067305,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 47,
+      "elapsed": 0.7477958998642862,
+      "status": "candidateValid",
+      "raw": -16.27246791691771,
+      "penalized": -16.27246791691771,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 48,
+      "elapsed": 0.7550615000072867,
+      "status": "candidateValid",
+      "raw": -9.231217125494315,
+      "penalized": -9.231217125494315,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 49,
+      "elapsed": 0.7623655998613685,
+      "status": "candidateValid",
+      "raw": -52.26469324799401,
+      "penalized": -52.26469324799401,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 50,
+      "elapsed": 0.7696708999574184,
+      "status": "candidateValid",
+      "raw": -9.173568391753909,
+      "penalized": -9.173568391753909,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 51,
+      "elapsed": 0.7757081999443471,
+      "status": "candidateValid",
+      "raw": -42.91897882569995,
+      "penalized": -42.91897882569995,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 52,
+      "elapsed": 0.7817486999556422,
+      "status": "candidateValid",
+      "raw": -18.724532789259786,
+      "penalized": -18.724532789259786,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 53,
+      "elapsed": 0.78758589993231,
+      "status": "candidateValid",
+      "raw": -2.0745406739017422,
+      "penalized": -2.0745406739017422,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 54,
+      "elapsed": 0.7950266997795552,
+      "status": "candidateValid",
+      "raw": -68.63907869292423,
+      "penalized": -68.63907869292423,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 55,
+      "elapsed": 0.8008411999326199,
+      "status": "candidateValid",
+      "raw": -31.660789635706852,
+      "penalized": -31.660789635706852,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 56,
+      "elapsed": 0.8066166997887194,
+      "status": "candidateValid",
+      "raw": -3.048302906204584,
+      "penalized": -3.048302906204584,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 57,
+      "elapsed": 0.824438399868086,
+      "status": "candidateValid",
+      "raw": -5.5071604008208315,
+      "penalized": -5.5071604008208315,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 58,
+      "elapsed": 0.8377932999283075,
+      "status": "candidateValid",
+      "raw": -270.22630877858876,
+      "penalized": -270.22630877858876,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 59,
+      "elapsed": 0.8484185999259353,
+      "status": "candidateValid",
+      "raw": -14.667973487944433,
+      "penalized": -14.667973487944433,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 60,
+      "elapsed": 1.1328146997839212,
+      "status": "candidateValid",
+      "raw": -31.01807195058332,
+      "penalized": -31.01807195058332,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 61,
+      "elapsed": 1.1392181999981403,
+      "status": "candidateValid",
+      "raw": -2.0292879484760546,
+      "penalized": -2.0292879484760546,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 62,
+      "elapsed": 1.1475901999510825,
+      "status": "candidateValid",
+      "raw": -162.10176929826258,
+      "penalized": -162.10176929826258,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 63,
+      "elapsed": 1.1573023998644203,
+      "status": "candidateValid",
+      "raw": -4.520895996949804,
+      "penalized": -4.520895996949804,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 64,
+      "elapsed": 1.172077199909836,
+      "status": "candidateValid",
+      "raw": -5.55276757372627,
+      "penalized": -5.55276757372627,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 65,
+      "elapsed": 1.1923964999150485,
+      "status": "candidateValid",
+      "raw": -7.279505400276962,
+      "penalized": -7.279505400276962,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 66,
+      "elapsed": 1.2136653999332339,
+      "status": "candidateValid",
+      "raw": -84.84458739125128,
+      "penalized": -84.84458739125128,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 67,
+      "elapsed": 1.2261047998908907,
+      "status": "candidateValid",
+      "raw": -32.69078477905289,
+      "penalized": -32.69078477905289,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 68,
+      "elapsed": 1.239774099783972,
+      "status": "candidateValid",
+      "raw": -14.497483584150011,
+      "penalized": -14.497483584150011,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 69,
+      "elapsed": 1.2487299998756498,
+      "status": "candidateValid",
+      "raw": -101.86374633876824,
+      "penalized": -101.86374633876824,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 70,
+      "elapsed": 1.2611547999549657,
+      "status": "candidateValid",
+      "raw": -16.589614777039557,
+      "penalized": -16.589614777039557,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 71,
+      "elapsed": 1.2691555998753756,
+      "status": "candidateValid",
+      "raw": -55.96679277421199,
+      "penalized": -55.96679277421199,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 72,
+      "elapsed": 1.538448799867183,
+      "status": "candidateValid",
+      "raw": -4.87023377068495,
+      "penalized": -4.87023377068495,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 73,
+      "elapsed": 1.5465363999828696,
+      "status": "candidateValid",
+      "raw": -12.10257341072898,
+      "penalized": -12.10257341072898,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 74,
+      "elapsed": 1.7398415999487042,
+      "status": "candidateValid",
+      "raw": -99.11027212624205,
+      "penalized": -99.11027212624205,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 75,
+      "elapsed": 1.7629249999299645,
+      "status": "candidateValid",
+      "raw": -22.450696196634873,
+      "penalized": -22.450696196634873,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 76,
+      "elapsed": 1.77526029990986,
+      "status": "candidateValid",
+      "raw": -40.59738923045613,
+      "penalized": -40.59738923045613,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 77,
+      "elapsed": 1.783939499873668,
+      "status": "candidateValid",
+      "raw": -20.724284936383008,
+      "penalized": -20.724284936383008,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 78,
+      "elapsed": 1.7910744999535382,
+      "status": "candidateValid",
+      "raw": -138.36818367272406,
+      "penalized": -138.36818367272406,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 79,
+      "elapsed": 1.8039280998054892,
+      "status": "candidateValid",
+      "raw": -19.890710360804242,
+      "penalized": -19.890710360804242,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 80,
+      "elapsed": 1.8119374997913837,
+      "status": "candidateValid",
+      "raw": -8.311193256933429,
+      "penalized": -8.311193256933429,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 81,
+      "elapsed": 1.8301930997986346,
+      "status": "candidateValid",
+      "raw": -34.59950256073146,
+      "penalized": -34.59950256073146,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 82,
+      "elapsed": 1.836606099968776,
+      "status": "candidateValid",
+      "raw": -3.3013591101764925,
+      "penalized": -3.3013591101764925,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 83,
+      "elapsed": 2.1170230999123305,
+      "status": "candidateValid",
+      "raw": -4.6458045899393365,
+      "penalized": -4.6458045899393365,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 84,
+      "elapsed": 2.123240399872884,
+      "status": "candidateValid",
+      "raw": -28.726594909004827,
+      "penalized": -28.726594909004827,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 85,
+      "elapsed": 2.1351046999916434,
+      "status": "candidateValid",
+      "raw": -36.3586893305786,
+      "penalized": -36.3586893305786,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 86,
+      "elapsed": 2.1418568999506533,
+      "status": "candidateValid",
+      "raw": -52.14239232758325,
+      "penalized": -52.14239232758325,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 87,
+      "elapsed": 2.1553785998839885,
+      "status": "candidateValid",
+      "raw": -372.2638930810045,
+      "penalized": -372.2638930810045,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 88,
+      "elapsed": 2.164400399895385,
+      "status": "candidateValid",
+      "raw": -2.5830072660576104,
+      "penalized": -2.5830072660576104,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 89,
+      "elapsed": 2.170953799970448,
+      "status": "candidateValid",
+      "raw": -4.749298835774516,
+      "penalized": -4.749298835774516,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 90,
+      "elapsed": 2.1784885998349637,
+      "status": "candidateValid",
+      "raw": -2.4380120913555956,
+      "penalized": -2.4380120913555956,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 91,
+      "elapsed": 2.1839336999692023,
+      "status": "candidateValid",
+      "raw": -28.874066358831953,
+      "penalized": -28.874066358831953,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 92,
+      "elapsed": 2.1898364999797195,
+      "status": "candidateValid",
+      "raw": -38.52851208555921,
+      "penalized": -38.52851208555921,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 93,
+      "elapsed": 2.197862399974838,
+      "status": "candidateValid",
+      "raw": -19.27724013428438,
+      "penalized": -19.27724013428438,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 94,
+      "elapsed": 2.2126097998116165,
+      "status": "candidateValid",
+      "raw": -39.41071534651515,
+      "penalized": -39.41071534651515,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 95,
+      "elapsed": 2.3994025997817516,
+      "status": "candidateValid",
+      "raw": -4.881250211069536,
+      "penalized": -4.881250211069536,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 96,
+      "elapsed": 2.4062217997852713,
+      "status": "candidateValid",
+      "raw": -2.867615241657792,
+      "penalized": -2.867615241657792,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 97,
+      "elapsed": 2.412586099933833,
+      "status": "candidateValid",
+      "raw": -30.428938170116634,
+      "penalized": -30.428938170116634,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 98,
+      "elapsed": 2.459242699900642,
+      "status": "candidateValid",
+      "raw": -7.432855964117647,
+      "penalized": -7.432855964117647,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 99,
+      "elapsed": 2.468149999855086,
+      "status": "candidateValid",
+      "raw": -31.46577761966077,
+      "penalized": -31.46577761966077,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 100,
+      "elapsed": 2.4761474998667836,
+      "status": "candidateValid",
+      "raw": -87.91820232728331,
+      "penalized": -87.91820232728331,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 101,
+      "elapsed": 2.4831578999292105,
+      "status": "candidateValid",
+      "raw": -22.224353331924128,
+      "penalized": -22.224353331924128,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 102,
+      "elapsed": 2.494828499853611,
+      "status": "candidateValid",
+      "raw": -37.91749247527206,
+      "penalized": -37.91749247527206,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 103,
+      "elapsed": 2.5027683000080287,
+      "status": "candidateValid",
+      "raw": -184.02852485708155,
+      "penalized": -184.02852485708155,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 104,
+      "elapsed": 2.527751899790019,
+      "status": "candidateValid",
+      "raw": -447.8891776219375,
+      "penalized": -447.8891776219375,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 105,
+      "elapsed": 2.5352029998321086,
+      "status": "candidateValid",
+      "raw": -6.6551407587467555,
+      "penalized": -6.6551407587467555,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 106,
+      "elapsed": 2.543378399917856,
+      "status": "candidateValid",
+      "raw": -44.06874258745646,
+      "penalized": -44.06874258745646,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 107,
+      "elapsed": 2.7653394998051226,
+      "status": "candidateValid",
+      "raw": -297.6261987831945,
+      "penalized": -297.6261987831945,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 108,
+      "elapsed": 2.7728401999920607,
+      "status": "candidateValid",
+      "raw": -7.6214863538160245,
+      "penalized": -7.6214863538160245,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 109,
+      "elapsed": 2.780910699861124,
+      "status": "candidateValid",
+      "raw": -20.970450235621477,
+      "penalized": -20.970450235621477,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 110,
+      "elapsed": 2.7869745998177677,
+      "status": "candidateValid",
+      "raw": -4.205130954892085,
+      "penalized": -4.205130954892085,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 111,
+      "elapsed": 2.7926677998621017,
+      "status": "candidateValid",
+      "raw": -1.4425372860449284,
+      "penalized": -1.4425372860449284,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 112,
+      "elapsed": 2.813843699870631,
+      "status": "candidateValid",
+      "raw": -24.467275354079387,
+      "penalized": -24.467275354079387,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 113,
+      "elapsed": 2.8216564999893308,
+      "status": "candidateValid",
+      "raw": -104.95936106909764,
+      "penalized": -104.95936106909764,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 114,
+      "elapsed": 2.8297748998738825,
+      "status": "candidateValid",
+      "raw": -56.64906981485065,
+      "penalized": -56.64906981485065,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 115,
+      "elapsed": 2.8711362998001277,
+      "status": "candidateValid",
+      "raw": -1.3968729187773925,
+      "penalized": -1.3968729187773925,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 116,
+      "elapsed": 2.880339899798855,
+      "status": "candidateValid",
+      "raw": -59.781752034598085,
+      "penalized": -59.781752034598085,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 117,
+      "elapsed": 2.888249599840492,
+      "status": "candidateValid",
+      "raw": -43.98777301242963,
+      "penalized": -43.98777301242963,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 118,
+      "elapsed": 2.896092199953273,
+      "status": "candidateValid",
+      "raw": -36.04539933799365,
+      "penalized": -36.04539933799365,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 119,
+      "elapsed": 2.9032991998828948,
+      "status": "candidateValid",
+      "raw": -17.687373017247978,
+      "penalized": -17.687373017247978,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 120,
+      "elapsed": 2.910440499894321,
+      "status": "candidateValid",
+      "raw": -17.7147587942461,
+      "penalized": -17.7147587942461,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 121,
+      "elapsed": 3.2353556999005377,
+      "status": "candidateValid",
+      "raw": -5.911491953749301,
+      "penalized": -5.911491953749301,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 122,
+      "elapsed": 3.2422419998329133,
+      "status": "candidateValid",
+      "raw": -3.557992036195228,
+      "penalized": -3.557992036195228,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 123,
+      "elapsed": 3.2507568998262286,
+      "status": "candidateValid",
+      "raw": -7.489763905418691,
+      "penalized": -7.489763905418691,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 124,
+      "elapsed": 3.257863499922678,
+      "status": "candidateValid",
+      "raw": -40.53886569482477,
+      "penalized": -40.53886569482477,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 125,
+      "elapsed": 3.267448299797252,
+      "status": "candidateValid",
+      "raw": -265.3842797350358,
+      "penalized": -265.3842797350358,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 126,
+      "elapsed": 3.2744838998187333,
+      "status": "candidateValid",
+      "raw": -35.70702891695848,
+      "penalized": -35.70702891695848,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 127,
+      "elapsed": 3.2990252999588847,
+      "status": "candidateValid",
+      "raw": -18.043580816837576,
+      "penalized": -18.043580816837576,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 128,
+      "elapsed": 3.3051165000069886,
+      "status": "candidateValid",
+      "raw": -2.7462252024696046,
+      "penalized": -2.7462252024696046,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 129,
+      "elapsed": 3.312966999830678,
+      "status": "candidateValid",
+      "raw": -283.86864414734987,
+      "penalized": -283.86864414734987,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 130,
+      "elapsed": 3.3212976998183876,
+      "status": "candidateValid",
+      "raw": -3.0420610796226644,
+      "penalized": -3.0420610796226644,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 131,
+      "elapsed": 3.3364097999874502,
+      "status": "candidateValid",
+      "raw": -1.783202716127814,
+      "penalized": -1.783202716127814,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 132,
+      "elapsed": 3.3427265998907387,
+      "status": "candidateValid",
+      "raw": -1.9396810825980908,
+      "penalized": -1.9396810825980908,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 133,
+      "elapsed": 3.541791799943894,
+      "status": "candidateValid",
+      "raw": -3.0588545566884657,
+      "penalized": -3.0588545566884657,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 134,
+      "elapsed": 3.5518399998545647,
+      "status": "candidateValid",
+      "raw": -7.435680894107259,
+      "penalized": -7.435680894107259,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 135,
+      "elapsed": 3.559831699822098,
+      "status": "candidateValid",
+      "raw": -97.8956179155447,
+      "penalized": -97.8956179155447,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 136,
+      "elapsed": 3.5704134998377413,
+      "status": "candidateValid",
+      "raw": -40.661513290015655,
+      "penalized": -40.661513290015655,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 137,
+      "elapsed": 3.579511099960655,
+      "status": "candidateValid",
+      "raw": -27.763681094317185,
+      "penalized": -27.763681094317185,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 138,
+      "elapsed": 3.604497899999842,
+      "status": "candidateValid",
+      "raw": -51.17968986114553,
+      "penalized": -51.17968986114553,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 139,
+      "elapsed": 3.612540799891576,
+      "status": "candidateValid",
+      "raw": -13.660541782830071,
+      "penalized": -13.660541782830071,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 140,
+      "elapsed": 3.6201767998281866,
+      "status": "candidateValid",
+      "raw": -6.802891500164661,
+      "penalized": -6.802891500164661,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 141,
+      "elapsed": 3.632638599956408,
+      "status": "candidateValid",
+      "raw": -44.64525662169822,
+      "penalized": -44.64525662169822,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 142,
+      "elapsed": 3.6466424998361617,
+      "status": "candidateValid",
+      "raw": -22.460628549228126,
+      "penalized": -22.460628549228126,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 143,
+      "elapsed": 3.6568471000064164,
+      "status": "candidateValid",
+      "raw": -221.35326283018603,
+      "penalized": -221.35326283018603,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 144,
+      "elapsed": 3.6690559999551624,
+      "status": "candidateValid",
+      "raw": -22.196104179242617,
+      "penalized": -22.196104179242617,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 145,
+      "elapsed": 3.678994999965653,
+      "status": "candidateValid",
+      "raw": -318.0417937931905,
+      "penalized": -318.0417937931905,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 146,
+      "elapsed": 4.180140499956906,
+      "status": "candidateValid",
+      "raw": -2.7635882182738327,
+      "penalized": -2.7635882182738327,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 147,
+      "elapsed": 4.205820699920878,
+      "status": "candidateValid",
+      "raw": -4.491065081830457,
+      "penalized": -4.491065081830457,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 148,
+      "elapsed": 4.222364999819547,
+      "status": "candidateValid",
+      "raw": -47.0122579446996,
+      "penalized": -47.0122579446996,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 149,
+      "elapsed": 4.253895799862221,
+      "status": "candidateValid",
+      "raw": -59.93492119743552,
+      "penalized": -59.93492119743552,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 150,
+      "elapsed": 4.266178299905732,
+      "status": "candidateValid",
+      "raw": -37.990108043517,
+      "penalized": -37.990108043517,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 151,
+      "elapsed": 4.274291699985042,
+      "status": "candidateValid",
+      "raw": -42.072099648188455,
+      "penalized": -42.072099648188455,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 152,
+      "elapsed": 4.357625299831852,
+      "status": "candidateValid",
+      "raw": -6.894187321949212,
+      "penalized": -6.894187321949212,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 153,
+      "elapsed": 4.375641799997538,
+      "status": "candidateValid",
+      "raw": -1.7056254232158465,
+      "penalized": -1.7056254232158465,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 154,
+      "elapsed": 4.39312529982999,
+      "status": "candidateValid",
+      "raw": -6.09165598255322,
+      "penalized": -6.09165598255322,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 155,
+      "elapsed": 4.650281299836934,
+      "status": "candidateValid",
+      "raw": -55.47214175498425,
+      "penalized": -55.47214175498425,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 156,
+      "elapsed": 4.6636775999795645,
+      "status": "candidateValid",
+      "raw": -409.3192830468455,
+      "penalized": -409.3192830468455,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 157,
+      "elapsed": 4.670672099804506,
+      "status": "candidateValid",
+      "raw": -40.93737262380236,
+      "penalized": -40.93737262380236,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 158,
+      "elapsed": 4.698943599825725,
+      "status": "candidateValid",
+      "raw": -29.888681916183895,
+      "penalized": -29.888681916183895,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 159,
+      "elapsed": 4.720715999836102,
+      "status": "candidateValid",
+      "raw": -1.462447688419502,
+      "penalized": -1.462447688419502,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 160,
+      "elapsed": 4.730852599954233,
+      "status": "candidateValid",
+      "raw": -16.107507194746166,
+      "penalized": -16.107507194746166,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 161,
+      "elapsed": 4.74721089983359,
+      "status": "candidateValid",
+      "raw": -16.455797357163792,
+      "penalized": -16.455797357163792,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 162,
+      "elapsed": 4.755273699993268,
+      "status": "candidateValid",
+      "raw": -3.5371567843169123,
+      "penalized": -3.5371567843169123,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 163,
+      "elapsed": 4.766690899850801,
+      "status": "candidateValid",
+      "raw": -36.78280308482188,
+      "penalized": -36.78280308482188,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 164,
+      "elapsed": 5.090600199997425,
+      "status": "candidateValid",
+      "raw": -10.054189564648288,
+      "penalized": -10.054189564648288,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 165,
+      "elapsed": 5.0997155997902155,
+      "status": "candidateValid",
+      "raw": -11.727027852313068,
+      "penalized": -11.727027852313068,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 166,
+      "elapsed": 5.106970499968156,
+      "status": "candidateValid",
+      "raw": -7.117399030948601,
+      "penalized": -7.117399030948601,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 167,
+      "elapsed": 5.115741699934006,
+      "status": "candidateValid",
+      "raw": -11.458250428601165,
+      "penalized": -11.458250428601165,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 168,
+      "elapsed": 5.123127199942246,
+      "status": "candidateValid",
+      "raw": -2.8795555976625966,
+      "penalized": -2.8795555976625966,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 169,
+      "elapsed": 5.130999599816278,
+      "status": "candidateValid",
+      "raw": -259.9479451489536,
+      "penalized": -259.9479451489536,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 170,
+      "elapsed": 5.139217199990526,
+      "status": "candidateValid",
+      "raw": -16.50004971411375,
+      "penalized": -16.50004971411375,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 171,
+      "elapsed": 5.148373699979857,
+      "status": "candidateValid",
+      "raw": -28.568141624763467,
+      "penalized": -28.568141624763467,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 172,
+      "elapsed": 5.155855499906465,
+      "status": "candidateValid",
+      "raw": -68.90304962065908,
+      "penalized": -68.90304962065908,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 173,
+      "elapsed": 5.173774799797684,
+      "status": "candidateValid",
+      "raw": -41.37472136099197,
+      "penalized": -41.37472136099197,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 174,
+      "elapsed": 5.183589099906385,
+      "status": "candidateValid",
+      "raw": -2.8958631808567277,
+      "penalized": -2.8958631808567277,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 175,
+      "elapsed": 5.191527699818835,
+      "status": "candidateValid",
+      "raw": -88.23552343961721,
+      "penalized": -88.23552343961721,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 176,
+      "elapsed": 5.200870499946177,
+      "status": "candidateValid",
+      "raw": -16.582109612850022,
+      "penalized": -16.582109612850022,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 177,
+      "elapsed": 5.209317799890414,
+      "status": "candidateValid",
+      "raw": -23.827157097251416,
+      "penalized": -23.827157097251416,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 178,
+      "elapsed": 5.220799999777228,
+      "status": "candidateValid",
+      "raw": -128.1288904688652,
+      "penalized": -128.1288904688652,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 179,
+      "elapsed": 5.424483599839732,
+      "status": "candidateValid",
+      "raw": -10.051015187325119,
+      "penalized": -10.051015187325119,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 180,
+      "elapsed": 5.434649499831721,
+      "status": "candidateValid",
+      "raw": -83.29251059990257,
+      "penalized": -83.29251059990257,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 181,
+      "elapsed": 5.446914399974048,
+      "status": "candidateValid",
+      "raw": -18.287651132605724,
+      "penalized": -18.287651132605724,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 182,
+      "elapsed": 5.455628599971533,
+      "status": "candidateValid",
+      "raw": -152.61562694999932,
+      "penalized": -152.61562694999932,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 183,
+      "elapsed": 5.465507699875161,
+      "status": "candidateValid",
+      "raw": -31.1255551880449,
+      "penalized": -31.1255551880449,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 184,
+      "elapsed": 5.4733940998557955,
+      "status": "candidateValid",
+      "raw": -5.056014631602239,
+      "penalized": -5.056014631602239,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 185,
+      "elapsed": 5.482368699973449,
+      "status": "candidateValid",
+      "raw": -13.366474950531853,
+      "penalized": -13.366474950531853,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 186,
+      "elapsed": 5.507342699915171,
+      "status": "candidateValid",
+      "raw": -3.539967169904786,
+      "penalized": -3.539967169904786,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 187,
+      "elapsed": 5.515783399809152,
+      "status": "candidateValid",
+      "raw": -13.292601248419722,
+      "penalized": -13.292601248419722,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 188,
+      "elapsed": 5.5309281998779625,
+      "status": "candidateValid",
+      "raw": -7.581492554788826,
+      "penalized": -7.581492554788826,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 189,
+      "elapsed": 5.539331099949777,
+      "status": "candidateValid",
+      "raw": -81.19043954241974,
+      "penalized": -81.19043954241974,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 190,
+      "elapsed": 5.550073199905455,
+      "status": "candidateValid",
+      "raw": -22.493522604539088,
+      "penalized": -22.493522604539088,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 191,
+      "elapsed": 5.932301299879327,
+      "status": "candidateValid",
+      "raw": -41.46476893200627,
+      "penalized": -41.46476893200627,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 192,
+      "elapsed": 6.036596699850634,
+      "status": "candidateValid",
+      "raw": -32.17409668155752,
+      "penalized": -32.17409668155752,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 193,
+      "elapsed": 6.045910899993032,
+      "status": "candidateValid",
+      "raw": -8.795459795050299,
+      "penalized": -8.795459795050299,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 194,
+      "elapsed": 6.053600599989295,
+      "status": "candidateValid",
+      "raw": -287.1587657935012,
+      "penalized": -287.1587657935012,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 195,
+      "elapsed": 6.383279699832201,
+      "status": "candidateValid",
+      "raw": -118.68786996944156,
+      "penalized": -118.68786996944156,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 196,
+      "elapsed": 6.397614799905568,
+      "status": "candidateValid",
+      "raw": -24.511008213257902,
+      "penalized": -24.511008213257902,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 197,
+      "elapsed": 6.414964499883354,
+      "status": "candidateValid",
+      "raw": -23.062948709066976,
+      "penalized": -23.062948709066976,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 198,
+      "elapsed": 6.427540899952874,
+      "status": "candidateValid",
+      "raw": -99.0854070803055,
+      "penalized": -99.0854070803055,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 199,
+      "elapsed": 6.439901500009,
+      "status": "candidateValid",
+      "raw": -20.125443642200157,
+      "penalized": -20.125443642200157,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 200,
+      "elapsed": 6.455973799806088,
+      "status": "candidateValid",
+      "raw": -3.883641173019614,
+      "penalized": -3.883641173019614,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 201,
+      "elapsed": 6.471661699935794,
+      "status": "candidateValid",
+      "raw": -2.424517062640553,
+      "penalized": -2.424517062640553,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 202,
+      "elapsed": 6.4865460998844355,
+      "status": "candidateValid",
+      "raw": -298.01548813404116,
+      "penalized": -298.01548813404116,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 203,
+      "elapsed": 6.497385299997404,
+      "status": "candidateValid",
+      "raw": -17.63970130068652,
+      "penalized": -17.63970130068652,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 204,
+      "elapsed": 6.52104189991951,
+      "status": "candidateValid",
+      "raw": -45.9556550630185,
+      "penalized": -45.9556550630185,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 205,
+      "elapsed": 6.775788999861106,
+      "status": "candidateValid",
+      "raw": -37.11106945838037,
+      "penalized": -37.11106945838037,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 206,
+      "elapsed": 6.791546699823812,
+      "status": "candidateValid",
+      "raw": -100.54048718083857,
+      "penalized": -100.54048718083857,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 207,
+      "elapsed": 6.810306399827823,
+      "status": "candidateValid",
+      "raw": -2.9735446931456035,
+      "penalized": -2.9735446931456035,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 208,
+      "elapsed": 6.956924899946898,
+      "status": "candidateValid",
+      "raw": -19.425465650115445,
+      "penalized": -19.425465650115445,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 209,
+      "elapsed": 6.9815698999445885,
+      "status": "candidateValid",
+      "raw": -38.39010160218379,
+      "penalized": -38.39010160218379,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 210,
+      "elapsed": 6.9888880997896194,
+      "status": "candidateValid",
+      "raw": -50.432897355229805,
+      "penalized": -50.432897355229805,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 211,
+      "elapsed": 7.197463699849322,
+      "status": "candidateValid",
+      "raw": -4.1492528964711255,
+      "penalized": -4.1492528964711255,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 212,
+      "elapsed": 7.212691499851644,
+      "status": "candidateValid",
+      "raw": -144.02530604174837,
+      "penalized": -144.02530604174837,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 213,
+      "elapsed": 7.221288000000641,
+      "status": "candidateValid",
+      "raw": -38.346780736119925,
+      "penalized": -38.346780736119925,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 214,
+      "elapsed": 7.231958899879828,
+      "status": "candidateValid",
+      "raw": -290.7929255843586,
+      "penalized": -290.7929255843586,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 215,
+      "elapsed": 7.240777799859643,
+      "status": "candidateValid",
+      "raw": -97.04637017318035,
+      "penalized": -97.04637017318035,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 216,
+      "elapsed": 7.249506999971345,
+      "status": "candidateValid",
+      "raw": -238.0156725175362,
+      "penalized": -238.0156725175362,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 217,
+      "elapsed": 7.299232599791139,
+      "status": "candidateValid",
+      "raw": -58.504144181690656,
+      "penalized": -58.504144181690656,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 218,
+      "elapsed": 8.840772699797526,
+      "status": "candidateValid",
+      "raw": -53.7737475610363,
+      "penalized": -53.7737475610363,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 219,
+      "elapsed": 8.849164899904281,
+      "status": "candidateValid",
+      "raw": -9.853323416790591,
+      "penalized": -9.853323416790591,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 220,
+      "elapsed": 8.854921499965712,
+      "status": "candidateValid",
+      "raw": -4.72971428847119,
+      "penalized": -4.72971428847119,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 221,
+      "elapsed": 8.8615515998099,
+      "status": "candidateValid",
+      "raw": -7.87924785804336,
+      "penalized": -7.87924785804336,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 222,
+      "elapsed": 8.867711199913174,
+      "status": "candidateValid",
+      "raw": -25.377854663545886,
+      "penalized": -25.377854663545886,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 223,
+      "elapsed": 8.873136199777946,
+      "status": "candidateValid",
+      "raw": -17.48266333479663,
+      "penalized": -17.48266333479663,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 224,
+      "elapsed": 8.880792899988592,
+      "status": "candidateValid",
+      "raw": -6.420746213230428,
+      "penalized": -6.420746213230428,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 225,
+      "elapsed": 8.887044899864122,
+      "status": "candidateValid",
+      "raw": -2.428744495553859,
+      "penalized": -2.428744495553859,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 226,
+      "elapsed": 8.893413399811834,
+      "status": "candidateValid",
+      "raw": -319.5026232831816,
+      "penalized": -319.5026232831816,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 227,
+      "elapsed": 8.902546499855816,
+      "status": "candidateValid",
+      "raw": -98.57897075202396,
+      "penalized": -98.57897075202396,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 228,
+      "elapsed": 8.9106549997814,
+      "status": "candidateValid",
+      "raw": -37.33794882184214,
+      "penalized": -37.33794882184214,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 229,
+      "elapsed": 8.917846999829635,
+      "status": "candidateValid",
+      "raw": -20.181241918218547,
+      "penalized": -20.181241918218547,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 230,
+      "elapsed": 8.92431449983269,
+      "status": "candidateValid",
+      "raw": -73.1630248241046,
+      "penalized": -73.1630248241046,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 231,
+      "elapsed": 8.93144949991256,
+      "status": "candidateValid",
+      "raw": -308.22737940082027,
+      "penalized": -308.22737940082027,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 232,
+      "elapsed": 8.940300099784508,
+      "status": "candidateValid",
+      "raw": -13.91298230549554,
+      "penalized": -13.91298230549554,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 233,
+      "elapsed": 8.95178349991329,
+      "status": "candidateValid",
+      "raw": -18.43580603750647,
+      "penalized": -18.43580603750647,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 234,
+      "elapsed": 8.961246999911964,
+      "status": "candidateValid",
+      "raw": -19.7264690241319,
+      "penalized": -19.7264690241319,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 235,
+      "elapsed": 8.96864499989897,
+      "status": "candidateValid",
+      "raw": -330.48823131025557,
+      "penalized": -330.48823131025557,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 236,
+      "elapsed": 8.974835000000894,
+      "status": "candidateValid",
+      "raw": -1.4425372860449284,
+      "penalized": -1.4425372860449284,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 237,
+      "elapsed": 8.981569599825889,
+      "status": "candidateValid",
+      "raw": -23.314121007627733,
+      "penalized": -23.314121007627733,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 238,
+      "elapsed": 8.986138799926266,
+      "status": "candidateValid",
+      "raw": -1.8132936036242906,
+      "penalized": -1.8132936036242906,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 239,
+      "elapsed": 8.992140999995172,
+      "status": "candidateValid",
+      "raw": -45.62559839644805,
+      "penalized": -45.62559839644805,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 240,
+      "elapsed": 8.9972685999237,
+      "status": "candidateValid",
+      "raw": -14.749550450071357,
+      "penalized": -14.749550450071357,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 241,
+      "elapsed": 9.003388999961317,
+      "status": "candidateValid",
+      "raw": -81.29166998672564,
+      "penalized": -81.29166998672564,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 242,
+      "elapsed": 9.010124999796972,
+      "status": "candidateValid",
+      "raw": -218.92593603367905,
+      "penalized": -218.92593603367905,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 243,
+      "elapsed": 9.016196599928662,
+      "status": "candidateValid",
+      "raw": -21.7369716755396,
+      "penalized": -21.7369716755396,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 244,
+      "elapsed": 9.022375899832696,
+      "status": "candidateValid",
+      "raw": -7.768192352253933,
+      "penalized": -7.768192352253933,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 245,
+      "elapsed": 9.030181499896571,
+      "status": "candidateValid",
+      "raw": -0.20245786927563053,
+      "penalized": -0.20245786927563053,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 246,
+      "elapsed": 9.039034799905494,
+      "status": "candidateValid",
+      "raw": -39.65977086032763,
+      "penalized": -39.65977086032763,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 247,
+      "elapsed": 9.047781699802727,
+      "status": "candidateValid",
+      "raw": -35.934160236089056,
+      "penalized": -35.934160236089056,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 248,
+      "elapsed": 9.055980799952522,
+      "status": "candidateValid",
+      "raw": -38.92621734140178,
+      "penalized": -38.92621734140178,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 249,
+      "elapsed": 9.297271499875933,
+      "status": "candidateValid",
+      "raw": -24.941605520863632,
+      "penalized": -24.941605520863632,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 250,
+      "elapsed": 9.307568699819967,
+      "status": "candidateValid",
+      "raw": -34.148346074184225,
+      "penalized": -34.148346074184225,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 251,
+      "elapsed": 9.320056599797681,
+      "status": "candidateValid",
+      "raw": -3.480452233930494,
+      "penalized": -3.480452233930494,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 252,
+      "elapsed": 9.333180399844423,
+      "status": "candidateValid",
+      "raw": -2.9647891984634014,
+      "penalized": -2.9647891984634014,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 253,
+      "elapsed": 9.342837099917233,
+      "status": "candidateValid",
+      "raw": -15.425460523391763,
+      "penalized": -15.425460523391763,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 254,
+      "elapsed": 9.350946299964562,
+      "status": "candidateValid",
+      "raw": -12.088428496887587,
+      "penalized": -12.088428496887587,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 255,
+      "elapsed": 9.35978649999015,
+      "status": "candidateValid",
+      "raw": -150.61501113023195,
+      "penalized": -150.61501113023195,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 256,
+      "elapsed": 9.372081299778074,
+      "status": "candidateValid",
+      "raw": -11.563784632810215,
+      "penalized": -11.563784632810215,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 257,
+      "elapsed": 9.385080099804327,
+      "status": "candidateValid",
+      "raw": -385.45394442422116,
+      "penalized": -385.45394442422116,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 258,
+      "elapsed": 9.392231999896467,
+      "status": "candidateValid",
+      "raw": -2.974461832480455,
+      "penalized": -2.974461832480455,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 259,
+      "elapsed": 9.40009309980087,
+      "status": "candidateValid",
+      "raw": -29.313496254998448,
+      "penalized": -29.313496254998448,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 260,
+      "elapsed": 9.405600499827415,
+      "status": "candidateValid",
+      "raw": -23.445202112462425,
+      "penalized": -23.445202112462425,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 261,
+      "elapsed": 9.413319099927321,
+      "status": "candidateValid",
+      "raw": -8.064031549083596,
+      "penalized": -8.064031549083596,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 262,
+      "elapsed": 9.420365499798208,
+      "status": "candidateValid",
+      "raw": -38.42536595086226,
+      "penalized": -38.42536595086226,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 263,
+      "elapsed": 9.427018999820575,
+      "status": "candidateValid",
+      "raw": -20.35941169644319,
+      "penalized": -20.35941169644319,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 264,
+      "elapsed": 9.767161499941722,
+      "status": "candidateValid",
+      "raw": -17.66597113491826,
+      "penalized": -17.66597113491826,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 265,
+      "elapsed": 9.776509899878874,
+      "status": "candidateValid",
+      "raw": -6.825162795845599,
+      "penalized": -6.825162795845599,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 266,
+      "elapsed": 9.784228399861604,
+      "status": "candidateValid",
+      "raw": -8.877036757177224,
+      "penalized": -8.877036757177224,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 267,
+      "elapsed": 9.790971199981868,
+      "status": "candidateValid",
+      "raw": -29.848543725092355,
+      "penalized": -29.848543725092355,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 268,
+      "elapsed": 9.798929699929431,
+      "status": "candidateValid",
+      "raw": -11.666036703171457,
+      "penalized": -11.666036703171457,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 269,
+      "elapsed": 9.807768299942836,
+      "status": "candidateValid",
+      "raw": -127.0288311488649,
+      "penalized": -127.0288311488649,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 270,
+      "elapsed": 9.81581259984523,
+      "status": "candidateValid",
+      "raw": -64.76070983169927,
+      "penalized": -64.76070983169927,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 271,
+      "elapsed": 9.82220479985699,
+      "status": "candidateValid",
+      "raw": -36.91228687864529,
+      "penalized": -36.91228687864529,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 272,
+      "elapsed": 9.830037899781018,
+      "status": "candidateValid",
+      "raw": -323.53006843265103,
+      "penalized": -323.53006843265103,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 273,
+      "elapsed": 9.837764299940318,
+      "status": "candidateValid",
+      "raw": -128.65731426443352,
+      "penalized": -128.65731426443352,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 274,
+      "elapsed": 9.84484629984945,
+      "status": "candidateValid",
+      "raw": -100.2056434581186,
+      "penalized": -100.2056434581186,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 275,
+      "elapsed": 9.851065899943933,
+      "status": "candidateValid",
+      "raw": -269.8992078064283,
+      "penalized": -269.8992078064283,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 276,
+      "elapsed": 9.856751199811697,
+      "status": "candidateValid",
+      "raw": -11.914497979511427,
+      "penalized": -11.914497979511427,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 277,
+      "elapsed": 9.864254599902779,
+      "status": "candidateValid",
+      "raw": -131.36014690639072,
+      "penalized": -131.36014690639072,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 278,
+      "elapsed": 9.873380499891937,
+      "status": "candidateValid",
+      "raw": -56.310399937257046,
+      "penalized": -56.310399937257046,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 279,
+      "elapsed": 9.881339899962768,
+      "status": "candidateValid",
+      "raw": -172.99568527321352,
+      "penalized": -172.99568527321352,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 280,
+      "elapsed": 10.120196099858731,
+      "status": "candidateValid",
+      "raw": -41.77804348215623,
+      "penalized": -41.77804348215623,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 281,
+      "elapsed": 10.126357999863103,
+      "status": "candidateValid",
+      "raw": -32.36690399577392,
+      "penalized": -32.36690399577392,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 282,
+      "elapsed": 10.134599999990314,
+      "status": "candidateValid",
+      "raw": -23.339183509060568,
+      "penalized": -23.339183509060568,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 283,
+      "elapsed": 10.142516299849376,
+      "status": "candidateValid",
+      "raw": -57.93735830636476,
+      "penalized": -57.93735830636476,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 284,
+      "elapsed": 10.149761999957263,
+      "status": "candidateValid",
+      "raw": -3.4839127701416652,
+      "penalized": -3.4839127701416652,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 285,
+      "elapsed": 10.155921699944884,
+      "status": "candidateValid",
+      "raw": -326.5663664367345,
+      "penalized": -326.5663664367345,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 286,
+      "elapsed": 10.165262299822643,
+      "status": "candidateValid",
+      "raw": -19.32925328619966,
+      "penalized": -19.32925328619966,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 287,
+      "elapsed": 10.172697199974209,
+      "status": "candidateValid",
+      "raw": -5.247339349205223,
+      "penalized": -5.247339349205223,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 288,
+      "elapsed": 10.180637199897319,
+      "status": "candidateValid",
+      "raw": -552.379682008091,
+      "penalized": -552.379682008091,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 289,
+      "elapsed": 10.187632399844006,
+      "status": "candidateValid",
+      "raw": -361.64423519221657,
+      "penalized": -361.64423519221657,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 290,
+      "elapsed": 10.19676319998689,
+      "status": "candidateValid",
+      "raw": -152.20600737127214,
+      "penalized": -152.20600737127214,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 291,
+      "elapsed": 10.206181799992919,
+      "status": "candidateValid",
+      "raw": -582.2990587456444,
+      "penalized": -582.2990587456444,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 292,
+      "elapsed": 10.213356399908662,
+      "status": "candidateValid",
+      "raw": -17.484194831192777,
+      "penalized": -17.484194831192777,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 293,
+      "elapsed": 10.225255599943921,
+      "status": "candidateValid",
+      "raw": -312.5841882504942,
+      "penalized": -312.5841882504942,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 294,
+      "elapsed": 10.23216179991141,
+      "status": "candidateValid",
+      "raw": -26.44970069727546,
+      "penalized": -26.44970069727546,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 295,
+      "elapsed": 10.481627999804914,
+      "status": "candidateValid",
+      "raw": -51.398348809696,
+      "penalized": -51.398348809696,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 296,
+      "elapsed": 10.488207799848169,
+      "status": "candidateValid",
+      "raw": -47.0185462797855,
+      "penalized": -47.0185462797855,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 297,
+      "elapsed": 10.495334699982777,
+      "status": "candidateValid",
+      "raw": -18.998077294664526,
+      "penalized": -18.998077294664526,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 298,
+      "elapsed": 10.502854499965906,
+      "status": "candidateValid",
+      "raw": -19.430647149326848,
+      "penalized": -19.430647149326848,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 299,
+      "elapsed": 10.510291299782693,
+      "status": "candidateValid",
+      "raw": -149.43359893116408,
+      "penalized": -149.43359893116408,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 300,
+      "elapsed": 10.516736999852583,
+      "status": "candidateValid",
+      "raw": -8.460616072330327,
+      "penalized": -8.460616072330327,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 301,
+      "elapsed": 10.523012499790639,
+      "status": "candidateValid",
+      "raw": -54.581331704998604,
+      "penalized": -54.581331704998604,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 302,
+      "elapsed": 10.53996739978902,
+      "status": "candidateValid",
+      "raw": -295.29112255437315,
+      "penalized": -295.29112255437315,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 303,
+      "elapsed": 10.547520499909297,
+      "status": "candidateValid",
+      "raw": -5.1300771267820435,
+      "penalized": -5.1300771267820435,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 304,
+      "elapsed": 10.553592599928379,
+      "status": "candidateValid",
+      "raw": -53.09308813049218,
+      "penalized": -53.09308813049218,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 305,
+      "elapsed": 10.561849099816754,
+      "status": "candidateValid",
+      "raw": -8.676612925487833,
+      "penalized": -8.676612925487833,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 306,
+      "elapsed": 10.568548199953511,
+      "status": "candidateValid",
+      "raw": -3.535969956454151,
+      "penalized": -3.535969956454151,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 307,
+      "elapsed": 10.574909899849445,
+      "status": "candidateValid",
+      "raw": -325.70754323922006,
+      "penalized": -325.70754323922006,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 308,
+      "elapsed": 10.584734699921682,
+      "status": "candidateValid",
+      "raw": -38.961181841647,
+      "penalized": -38.961181841647,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 309,
+      "elapsed": 10.832476499956101,
+      "status": "candidateValid",
+      "raw": -4.459250908683756,
+      "penalized": -4.459250908683756,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 310,
+      "elapsed": 10.839243599912152,
+      "status": "candidateValid",
+      "raw": -3.440290952064,
+      "penalized": -3.440290952064,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 311,
+      "elapsed": 10.84720529988408,
+      "status": "candidateValid",
+      "raw": -7.581785384662435,
+      "penalized": -7.581785384662435,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 312,
+      "elapsed": 10.856853899778798,
+      "status": "candidateValid",
+      "raw": -302.25593696924375,
+      "penalized": -302.25593696924375,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 313,
+      "elapsed": 10.868562899995595,
+      "status": "candidateValid",
+      "raw": -289.9190439680285,
+      "penalized": -289.9190439680285,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 314,
+      "elapsed": 10.875656799878925,
+      "status": "candidateValid",
+      "raw": -267.79282727176275,
+      "penalized": -267.79282727176275,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 315,
+      "elapsed": 10.885571699822322,
+      "status": "candidateValid",
+      "raw": -45.62640004289883,
+      "penalized": -45.62640004289883,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 316,
+      "elapsed": 10.893841599812731,
+      "status": "candidateValid",
+      "raw": -5.7814220268478245,
+      "penalized": -5.7814220268478245,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 317,
+      "elapsed": 10.902642600005493,
+      "status": "candidateValid",
+      "raw": -267.37470186952623,
+      "penalized": -267.37470186952623,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 318,
+      "elapsed": 10.909791799960658,
+      "status": "candidateValid",
+      "raw": -299.3023768719732,
+      "penalized": -299.3023768719732,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 319,
+      "elapsed": 10.917294799815863,
+      "status": "candidateValid",
+      "raw": -5.846476453106549,
+      "penalized": -5.846476453106549,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 320,
+      "elapsed": 10.924721999792382,
+      "status": "candidateValid",
+      "raw": -386.75053700674806,
+      "penalized": -386.75053700674806,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 321,
+      "elapsed": 10.931917199864984,
+      "status": "candidateValid",
+      "raw": -46.301294538982134,
+      "penalized": -46.301294538982134,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 322,
+      "elapsed": 10.937901599798352,
+      "status": "candidateValid",
+      "raw": -9.147225366161296,
+      "penalized": -9.147225366161296,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 323,
+      "elapsed": 10.945074999937788,
+      "status": "candidateValid",
+      "raw": -0.8056102811032475,
+      "penalized": -0.8056102811032475,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 324,
+      "elapsed": 11.246772899990901,
+      "status": "candidateValid",
+      "raw": -3.2281431353433634,
+      "penalized": -3.2281431353433634,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 325,
+      "elapsed": 11.25490039982833,
+      "status": "candidateValid",
+      "raw": -12.596465905414629,
+      "penalized": -12.596465905414629,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 326,
+      "elapsed": 11.26838849997148,
+      "status": "candidateValid",
+      "raw": -24.13936567573621,
+      "penalized": -24.13936567573621,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 327,
+      "elapsed": 11.275973899988458,
+      "status": "candidateValid",
+      "raw": -13.498829616636561,
+      "penalized": -13.498829616636561,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 328,
+      "elapsed": 11.285019099945202,
+      "status": "candidateValid",
+      "raw": -40.34283412711002,
+      "penalized": -40.34283412711002,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 329,
+      "elapsed": 11.294528999831527,
+      "status": "candidateValid",
+      "raw": -5.180113115953652,
+      "penalized": -5.180113115953652,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 330,
+      "elapsed": 11.303595799952745,
+      "status": "candidateValid",
+      "raw": -168.2692647016717,
+      "penalized": -168.2692647016717,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 331,
+      "elapsed": 11.312351599801332,
+      "status": "candidateValid",
+      "raw": -361.0622619760277,
+      "penalized": -361.0622619760277,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 332,
+      "elapsed": 11.325074899941683,
+      "status": "candidateValid",
+      "raw": -7.161600178325227,
+      "penalized": -7.161600178325227,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 333,
+      "elapsed": 11.334507499821484,
+      "status": "candidateValid",
+      "raw": -3.9621467102680183,
+      "penalized": -3.9621467102680183,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 334,
+      "elapsed": 11.343028699979186,
+      "status": "candidateValid",
+      "raw": -365.68770707761996,
+      "penalized": -365.68770707761996,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 335,
+      "elapsed": 11.35101669980213,
+      "status": "candidateValid",
+      "raw": -23.46041326907049,
+      "penalized": -23.46041326907049,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 336,
+      "elapsed": 11.360073799965903,
+      "status": "candidateValid",
+      "raw": -101.26221393051472,
+      "penalized": -101.26221393051472,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 337,
+      "elapsed": 11.581832599826157,
+      "status": "candidateValid",
+      "raw": -0.7417357517159586,
+      "penalized": -0.7417357517159586,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 338,
+      "elapsed": 11.588942699832842,
+      "status": "candidateValid",
+      "raw": -19.617052718974197,
+      "penalized": -19.617052718974197,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 339,
+      "elapsed": 11.599534599808976,
+      "status": "candidateValid",
+      "raw": -28.078288968530796,
+      "penalized": -28.078288968530796,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 340,
+      "elapsed": 11.608144999947399,
+      "status": "candidateValid",
+      "raw": -42.61227286795124,
+      "penalized": -42.61227286795124,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 341,
+      "elapsed": 11.623668499989435,
+      "status": "candidateValid",
+      "raw": -104.94103457923435,
+      "penalized": -104.94103457923435,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 342,
+      "elapsed": 11.633654499892145,
+      "status": "candidateValid",
+      "raw": -0.6720009120341168,
+      "penalized": -0.6720009120341168,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 343,
+      "elapsed": 11.642607499845326,
+      "status": "candidateValid",
+      "raw": -5.641498738408669,
+      "penalized": -5.641498738408669,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 344,
+      "elapsed": 11.65437959996052,
+      "status": "candidateValid",
+      "raw": -2.141520845127308,
+      "penalized": -2.141520845127308,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 345,
+      "elapsed": 11.66272239992395,
+      "status": "candidateValid",
+      "raw": -2.853120496065628,
+      "penalized": -2.853120496065628,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 346,
+      "elapsed": 11.670364699792117,
+      "status": "candidateValid",
+      "raw": -6.129671896022587,
+      "penalized": -6.129671896022587,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 347,
+      "elapsed": 11.676743099931628,
+      "status": "candidateValid",
+      "raw": -137.91129569764357,
+      "penalized": -137.91129569764357,
+      "complexity": 5
+    },
+    {
+      "scorerCallIndex": 348,
+      "elapsed": 11.685965899843723,
+      "status": "candidateValid",
+      "raw": -2.17578558959972,
+      "penalized": -2.17578558959972,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 349,
+      "elapsed": 11.697059799917042,
+      "status": "candidateValid",
+      "raw": -307.4549253961693,
+      "penalized": -307.4549253961693,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 350,
+      "elapsed": 11.995236699935049,
+      "status": "candidateValid",
+      "raw": -163.93033645420775,
+      "penalized": -163.93033645420775,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 351,
+      "elapsed": 12.001779499929398,
+      "status": "candidateValid",
+      "raw": -39.43212304024546,
+      "penalized": -39.43212304024546,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 352,
+      "elapsed": 12.008432799950242,
+      "status": "candidateValid",
+      "raw": -91.91597387043004,
+      "penalized": -91.91597387043004,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 353,
+      "elapsed": 12.015489099780098,
+      "status": "candidateValid",
+      "raw": -30.280572272219757,
+      "penalized": -30.280572272219757,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 354,
+      "elapsed": 12.03140959981829,
+      "status": "candidateValid",
+      "raw": -167.77839713837898,
+      "penalized": -167.77839713837898,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 355,
+      "elapsed": 12.039173899916932,
+      "status": "candidateValid",
+      "raw": -51.863094206539245,
+      "penalized": -51.863094206539245,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 356,
+      "elapsed": 12.04810109990649,
+      "status": "candidateValid",
+      "raw": -15.39811919814073,
+      "penalized": -15.39811919814073,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 357,
+      "elapsed": 12.064094399800524,
+      "status": "candidateValid",
+      "raw": -133.0492133660701,
+      "penalized": -133.0492133660701,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 358,
+      "elapsed": 12.071777899982408,
+      "status": "candidateValid",
+      "raw": -64.54874008203953,
+      "penalized": -64.54874008203953,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 359,
+      "elapsed": 12.080711399903521,
+      "status": "candidateValid",
+      "raw": -52.15885977305033,
+      "penalized": -52.15885977305033,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 360,
+      "elapsed": 12.088775699958205,
+      "status": "candidateValid",
+      "raw": -3.2101275104520126,
+      "penalized": -3.2101275104520126,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 361,
+      "elapsed": 12.10250909999013,
+      "status": "candidateValid",
+      "raw": -44.07659178142235,
+      "penalized": -44.07659178142235,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 362,
+      "elapsed": 12.112763299839571,
+      "status": "candidateValid",
+      "raw": -36.911005203188736,
+      "penalized": -36.911005203188736,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 363,
+      "elapsed": 12.294691799907014,
+      "status": "candidateValid",
+      "raw": -27.880723748961966,
+      "penalized": -27.880723748961966,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 364,
+      "elapsed": 12.31220359983854,
+      "status": "candidateValid",
+      "raw": -40.24424112404577,
+      "penalized": -40.24424112404577,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 365,
+      "elapsed": 12.323965299874544,
+      "status": "candidateValid",
+      "raw": -11.793457442024122,
+      "penalized": -11.793457442024122,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 366,
+      "elapsed": 12.333185999887064,
+      "status": "candidateValid",
+      "raw": -38.66999164989614,
+      "penalized": -38.66999164989614,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 367,
+      "elapsed": 12.348145699827,
+      "status": "candidateValid",
+      "raw": -22.86059939388833,
+      "penalized": -22.86059939388833,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 368,
+      "elapsed": 12.360437699826434,
+      "status": "candidateValid",
+      "raw": -323.47075170640517,
+      "penalized": -323.47075170640517,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 369,
+      "elapsed": 12.372338499873877,
+      "status": "candidateValid",
+      "raw": -36.446716000346086,
+      "penalized": -36.446716000346086,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 370,
+      "elapsed": 12.38100739987567,
+      "status": "candidateValid",
+      "raw": -424.7319031019474,
+      "penalized": -424.7319031019474,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 371,
+      "elapsed": 12.388041999889538,
+      "status": "candidateValid",
+      "raw": -14.942991011596295,
+      "penalized": -14.942991011596295,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 372,
+      "elapsed": 12.39588679978624,
+      "status": "candidateValid",
+      "raw": -0.24548050186850306,
+      "penalized": -0.24548050186850306,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 373,
+      "elapsed": 12.40785999991931,
+      "status": "candidateValid",
+      "raw": -77.45470807491688,
+      "penalized": -77.45470807491688,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 374,
+      "elapsed": 12.41670409985818,
+      "status": "candidateValid",
+      "raw": -19.309461736248185,
+      "penalized": -19.309461736248185,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 375,
+      "elapsed": 12.717161000007764,
+      "status": "candidateValid",
+      "raw": -12.035444645897023,
+      "penalized": -12.035444645897023,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 376,
+      "elapsed": 12.725214199861512,
+      "status": "candidateValid",
+      "raw": -2.2996869184209716,
+      "penalized": -2.2996869184209716,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 377,
+      "elapsed": 12.73337379982695,
+      "status": "candidateValid",
+      "raw": -1.693525125179097,
+      "penalized": -1.693525125179097,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 378,
+      "elapsed": 12.751717499922961,
+      "status": "candidateValid",
+      "raw": -14.33312976522446,
+      "penalized": -14.33312976522446,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 379,
+      "elapsed": 12.772719899890944,
+      "status": "candidateValid",
+      "raw": -6.590325569910502,
+      "penalized": -6.590325569910502,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 380,
+      "elapsed": 12.789941599825397,
+      "status": "candidateValid",
+      "raw": -26.69329483797268,
+      "penalized": -26.69329483797268,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 381,
+      "elapsed": 12.799471399979666,
+      "status": "candidateValid",
+      "raw": -2.2996869184209716,
+      "penalized": -2.2996869184209716,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 382,
+      "elapsed": 12.807041799882427,
+      "status": "candidateValid",
+      "raw": -404.10549380225285,
+      "penalized": -404.10549380225285,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 383,
+      "elapsed": 12.816491399891675,
+      "status": "candidateValid",
+      "raw": -11.522744341887421,
+      "penalized": -11.522744341887421,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 384,
+      "elapsed": 12.833785499911755,
+      "status": "candidateValid",
+      "raw": -21.22124286461518,
+      "penalized": -21.22124286461518,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 385,
+      "elapsed": 12.844960399903357,
+      "status": "candidateValid",
+      "raw": -12.931459672895432,
+      "penalized": -12.931459672895432,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 386,
+      "elapsed": 13.832640199922025,
+      "status": "candidateValid",
+      "raw": -78.9577242999337,
+      "penalized": -78.9577242999337,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 387,
+      "elapsed": 13.841897799866274,
+      "status": "candidateValid",
+      "raw": -52.74225355312913,
+      "penalized": -52.74225355312913,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 388,
+      "elapsed": 13.85300529981032,
+      "status": "candidateValid",
+      "raw": -121.93134472290092,
+      "penalized": -121.93134472290092,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 389,
+      "elapsed": 13.865456899860874,
+      "status": "candidateValid",
+      "raw": -65.35416357947703,
+      "penalized": -65.35416357947703,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 390,
+      "elapsed": 13.874490099959075,
+      "status": "candidateValid",
+      "raw": -58.46209196324893,
+      "penalized": -58.46209196324893,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 391,
+      "elapsed": 13.883860299829394,
+      "status": "candidateValid",
+      "raw": -91.52727675012241,
+      "penalized": -91.52727675012241,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 392,
+      "elapsed": 13.89741069986485,
+      "status": "candidateValid",
+      "raw": -120.65618137637452,
+      "penalized": -120.65618137637452,
+      "complexity": 24
+    },
+    {
+      "scorerCallIndex": 393,
+      "elapsed": 13.908766099950299,
+      "status": "candidateValid",
+      "raw": -12.042806809126406,
+      "penalized": -12.042806809126406,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 394,
+      "elapsed": 13.920842799823731,
+      "status": "candidateValid",
+      "raw": -23.991367672987465,
+      "penalized": -23.991367672987465,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 395,
+      "elapsed": 13.931990399956703,
+      "status": "candidateValid",
+      "raw": -36.827589397440015,
+      "penalized": -36.827589397440015,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 396,
+      "elapsed": 13.953485799953341,
+      "status": "candidateValid",
+      "raw": -27.89540991187892,
+      "penalized": -27.89540991187892,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 397,
+      "elapsed": 13.962770099984482,
+      "status": "candidateValid",
+      "raw": -45.3795566882324,
+      "penalized": -45.3795566882324,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 398,
+      "elapsed": 13.972934399964288,
+      "status": "candidateValid",
+      "raw": -161.25687425258366,
+      "penalized": -161.25687425258366,
+      "complexity": 25
+    },
+    {
+      "scorerCallIndex": 399,
+      "elapsed": 13.982980499975383,
+      "status": "candidateValid",
+      "raw": -25.480902876272634,
+      "penalized": -25.480902876272634,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 400,
+      "elapsed": 13.992985399905592,
+      "status": "candidateValid",
+      "raw": -45.70880774686394,
+      "penalized": -45.70880774686394,
+      "complexity": 23
+    },
+    {
+      "scorerCallIndex": 401,
+      "elapsed": 14.004294799873605,
+      "status": "candidateValid",
+      "raw": -133.45229756818597,
+      "penalized": -133.45229756818597,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 402,
+      "elapsed": 14.015242699999362,
+      "status": "candidateValid",
+      "raw": -76.56244723229881,
+      "penalized": -76.56244723229881,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 403,
+      "elapsed": 14.027504300000146,
+      "status": "candidateValid",
+      "raw": -40.596869527117235,
+      "penalized": -40.596869527117235,
+      "complexity": 24
+    },
+    {
+      "scorerCallIndex": 404,
+      "elapsed": 14.038082299986854,
+      "status": "candidateValid",
+      "raw": -24.865318298315294,
+      "penalized": -24.865318298315294,
+      "complexity": 26
+    },
+    {
+      "scorerCallIndex": 405,
+      "elapsed": 14.048853199928999,
+      "status": "candidateValid",
+      "raw": -145.02289378818682,
+      "penalized": -145.02289378818682,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 406,
+      "elapsed": 14.058681399794295,
+      "status": "candidateValid",
+      "raw": -148.48530713531073,
+      "penalized": -148.48530713531073,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 407,
+      "elapsed": 14.06977599998936,
+      "status": "candidateValid",
+      "raw": -400.890238874552,
+      "penalized": -400.890238874552,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 408,
+      "elapsed": 14.079909399850294,
+      "status": "candidateValid",
+      "raw": -61.89776666113824,
+      "penalized": -61.89776666113824,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 409,
+      "elapsed": 14.089151699794456,
+      "status": "candidateValid",
+      "raw": -7.208530986982144,
+      "penalized": -7.208530986982144,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 410,
+      "elapsed": 14.1000374997966,
+      "status": "candidateValid",
+      "raw": -19.751247808954616,
+      "penalized": -19.751247808954616,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 411,
+      "elapsed": 14.109830599976704,
+      "status": "candidateValid",
+      "raw": -352.43451783731393,
+      "penalized": -352.43451783731393,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 412,
+      "elapsed": 14.12105629988946,
+      "status": "candidateValid",
+      "raw": -3.0375411097493257,
+      "penalized": -3.0375411097493257,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 413,
+      "elapsed": 14.134708099998534,
+      "status": "candidateValid",
+      "raw": -91.83474427456753,
+      "penalized": -91.83474427456753,
+      "complexity": 25
+    },
+    {
+      "scorerCallIndex": 414,
+      "elapsed": 14.14730289997533,
+      "status": "candidateValid",
+      "raw": -51.20322327060802,
+      "penalized": -51.20322327060802,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 415,
+      "elapsed": 14.156607999932021,
+      "status": "candidateValid",
+      "raw": -33.19747576140224,
+      "penalized": -33.19747576140224,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 416,
+      "elapsed": 14.465874699875712,
+      "status": "candidateValid",
+      "raw": -49.6630229915132,
+      "penalized": -49.6630229915132,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 417,
+      "elapsed": 14.479630399961025,
+      "status": "candidateValid",
+      "raw": -257.9283847162091,
+      "penalized": -257.9283847162091,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 418,
+      "elapsed": 14.489948499947786,
+      "status": "candidateValid",
+      "raw": -19.386291343089503,
+      "penalized": -19.386291343089503,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 419,
+      "elapsed": 14.502838199958205,
+      "status": "candidateValid",
+      "raw": -7.650023003195871,
+      "penalized": -7.650023003195871,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 420,
+      "elapsed": 14.515072699869052,
+      "status": "candidateValid",
+      "raw": -47.22264990154413,
+      "penalized": -47.22264990154413,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 421,
+      "elapsed": 14.527765999780968,
+      "status": "candidateValid",
+      "raw": -55.46525317129058,
+      "penalized": -55.46525317129058,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 422,
+      "elapsed": 14.539873999776319,
+      "status": "candidateValid",
+      "raw": -15.111477863808348,
+      "penalized": -15.111477863808348,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 423,
+      "elapsed": 14.551142399897799,
+      "status": "candidateValid",
+      "raw": -63.998639910742384,
+      "penalized": -63.998639910742384,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 424,
+      "elapsed": 14.562324999831617,
+      "status": "candidateValid",
+      "raw": -532.9169312660464,
+      "penalized": -532.9169312660464,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 425,
+      "elapsed": 14.572496499866247,
+      "status": "candidateValid",
+      "raw": -322.47024711713425,
+      "penalized": -322.47024711713425,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 426,
+      "elapsed": 14.582588599994779,
+      "status": "candidateValid",
+      "raw": -305.4165945075483,
+      "penalized": -305.4165945075483,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 427,
+      "elapsed": 14.592497099889442,
+      "status": "candidateValid",
+      "raw": -35.53161717428396,
+      "penalized": -35.53161717428396,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 428,
+      "elapsed": 14.602791999932379,
+      "status": "candidateValid",
+      "raw": -35.60226246600282,
+      "penalized": -35.60226246600282,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 429,
+      "elapsed": 14.61197889992036,
+      "status": "candidateValid",
+      "raw": -100.80832124967381,
+      "penalized": -100.80832124967381,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 430,
+      "elapsed": 14.62118829996325,
+      "status": "candidateValid",
+      "raw": -33.6309975290531,
+      "penalized": -33.6309975290531,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 431,
+      "elapsed": 14.634300699923187,
+      "status": "candidateValid",
+      "raw": -316.79114730333276,
+      "penalized": -316.79114730333276,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 432,
+      "elapsed": 14.996360899880528,
+      "status": "candidateValid",
+      "raw": -18.963575900161963,
+      "penalized": -18.963575900161963,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 433,
+      "elapsed": 15.007070399820805,
+      "status": "candidateValid",
+      "raw": -12.725158878935181,
+      "penalized": -12.725158878935181,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 434,
+      "elapsed": 15.021338799968362,
+      "status": "candidateValid",
+      "raw": -20.95606881853525,
+      "penalized": -20.95606881853525,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 435,
+      "elapsed": 15.03315609996207,
+      "status": "candidateValid",
+      "raw": -356.3972283937728,
+      "penalized": -356.3972283937728,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 436,
+      "elapsed": 15.040958799887449,
+      "status": "candidateValid",
+      "raw": -4.061207327190743,
+      "penalized": -4.061207327190743,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 437,
+      "elapsed": 15.053373999893665,
+      "status": "candidateValid",
+      "raw": -16.22603582357546,
+      "penalized": -16.22603582357546,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 438,
+      "elapsed": 15.06577180000022,
+      "status": "candidateValid",
+      "raw": -83.19306463188343,
+      "penalized": -83.19306463188343,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 439,
+      "elapsed": 15.076208099955693,
+      "status": "candidateValid",
+      "raw": -351.8040827599182,
+      "penalized": -351.8040827599182,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 440,
+      "elapsed": 15.08978209993802,
+      "status": "candidateValid",
+      "raw": -100.83676046043993,
+      "penalized": -100.83676046043993,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 441,
+      "elapsed": 15.10108739999123,
+      "status": "candidateValid",
+      "raw": -156.17930206509192,
+      "penalized": -156.17930206509192,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 442,
+      "elapsed": 15.11318889982067,
+      "status": "candidateValid",
+      "raw": -133.92452430904504,
+      "penalized": -133.92452430904504,
+      "complexity": 23
+    },
+    {
+      "scorerCallIndex": 443,
+      "elapsed": 15.12706739990972,
+      "status": "candidateValid",
+      "raw": -24.01278805359341,
+      "penalized": -24.01278805359341,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 444,
+      "elapsed": 15.137914799852297,
+      "status": "candidateValid",
+      "raw": -23.711126926249502,
+      "penalized": -23.711126926249502,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 445,
+      "elapsed": 15.150595999788493,
+      "status": "candidateValid",
+      "raw": -33.19320695378394,
+      "penalized": -33.19320695378394,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 446,
+      "elapsed": 15.163894899887964,
+      "status": "candidateValid",
+      "raw": -376.33847207643396,
+      "penalized": -376.33847207643396,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 447,
+      "elapsed": 15.174662299919873,
+      "status": "candidateValid",
+      "raw": -52.482783703930274,
+      "penalized": -52.482783703930274,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 448,
+      "elapsed": 15.547577599994838,
+      "status": "candidateValid",
+      "raw": -42.28219915669668,
+      "penalized": -42.28219915669668,
+      "complexity": 24
+    },
+    {
+      "scorerCallIndex": 449,
+      "elapsed": 15.557082399958745,
+      "status": "candidateValid",
+      "raw": -65.58783548249286,
+      "penalized": -65.58783548249286,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 450,
+      "elapsed": 15.568194199819118,
+      "status": "candidateValid",
+      "raw": -44.285356756251794,
+      "penalized": -44.285356756251794,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 451,
+      "elapsed": 15.578792499843985,
+      "status": "candidateValid",
+      "raw": -0.9377953689198676,
+      "penalized": -0.9377953689198676,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 452,
+      "elapsed": 15.589943599887192,
+      "status": "candidateValid",
+      "raw": -153.54857003471085,
+      "penalized": -153.54857003471085,
+      "complexity": 25
+    },
+    {
+      "scorerCallIndex": 453,
+      "elapsed": 15.60003410000354,
+      "status": "candidateValid",
+      "raw": -29.87443187418719,
+      "penalized": -29.87443187418719,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 454,
+      "elapsed": 15.60965899983421,
+      "status": "candidateValid",
+      "raw": -141.02476236882785,
+      "penalized": -141.02476236882785,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 455,
+      "elapsed": 15.618521399796009,
+      "status": "candidateValid",
+      "raw": -32.27596088365909,
+      "penalized": -32.27596088365909,
+      "complexity": 9
+    },
+    {
+      "scorerCallIndex": 456,
+      "elapsed": 15.629159400006756,
+      "status": "candidateValid",
+      "raw": -163.72560229742595,
+      "penalized": -163.72560229742595,
+      "complexity": 23
+    },
+    {
+      "scorerCallIndex": 457,
+      "elapsed": 15.639373899903148,
+      "status": "candidateValid",
+      "raw": -96.47796983093635,
+      "penalized": -96.47796983093635,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 458,
+      "elapsed": 15.652188899926841,
+      "status": "candidateValid",
+      "raw": -70.03542651375538,
+      "penalized": -70.03542651375538,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 459,
+      "elapsed": 15.660828299820423,
+      "status": "candidateValid",
+      "raw": -31.36162279730933,
+      "penalized": -31.36162279730933,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 460,
+      "elapsed": 15.67181079997681,
+      "status": "candidateValid",
+      "raw": -4.458675772054251,
+      "penalized": -4.458675772054251,
+      "complexity": 21
+    },
+    {
+      "scorerCallIndex": 461,
+      "elapsed": 15.682122999802232,
+      "status": "candidateValid",
+      "raw": -288.3355983226072,
+      "penalized": -288.3355983226072,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 462,
+      "elapsed": 15.69132969994098,
+      "status": "candidateValid",
+      "raw": -123.01107714495353,
+      "penalized": -123.01107714495353,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 463,
+      "elapsed": 15.70413829991594,
+      "status": "candidateValid",
+      "raw": -214.726385862247,
+      "penalized": -214.726385862247,
+      "complexity": 24
+    },
+    {
+      "scorerCallIndex": 464,
+      "elapsed": 16.027204499812797,
+      "status": "candidateValid",
+      "raw": -448.6043822439939,
+      "penalized": -448.6043822439939,
+      "complexity": 24
+    },
+    {
+      "scorerCallIndex": 465,
+      "elapsed": 16.04013259988278,
+      "status": "candidateValid",
+      "raw": -11.081734293981397,
+      "penalized": -11.081734293981397,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 466,
+      "elapsed": 16.05484879994765,
+      "status": "candidateValid",
+      "raw": -22.036942915325945,
+      "penalized": -22.036942915325945,
+      "complexity": 23
+    },
+    {
+      "scorerCallIndex": 467,
+      "elapsed": 16.06884519988671,
+      "status": "candidateValid",
+      "raw": -90.02942064795221,
+      "penalized": -90.02942064795221,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 468,
+      "elapsed": 16.080118799814954,
+      "status": "candidateValid",
+      "raw": -135.94095177515285,
+      "penalized": -135.94095177515285,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 469,
+      "elapsed": 16.09182389988564,
+      "status": "candidateValid",
+      "raw": -19.85481627945929,
+      "penalized": -19.85481627945929,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 470,
+      "elapsed": 16.105352299986407,
+      "status": "candidateValid",
+      "raw": -35.34381073367457,
+      "penalized": -35.34381073367457,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 471,
+      "elapsed": 16.11926699988544,
+      "status": "candidateValid",
+      "raw": -114.13518673356162,
+      "penalized": -114.13518673356162,
+      "complexity": 13
+    },
+    {
+      "scorerCallIndex": 472,
+      "elapsed": 16.132000399986282,
+      "status": "candidateValid",
+      "raw": -9.355311627217537,
+      "penalized": -9.355311627217537,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 473,
+      "elapsed": 16.14377319999039,
+      "status": "candidateValid",
+      "raw": -304.2803283357636,
+      "penalized": -304.2803283357636,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 474,
+      "elapsed": 16.15572249982506,
+      "status": "candidateValid",
+      "raw": -351.1944260194948,
+      "penalized": -351.1944260194948,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 475,
+      "elapsed": 16.170971899991855,
+      "status": "candidateValid",
+      "raw": -184.9640148116709,
+      "penalized": -184.9640148116709,
+      "complexity": 18
+    },
+    {
+      "scorerCallIndex": 476,
+      "elapsed": 16.260729499859735,
+      "status": "candidateValid",
+      "raw": -32.15708582774391,
+      "penalized": -32.15708582774391,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 477,
+      "elapsed": 16.27324019977823,
+      "status": "candidateValid",
+      "raw": -42.76292085536091,
+      "penalized": -42.76292085536091,
+      "complexity": 14
+    },
+    {
+      "scorerCallIndex": 478,
+      "elapsed": 16.28676649997942,
+      "status": "candidateValid",
+      "raw": -132.7533699377377,
+      "penalized": -132.7533699377377,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 479,
+      "elapsed": 16.308383099967614,
+      "status": "candidateValid",
+      "raw": -112.9194664210939,
+      "penalized": -112.9194664210939,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 480,
+      "elapsed": 16.70375319989398,
+      "status": "candidateValid",
+      "raw": -10.005019576809854,
+      "penalized": -10.005019576809854,
+      "complexity": 15
+    },
+    {
+      "scorerCallIndex": 481,
+      "elapsed": 16.719109499827027,
+      "status": "candidateValid",
+      "raw": -9.70457549224585,
+      "penalized": -9.70457549224585,
+      "complexity": 23
+    },
+    {
+      "scorerCallIndex": 482,
+      "elapsed": 16.73371099983342,
+      "status": "candidateValid",
+      "raw": -331.3104609062583,
+      "penalized": -331.3104609062583,
+      "complexity": 22
+    },
+    {
+      "scorerCallIndex": 483,
+      "elapsed": 16.746141099836677,
+      "status": "candidateValid",
+      "raw": -410.1250224595351,
+      "penalized": -410.1250224595351,
+      "complexity": 17
+    },
+    {
+      "scorerCallIndex": 484,
+      "elapsed": 16.76002649986185,
+      "status": "candidateValid",
+      "raw": -25.360004740625556,
+      "penalized": -25.360004740625556,
+      "complexity": 16
+    },
+    {
+      "scorerCallIndex": 485,
+      "elapsed": 16.774952200008556,
+      "status": "candidateValid",
+      "raw": -11.732590902488031,
+      "penalized": -11.732590902488031,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 486,
+      "elapsed": 16.78677979996428,
+      "status": "candidateValid",
+      "raw": -40.7116455212457,
+      "penalized": -40.7116455212457,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 487,
+      "elapsed": 16.802255999995396,
+      "status": "candidateValid",
+      "raw": -87.80716997970745,
+      "penalized": -87.80716997970745,
+      "complexity": 20
+    },
+    {
+      "scorerCallIndex": 488,
+      "elapsed": 16.816367199877277,
+      "status": "candidateValid",
+      "raw": -245.42154915888472,
+      "penalized": -245.42154915888472,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 489,
+      "elapsed": 16.82624669978395,
+      "status": "candidateValid",
+      "raw": -57.430594980498824,
+      "penalized": -57.430594980498824,
+      "complexity": 11
+    },
+    {
+      "scorerCallIndex": 490,
+      "elapsed": 16.839711799984798,
+      "status": "candidateValid",
+      "raw": -46.350162248179416,
+      "penalized": -46.350162248179416,
+      "complexity": 12
+    },
+    {
+      "scorerCallIndex": 491,
+      "elapsed": 16.858462599804625,
+      "status": "candidateValid",
+      "raw": -2.232012483436069,
+      "penalized": -2.232012483436069,
+      "complexity": 7
+    },
+    {
+      "scorerCallIndex": 492,
+      "elapsed": 16.87134339986369,
+      "status": "candidateValid",
+      "raw": -182.11640399633472,
+      "penalized": -182.11640399633472,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 493,
+      "elapsed": 16.886305699823424,
+      "status": "candidateValid",
+      "raw": -35.44865468817595,
+      "penalized": -35.44865468817595,
+      "complexity": 24
+    },
+    {
+      "scorerCallIndex": 494,
+      "elapsed": 16.899096799781546,
+      "status": "candidateValid",
+      "raw": -14.409698080022814,
+      "penalized": -14.409698080022814,
+      "complexity": 10
+    },
+    {
+      "scorerCallIndex": 495,
+      "elapsed": 17.36667829984799,
+      "status": "candidateValid",
+      "raw": -515.2896466634547,
+      "penalized": -515.2896466634547,
+      "complexity": 4
+    },
+    {
+      "scorerCallIndex": 496,
+      "elapsed": 17.377389199798927,
+      "status": "candidateValid",
+      "raw": -414.947653623569,
+      "penalized": -414.947653623569,
+      "complexity": 23
+    },
+    {
+      "scorerCallIndex": 497,
+      "elapsed": 17.389212699839845,
+      "status": "candidateValid",
+      "raw": -27.27884568697357,
+      "penalized": -27.27884568697357,
+      "complexity": 8
+    },
+    {
+      "scorerCallIndex": 498,
+      "elapsed": 17.403035999974236,
+      "status": "candidateValid",
+      "raw": -18.866968945220123,
+      "penalized": -18.866968945220123,
+      "complexity": 19
+    },
+    {
+      "scorerCallIndex": 499,
+      "elapsed": 17.412210299866274,
+      "status": "candidateValid",
+      "raw": -49.07016528783697,
+      "penalized": -49.07016528783697,
+      "complexity": 6
+    },
+    {
+      "scorerCallIndex": 500,
+      "elapsed": 17.421941899927333,
+      "status": "candidateValid",
+      "raw": -1.7750698967584215,
+      "penalized": -1.7750698967584215,
+      "complexity": 13
+    }
+  ],
+  "optimizer_trace": [
+    {
+      "deme": [
+        "mkDemeId",
+        1
+      ],
+      "stop": "stopStagnation",
+      "actualEvaluations": 216,
+      "proposals": 306,
+      "cacheHits": 88,
+      "invalids": 0,
+      "modelSize": 34
+    },
+    {
+      "deme": [
+        "mkDemeId",
+        2
+      ],
+      "stop": "stopStagnation",
+      "actualEvaluations": 168,
+      "proposals": 192,
+      "cacheHits": 24,
+      "invalids": 0,
+      "modelSize": 34
+    },
+    {
+      "deme": [
+        "mkDemeId",
+        3
+      ],
+      "stop": "stopBudgetExhausted",
+      "actualEvaluations": 115,
+      "proposals": 120,
+      "cacheHits": 5,
+      "invalids": 0,
+      "modelSize": 54
+    }
+  ],
+  "generation_trace": [
+    {
+      "remaining": 10,
+      "expansion": 0,
+      "selected": 0.0,
+      "selectedVisits": 1,
+      "actualNewEvaluations": 216,
+      "cumulativeEvaluations": 217,
+      "uniqueCandidates": 217,
+      "retainedCandidates": 22,
+      "bestRaw": -1.3968729187773925,
+      "bestPenalized": -1.3968729187773925
+    },
+    {
+      "remaining": 9,
+      "expansion": 1,
+      "selected": 0.1411200080598672,
+      "selectedVisits": 1,
+      "actualNewEvaluations": 168,
+      "cumulativeEvaluations": 385,
+      "uniqueCandidates": 169,
+      "retainedCandidates": 16,
+      "bestRaw": -0.20245786927563053,
+      "bestPenalized": -0.20245786927563053
+    },
+    {
+      "remaining": 8,
+      "expansion": 2,
+      "selected": [
+        "c_add",
+        0.1411200080598672,
+        [
+          "c_mul",
+          -1.0,
+          [
+            "c_sin",
+            [
+              "c_add",
+              [
+                "c_mul",
+                1.5,
+                "x"
+              ],
+              [
+                "c_mul",
+                -3.0,
+                [
+                  "c_mul",
+                  "x",
+                  "x"
+                ]
+              ],
+              [
+                "c_mul",
+                -1.0,
+                [
+                  "c_sin",
+                  "x"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "selectedVisits": 1,
+      "actualNewEvaluations": 115,
+      "cumulativeEvaluations": 500,
+      "uniqueCandidates": 119,
+      "retainedCandidates": 18,
+      "bestRaw": -0.20245786927563053,
+      "bestPenalized": -0.20245786927563053
+    }
+  ],
+  "fit_trace": [
+    {
+      "algorithm": "hboa",
+      "seconds": 0.2015358000062406,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.18394609983079135,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.18864309997297823,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.16210890002548695,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1764964999165386,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1409773000050336,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.17614330002106726,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.17273440002463758,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.15233559999614954,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.31033620005473495,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1738008998800069,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.2091342001222074,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.15048480010591447,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1903643999248743,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.27719679987058043,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.18264809995889664,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.14334720000624657,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.2096853000111878,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.25304049998521805,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1686124000698328,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.17188759986311197,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.16905550006777048,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.19806939992122352,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.16202430007979274,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1731068000663072,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.13014140003360808,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.1813771000597626,
+      "learnedEdges": 1,
+      "parameters": 34,
+      "treeNodes": 18,
+      "leaves": 17,
+      "iterations": 1,
+      "localFits": 272,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.25680419988930225,
+      "learnedEdges": 1,
+      "parameters": 54,
+      "treeNodes": 28,
+      "leaves": 27,
+      "iterations": 1,
+      "localFits": 282,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.2185772000811994,
+      "learnedEdges": 1,
+      "parameters": 54,
+      "treeNodes": 28,
+      "leaves": 27,
+      "iterations": 1,
+      "localFits": 282,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.23788850009441376,
+      "learnedEdges": 1,
+      "parameters": 54,
+      "treeNodes": 28,
+      "leaves": 27,
+      "iterations": 1,
+      "localFits": 282,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.24764710012823343,
+      "learnedEdges": 1,
+      "parameters": 54,
+      "treeNodes": 28,
+      "leaves": 27,
+      "iterations": 1,
+      "localFits": 282,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.30486369994468987,
+      "learnedEdges": 1,
+      "parameters": 54,
+      "treeNodes": 28,
+      "leaves": 27,
+      "iterations": 1,
+      "localFits": 282,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.3725332000758499,
+      "learnedEdges": 1,
+      "parameters": 54,
+      "treeNodes": 28,
+      "leaves": 27,
+      "iterations": 1,
+      "localFits": 282,
+      "scoreCacheHits": 0,
+      "stop": "fitScoreLimit"
+    }
+  ],
+  "population_trace": [
+    {
+      "generations": 18,
+      "population": 32,
+      "archive": 304,
+      "unretainedProposals": 2,
+      "stagnation": 10
+    },
+    {
+      "generations": 11,
+      "population": 32,
+      "archive": 192,
+      "unretainedProposals": 0,
+      "stagnation": 10
+    },
+    {
+      "generations": 7,
+      "population": 32,
+      "archive": 120,
+      "unretainedProposals": 0,
+      "stagnation": 6
+    }
+  ],
+  "replacement_trace": [
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 9,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 7,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 6,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 6,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 4,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 3,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 4,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 3,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 3,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 4,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 0,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 5,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 3,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 2,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 1,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 7,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 4,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 7,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 3,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 4,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 3,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 6,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 6,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 7,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 4,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 16,
+      "accepted": 7,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 8,
+      "accepted": 4,
+      "window": 8
+    }
+  ],
+  "rtr_accepted": 134,
+  "rtr_offspring": 520,
+  "max_tree_nodes": 28,
+  "model_fitting_seconds": 6.647547800093889,
+  "fits": 33,
+  "max_learned_edges": 1,
+  "max_model_parameters": 54,
+  "local_fits": 9036,
+  "score_cache_hits": 0,
+  "unretained_proposals": 2,
+  "fitting_stops": {
+    "fitScoreLimit": 33
+  }
+}
