@@ -2,8 +2,8 @@
 ;; Module: scoring/contin-score.metta
 ;; Purpose: Continuous Score Formula, Complexity Weights, and Improvement Predicate
 ;;
-;; Phase: Phase 0 — Freeze Contracts (closes Step 1)
-;;        Phase 1 will add the full per-row scoring and aggregation implementation.
+;; Phase 1 / Step 4: full validated numerical candidate scoring.
+;; Load contin-eval before this module; candidate-evaluation after it.
 ;;
 ;; Reference (commit f88ccd3279f3dd853e8c23103be5376a0e7eafc1):
 ;;   - moses/moses/scoring/bscores.h (contin_bscore)
@@ -61,7 +61,7 @@
 
 ;; A single dispatcher prevents overlapping clauses from producing duplicate
 ;; answers under PeTTa. Unknown internal operators follow C++'s zero weight;
-;; operator/arity validation is the future evaluator's responsibility.
+;; operator/arity validation is the evaluator's responsibility.
 (= (continOperatorCost $op)
    (case $op
      ((c_div 1) (c_exp 1) (c_log 1) (c_sin 1) ($other 0))))
@@ -98,7 +98,7 @@
 ;; Row-Level Error Formulas: continRowScore
 ;; ------------------------------------------------------------------------------
 ;; Returns the (negative) contribution of a single prediction/target pair.
-;; Phase 1 will call this once per row.
+;; The validated scoring path calls this once per row inside a catch boundary.
 ;;
 ;; Invariant: result is always <= 0.  The sum of all row scores is raw_score.
 
@@ -135,7 +135,7 @@
 ;;   improved iff newScore > oldScore + t
 ;;
 ;; Keep the numeric helper separate from the context-aware public operation.
-;; Continuous defaults are local until the production parameter-wiring phase;
+;; Continuous defaults have their own production parameter;
 ;; Boolean/action callers retain the configured hcScoreImprovedThreshold.
 ;;
 ;; Edge case: when oldScore is 0.0, the relative branch reduces to
@@ -143,7 +143,7 @@
 ;;   improvement. Never clamp non-finite scores to an arbitrary finite value.
 ;; Explicit candidate validity handles initialization from an invalid candidate
 ;; in O0; the scalar helper also handles an old negative infinity safely.
-(= (continImprovementThreshold) -0.0001)
+(= (continImprovementThreshold) (param continImprovementThreshold))
 
 (= (scoreImproved $context $newScore $oldScore)
    (let $threshold
@@ -152,24 +152,114 @@
            ($other (param hcScoreImprovedThreshold))))
      (scoreImprovedWithThreshold $newScore $oldScore $threshold)))
 
-(= (continFiniteNumber $value)
-   (if (== (get-type $value) Number)
-       ;; Convert Janus Python bools to integers before MeTTa comparison.
-       (== (py-call (builtins.int (py-call (math.isfinite $value)))) 1) False))
-
 (= (scoreImprovedWithThreshold $newScore $oldScore $threshold)
    (if (and (continFiniteNumber $newScore) (continFiniteNumber $threshold))
        (if (continFiniteNumber $oldScore)
            (scoreImprovedFinite $newScore $oldScore $threshold)
            (if (== (get-type $oldScore) Number)
-               (if (== (py-call (builtins.int (py-call (math.isinf $oldScore)))) 1)
+               (if (== (catch (py-call (builtins.int (py-call (math.isinf $oldScore))))) 1)
                    (< $oldScore 0) False)
                False))
        False))
 
 (= (scoreImprovedFinite $newScore $oldScore $threshold)
-   (if (>= $threshold 0)
+   (== (catch (if (>= $threshold 0)
        (> $newScore (+ $oldScore $threshold))
        (let $margin (* (- 0 $threshold)
                        (if (< $oldScore 0) (- 0 $oldScore) $oldScore))
-         (> $newScore (+ $oldScore $margin)))))
+         (> $newScore (+ $oldScore $margin))))) True))
+
+;; Full scoring path: preserve tagged failures until the composite boundary.
+;; Catch EACH row and accumulation: overflow must not be hidden by later rows.
+(= (continScoreRowsWithBehavior $tree $labels $columns $targets $error $total)
+   (case $targets
+     ((() (mkContinBehavior () $total))
+      ((cons $target $rest)
+       (case (continEval $tree (continRowEnvironment $labels $columns))
+         (((mkCEvalError $reason) (mkCEvalError $reason))
+          ((mkCEvalOk $prediction)
+           (case (continCheckedNumber (catch (continRowScore $error $prediction $target)))
+             (((mkCEvalError $rowError) (mkCEvalError $rowError))
+              ((mkCEvalOk $contribution)
+               (case (continCheckedNumber (catch (+ $total $contribution)))
+                 (((mkCEvalError $sumError) (mkCEvalError $sumError))
+                  ((mkCEvalOk $sum)
+                   (case (continScoreRowsWithBehavior $tree $labels (continNextColumns $columns)
+                                    $rest $error $sum)
+                     (((mkCEvalError $tailError) (mkCEvalError $tailError))
+                      ((mkContinBehavior $tailScores $raw)
+                       (mkContinBehavior (cons $contribution $tailScores) $raw)))))))))))))))))
+
+(= (continScoreRows $tree $labels $columns $targets $error $total)
+   (case (continScoreRowsWithBehavior $tree $labels $columns $targets $error $total)
+     (((mkCEvalError $reason) (mkCEvalError $reason))
+      ((mkContinBehavior $scores $raw) (mkCEvalOk $raw)))))
+
+(= (continComposite $tree $raw $ratio)
+   (let $complexity (continTreeComplexity $tree)
+     (case (continCheckedNumber (catch (* $ratio $complexity)))
+       (((mkCEvalError $reason) (mkCEvalError $reason))
+        ((mkCEvalOk $penalty)
+         (case (continCheckedNumber (catch (- $raw $penalty)))
+           (((mkCEvalError $penError) (mkCEvalError $penError))
+            ((mkCEvalOk $penalized)
+             (mkCscore $raw $complexity $penalty 0.0 $penalized)))))))))
+
+;; Returns mkCscore or mkCEvalError. Validation is also needed for a constant
+;; tree, so unused bad columns and invalid context fields cannot bypass it.
+(= (continScoreDetails $tree $context)
+   (case (continPrepareContext $context)
+     (((mkCEvalError $reason) (mkCEvalError $reason))
+      ((mkContinData $labels $columns $targets)
+       (if (continTreeWellFormed $tree)
+           (case (continScoreRowsWithBehavior $tree $labels $columns $targets (continCtxErrorType $context) 0.0)
+             (((mkCEvalError $rowError) (mkCEvalError $rowError))
+              ((mkContinBehavior $scores $raw)
+               (case (continComposite $tree $raw (continCtxComplexityRatio $context))
+                 (((mkCEvalError $penaltyError) (mkCEvalError $penaltyError))
+                  ($composite (mkContinScore $composite (mkBScore $scores))))))))
+           (mkCEvalError "InvalidTree"))))))
+
+(= (continScoreTree $tree $context)
+   (case (continScoreDetails $tree $context)
+     (((mkCEvalError $reason) (mkCEvalError $reason))
+      ((mkContinScore $score $behavior) $score))))
+
+;; Retain per-row errors from the SAME counted invocation for merge/dominance.
+;; Never rescore during merge. The lifecycle clears this alongside score caches.
+!(bind! &continBehaviorCache (new-space))
+!(bind! &continTraceStart (new-state 0.0))
+!(bind! &continTraceCalls (new-state 0))
+(= (cachedContinBehavior $context $tree)
+   (let $hits (collapse (match &continBehaviorCache (continBehavior $context $tree $bs) $bs))
+     (if (== $hits ()) (mkCEvalError "MissingContinuousBehavior") (car-atom $hits))))
+(= (resetContinBehaviorCache)
+   (let* (($entries (collapse (match &continBehaviorCache $entry $entry)))
+          ($_ (map-atom $entries $entry (remove-atom &continBehaviorCache $entry)))
+          ($_count (change-state! &continTraceCalls 0))
+          ($_clock (if (param continTrace)
+                      (change-state! &continTraceStart (py-call (time.monotonic))) True))) True))
+
+;; Opt-in observational trace: only actual scorer invocations, never cache hits
+;; or merge. Elapsed time starts at run cache reset (not process startup/CSV).
+(= (continTraceEvaluation $tree $result)
+   (let $_trace
+        (if (param continTrace)
+            (let* (($_count (change-state! &continTraceCalls (+ 1 (get-state &continTraceCalls))))
+                   ($elapsed (- (py-call (time.monotonic)) (get-state &continTraceStart)))
+                   ((mkCandidateScore $score $status) $result))
+              (println! (ContinuousEvaluation (scorerCallIndex (get-state &continTraceCalls))
+                (elapsed $elapsed) (status $status) (raw (getScore $score))
+                (penalized (getPenScore $score)) (complexity (getComp $score))))) True)
+     $result))
+
+;; Status-aware shared scorer. A valid raw score below -1e100 stays valid.
+(= (scoreContinCandidate $tree $context)
+   (continTraceEvaluation $tree (case (continScoreDetails $tree $context)
+     (((mkCEvalError $reason)
+       (mkCandidateScore (worstCscore) (candidateInvalid $reason)))
+      ((mkContinScore $score $behavior)
+       (let $_cache
+            (if (== (cachedContinBehavior $context $tree) (mkCEvalError "MissingContinuousBehavior"))
+                (add-atom &continBehaviorCache (continBehavior $context $tree $behavior)) True)
+         (mkCandidateScore $score candidateValid)))))))
