@@ -1,0 +1,198 @@
+{
+  "version": 3,
+  "purpose": "Step 11 initial, untuned hBOA vs default HC; affine and fixed-deme linkage diagnostics. Equal evaluation allowances, not equal-time or nonlinear qualification.",
+  "development_seeds": [
+    0
+  ],
+  "seeds": [
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209
+  ],
+  "training_error_targets": [
+    1,
+    0.1,
+    0.01,
+    1e-8
+  ],
+  "evaluation_checkpoints": [
+    1,
+    10,
+    25,
+    50,
+    100,
+    250,
+    500,
+    1000
+  ],
+  "acceptance_error": 1e-8,
+  "parameters": {
+    "problem": "linear",
+    "continDepth": 2,
+    "continStep": 1,
+    "continExpansion": 2,
+    "continComplexityRatio": 0,
+    "continImprovementThreshold": -0.0001,
+    "continSearchMode": "linear",
+    "maxGen": 10,
+    "nDeme": 1,
+    "maxEvals": 1000,
+    "optimizerMaxProposals": 100000,
+    "optimizerMaxGenerations": 1000,
+    "optimizerTimeLimitSec": -1,
+    "hcWidenSearch": false,
+    "hcCrossover": true,
+    "maxDist": 4,
+    "minXoverNeighbors": 400,
+    "hcCrossoverPopSize": 120,
+    "hcFractionOfNN": 2,
+    "hcMinDemeSize": 50,
+    "revisit": 0,
+    "discardDominated": false,
+    "capCoef": 50,
+    "complexityTemperature": 6,
+    "maxCandPerDeme": 100,
+    "minPoolSize": 20,
+    "nToKeep": 50,
+    "nEval": 10000,
+    "maxCandOutput": 10,
+    "diagnostics": true,
+    "continTrace": true,
+    "edaPopulationSize": 32,
+    "edaSelectionSize": 16,
+    "edaOffspringSize": 16,
+    "edaTournamentSize": 2,
+    "edaPseudocount": 1,
+    "edaExploration": 0.1,
+    "edaMaxRefillAttempts": 256,
+    "edaStagnationGenerations": 10,
+    "boaMaxParents": 2,
+    "boaMaxTableCells": 256,
+    "boaMaxIterations": 16,
+    "boaMaxScoreCalls": 256,
+    "boaFitTimeLimitSec": 10,
+    "hboaMaxParents": 3,
+    "hboaMaxDepth": 3,
+    "hboaMaxLeaves": 8,
+    "hboaMinSupport": 2,
+    "hboaMaxIterations": 16,
+    "hboaMaxScoreCalls": 256,
+    "hboaFitTimeLimitSec": 10,
+    "hboaLearnDependencies": true,
+    "edaRTRWindow": 8,
+    "edaReplacement": "auto"
+  },
+  "cases": [
+    {
+      "name": "linear",
+      "loss": "squared_error",
+      "equation": "1 + 2*x",
+      "identifiable": true,
+      "coefficients": {
+        "bias": 1,
+        "x": 2
+      }
+    },
+    {
+      "name": "multivariate",
+      "loss": "squared_error",
+      "equation": "1 + 2*x - z",
+      "identifiable": true,
+      "coefficients": {
+        "bias": 1,
+        "x": 2,
+        "z": -1
+      }
+    },
+    {
+      "name": "absolute",
+      "loss": "abs_error",
+      "equation": "-1 + 0.5*x",
+      "identifiable": true,
+      "coefficients": {
+        "bias": -1,
+        "x": 0.5
+      }
+    },
+    {
+      "name": "correlated",
+      "loss": "squared_error",
+      "equation": "1 + 3*x, with z=2*x",
+      "identifiable": false,
+      "note": "Assess prediction on the z=2*x manifold; no unique coefficient recovery or off-manifold claim."
+    },
+    {
+      "name": "trap12",
+      "kind": "linkage",
+      "entrypoint": "optimization/hboa/tests/linkage-benchmark.metta",
+      "algorithms": [
+        "hc",
+        "hboa",
+        "hboa_no_dependencies"
+      ],
+      "target": 12,
+      "parameters": {
+        "problem": "trap12",
+        "maxEvals": 256,
+        "continTrace": false
+      },
+      "note": "Fixed bit-vector representation through action fitness seam and common counted scorer. Not a regression result. Identical initial vector across optimizers; EDA adds its configured prior population."
+    },
+    {
+      "name": "hiff8",
+      "kind": "linkage",
+      "entrypoint": "optimization/hboa/tests/linkage-benchmark.metta",
+      "algorithms": [
+        "hc",
+        "hboa",
+        "hboa_no_dependencies"
+      ],
+      "target": 32,
+      "parameters": {
+        "problem": "hiff8",
+        "maxEvals": 256,
+        "continTrace": false
+      },
+      "note": "Fixed bit-vector representation through action fitness seam and common counted scorer. Not a regression result. Identical initial vector across optimizers; EDA adds its configured prior population."
+    }
+  ],
+  "algorithms": [
+    "hc",
+    "hc_wide",
+    "univariate_rtr",
+    "boa",
+    "boa_rtr",
+    "hboa_elitist",
+    "hboa",
+    "hboa_no_dependencies"
+  ],
+  "algorithm_parameters": {
+    "hc_wide": {
+      "optAlgo": "hc",
+      "hcWidenSearch": true
+    },
+    "univariate_rtr": {
+      "optAlgo": "univariate",
+      "edaReplacement": "rtr"
+    },
+    "boa_rtr": {
+      "optAlgo": "boa",
+      "edaReplacement": "rtr"
+    },
+    "hboa_elitist": {
+      "optAlgo": "hboa",
+      "edaReplacement": "elitist"
+    },
+    "hboa_no_dependencies": {
+      "optAlgo": "hboa",
+      "hboaLearnDependencies": false
+    }
+  }
+}
