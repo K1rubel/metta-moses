@@ -97,6 +97,7 @@
       (
         ((mkOptimizerContext (mkActionCtx $nTrials $complexityRatio $actionTarget) $targetScore)
          ($optimize $deme $targetScore $inst (mkParams applyActionBasedScore ($nTrials $complexityRatio))))
+        ((mkOptimizerContext $inner $targetScore) ($optimize $deme $inner $inst))
         ($other ($optimize $deme $context $inst))
       )))
 
@@ -108,7 +109,10 @@
           ($demeIds (createDemeIds $nExpansion $nDeme))
          )
      (case $context
-       (((mkActionCtx $nTrials $cpxRatio $targetScore) (createDeme $nDeme $demeIds $tree (param actions) (param perceptions)))
+       (((mkContinCtx $table $error $ratio $mode $target)
+         (if (<= $nDeme 0) ()
+             (let $build createContinDemes ($build $demeIds $tree $context))))
+        ((mkActionCtx $nTrials $cpxRatio $targetScore) (createDeme $nDeme $demeIds $tree (param actions) (param perceptions)))
         (($prune $fsAlgo $truthTableBScore $itable) (createDeme $nDeme $demeIds $tree $itable $fsAlgo $prune () mi))))))
 
 (= (createSelectedDemes $exemplar $nExpansion $nDeme (mkActionCtx $nTrials $cpxRatio))
@@ -118,8 +122,9 @@
 ;; Adapt the public problem context to the optimizer's existing input shape.
 (= (optimizerContextFor $context $maxScore)
    (case $context
-     (((mkActionCtx $nTrials $cpxRatio $targetScore) (mkOptimizerContext $context $maxScore))
-      (($prune $fsAlgo $truthTableBScore $itable) $truthTableBScore))))
+     (((mkContinCtx $table $error $ratio $mode $target) (mkOptimizerContext $context $maxScore))
+      ((mkActionCtx $nTrials $cpxRatio $targetScore) (mkOptimizerContext $context $maxScore))
+      (($prune $fsAlgo $truthTableBScore $itable) (mkOptimizerContext $truthTableBScore $maxScore)))))
 
 (= (optimizerContextFor (mkActionCtx $nTrials $cpxRatio) $maxScore)
    (optimizerContextFor (mkActionCtx $nTrials $cpxRatio $maxScore) $maxScore))
@@ -128,20 +133,21 @@
 ;; `demeToTrees` during the shared merge.
 (= (mergeContextFor $context)
    (case $context
-     (((mkActionCtx $nTrials $cpxRatio $targetScore) (mkActionCtx $nTrials $cpxRatio $targetScore))
+     (((mkContinCtx $table $error $ratio $mode $target) $context)
+      ((mkActionCtx $nTrials $cpxRatio $targetScore) (mkActionCtx $nTrials $cpxRatio $targetScore))
       (($prune $fsAlgo $truthTableBScore $itable) $itable))))
 
 (= (mergeContextFor (mkActionCtx $nTrials $cpxRatio))
    (mkActionCtx $nTrials $cpxRatio 0))
 
-;; Stateful action setup evaluates its seed once. Boolean setup uses a
-;; synthetic known-worst score and therefore spends no scorer call.
+;; Legacy Boolean/action setup uses a synthetic seed and spends no scorer
+;; call here. Continuous seed calls are returned by prepareRunPopulation.
 (= (initialEvaluationCount $context)
    (case $context
      (($other 0))))
 
-;; Only a seed that was genuinely evaluated belongs in the run-wide candidate
-;; cache. Other domains will cache their first materialized candidate normally.
+;; Legacy synthetic seeds must not enter the candidate cache. Continuous run
+;; initialization populates it through the counted evaluator instead.
 (= (seedInitialCandidateCache $context $metaPop)
    (case $context
      (($other ()))))
@@ -153,18 +159,15 @@
    (let $_trees (clearSpace &treeSpace)
      (case $context
        ((($prune $fsAlgo $truthTableBScore (mkITable $rows $labels)) (resetSubtreeCache))
+        ((mkContinCtx $table $error $ratio $mode $target)
+         (let $reset resetContinBehaviorCache ($reset)))
         ($other True)))))
 
 (= (createInitialInstance $dscMp)
    (let $knobs (MultiMap.values $dscMp) (map-atom $knobs $knob (second (getKnobDefault $knob)))))
 
-;; The ninth hill-climbing state field is the number of actual scorer calls.
-(= (hillStateEvaluationCount ($alreadyXover $lastChance $hasImproved $prevCenter $prevStart
-       $prevSize $bestCscore $bestScore $actualEvaluations $distance $iteration))
-   $actualEvaluations)
-
 ;; Optimize one deme under its fair share of the remaining complete-run
-;; allowance. The temporary state is restored for direct optimizer callers.
+;; allowance. Only common result accessors cross the algorithm boundary.
 (= (optimizeDemeCounted (mkDeme (mkRep (mkKbMap (mkDscMp $dscKbMp)) $tree) $scoredInstances $demeId) $optimizerContext $optimize $localLimit)
    (let* (
           ($generatedList (createInitialInstance $dscKbMp))
@@ -173,11 +176,20 @@
                 (println! (GeneratedList: $generatedList))
                 ()))
           ($deme (mkDeme (mkRep (mkKbMap (mkDscMp $dscKbMp)) $tree) $scoredInstances $demeId))
-          ($_setLocalLimit (change-state! &localEvalLimit $localLimit))
-          (($inst $optimizedDeme $state) (optimizeDeme $deme $optimizerContext (mkInst $generatedList) $optimize))
-          ($_restoreLocalLimit (change-state! &localEvalLimit -1))
+          ($result (optimizeDeme $deme $optimizerContext (mkInst $generatedList)
+                     (configuredOptimizerLimits $localLimit) (get-state &optimizerRunRng)
+                     (mkOptimizerConfig $optimize)))
+          ($_nextRng (change-state! &optimizerRunRng (resultNextRngState $result)))
+          ($_optimizerDiagnostics
+            (if (param diagnostics)
+                (println! (OptimizerDiagnostics (deme $demeId)
+                  (stop (resultStopReason $result)) (actualEvaluations (resultActualEvaluations $result))
+                  (proposals (diagProposals (resultDiagnostics $result)))
+                  (cacheHits (diagCacheHits (resultDiagnostics $result)))
+                  (invalids (diagInvalids (resultDiagnostics $result)))
+                  (modelSize (diagModelSize (resultDiagnostics $result))))) ()))
          )
-     ($optimizedDeme (hillStateEvaluationCount $state))))
+     ((resultDeme $result) (resultActualEvaluations $result))))
 
 ;; Divide a finite allowance evenly, assigning remainder calls to the earliest
 ;; demes. The sum of local shares never exceeds the remaining global budget.
@@ -188,7 +200,7 @@
           ($localLimit (+ $baseLimit (if $hasExtra 1 0)))
           ($nextExtra (if $hasExtra (- $extraSlots 1) 0))
          )
-     (if (<= $localLimit 0)
+     (if (== $localLimit 0)
          (() 0)
          (let* (
                 (($optimizedDeme $used) (optimizeDemeCounted $deme $optimizerContext $optimize $localLimit))
@@ -204,7 +216,7 @@
           ($demeCount (List.length (cons $firstDeme $restDemes)))
           ($baseLimit
             (if (< $remainingBudget 0)
-                (pow-math 10 18)
+                -1
                 (floor-math (/ $remainingBudget $demeCount))))
           ($extraSlots
             (if (< $remainingBudget 0)
@@ -227,11 +239,13 @@
      (expandDemesCounted $demes $optimizerContext $optimize $remainingBudget)))
 
 ;; Diagnostics materialize each candidate once before treeSpace is cleared.
-(= (diagnosticDemeTrees $demes)
+(= (diagnosticDemeTrees $demes $context)
    (List.flatten
      (map-atom $demes (mkDeme $rep (mkSInstSet $instances) $demeId)
          (map-atom $instances $scoredInst
-           (getCandidate $rep $demeId (getInst $scoredInst))))))
+           (materializeCandidateForContext $rep $demeId (getInst $scoredInst) $context)))))
+
+(= (diagnosticDemeTrees $demes) (diagnosticDemeTrees $demes ()))
 
 ;; Count retained instance rows across diagnostic demes without allocating an
 ;; intermediate list.
@@ -274,8 +288,8 @@
 (= (printGenerationDiagnostics
       $remainingGen $nExpansion $selectedExemplar $selectedVisitCount
       $optimizedDemes $updatedMetaPop ($bestRaw $bestPenalized)
-      $actualEvaluations $cumulativeEvaluations)
-   (let $candidateTrees (diagnosticDemeTrees $optimizedDemes)
+      $actualEvaluations $cumulativeEvaluations $context)
+   (let $candidateTrees (diagnosticDemeTrees $optimizedDemes $context)
      (println! (GenerationDiagnostics
                  (remaining $remainingGen)
                  (expansion $nExpansion)
@@ -353,12 +367,20 @@
 ;; One shared loop handles visits, budgets, expansion, merging, raw-target
 ;; termination, and finalization for every problem family. The main public entry
 ;; keeps the init state inline and avoids any extra helper layer.
-(= (runMoses $maxGen $maxScore $metaPop $nExpansion $nDeme $context $optimize)
+(= (prepareRunPopulation $context $supplied)
+   (case $context
+     (((mkContinCtx $table $error $ratio $mode $target)
+       (let $initialize initializeContinRun ($initialize $context $supplied)))
+      ($other
+       (let $_seed (seedInitialCandidateCache $context $supplied)
+         ($supplied (initialEvaluationCount $context)))))))
+
+(= (runMoses $maxGen $maxScore $suppliedMetaPop $nExpansion $nDeme $context $optimize)
 (let* (
           ($_reset (resetCandidateScoreCache))
           ($_domainReset (resetDomainRunCaches $context))
-          ($_seed (seedInitialCandidateCache $context $metaPop))
-          ($initialEvaluations (initialEvaluationCount $context))
+          ($_optimizerRng (change-state! &optimizerRunRng (optimizerRngFromSeed (param seed))))
+          (($metaPop $initialEvaluations) (prepareRunPopulation $context $suppliedMetaPop))
           ($rawChampion (if (== $metaPop ()) () (bestRawExemplar $metaPop)))
           ($initialVisits ())
          )
@@ -428,7 +450,7 @@
                       (getExemplarPenScore (OS.getByIdx 0 $updatedMetaPop))))
                 ($_diagnostics
                   (if (param diagnostics)
-                      (printGenerationDiagnostics $maxGen $nExpansion $exemplar $selectedVisitCount $optimizedDemes $updatedMetaPop ($bestRaw $bestPenalized) $actualEvaluations $updatedEvaluations)
+                      (printGenerationDiagnostics $maxGen $nExpansion $exemplar $selectedVisitCount $optimizedDemes $updatedMetaPop ($bestRaw $bestPenalized) $actualEvaluations $updatedEvaluations $context)
                       ()))
                 ($_clear (clearSpace &treeSpace))
                 ($_cut (cut))

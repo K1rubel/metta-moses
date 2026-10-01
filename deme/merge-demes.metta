@@ -65,6 +65,23 @@
  $uniqueTopCandidates
  ))
 
+;; Action scoring/merge deliberately use the unreduced materialized tree.
+;; Do not call getCandidate (which finalizes) during action duplicate filtering:
+;; a failed rewrite could backtrack into another already-counted search run.
+(= (uniqueActionRows $rep $rows $seen $left)
+   (if (<= $left 0) ()
+       (case $rows
+         ((() ())
+          ((cons $row $rest)
+           (let $tree (getCandidateHelper (getInst $row) (getRepTree $rep))
+             (if (once (is-member $tree $seen))
+                 (uniqueActionRows $rep $rest $seen $left)
+                 (cons $row (uniqueActionRows $rep $rest (cons $tree $seen) (- $left 1))))))))))
+(= (keepTopActionCandidates $rep (mkSInstSet $rows))
+   (let* (($limit (min (param nEval) (List.length $rows)))
+          ($capped (if (< (param maxCandPerDeme) 0) $limit (min $limit (param maxCandPerDeme)))))
+     (uniqueActionRows $rep $rows () $capped)))
+
 ;; Filters a sorted list of ScoredInstances, removing instances with penalized scores below $botSc, starting from $lastIndex.
 ;; Params:
 ;;   (List (ScoredInstance Cscore)): Sorted list of scored instances.
@@ -142,11 +159,15 @@
         ($inst (getInst $si))
         ($tree
           (case $scoringContext
-            (((mkActionCtx $nTrials $complexityRatio $targetScore)
+            (((mkContinCtx $table $error $ratio $mode $target)
+              (let $finalize finalizeContinCandidate ($finalize $rep $inst)))
+             ((mkActionCtx $nTrials $complexityRatio $targetScore)
               (getCandidateHelper $inst (getRepTree $rep)))
              ($other (getCandidate $rep $demeId $inst)))))
         ($bscore (case $scoringContext
-                    (((mkITable $rows $labels) (scoreTree $scoringContext $tree &bscoreCache))
+                    (((mkContinCtx $table $error $ratio $mode $target)
+                      (let $behavior continMergeBehavior ($behavior $scoringContext $tree)))
+                     ((mkITable $rows $labels) (scoreTree $scoringContext $tree &bscoreCache))
 ;; Action arm: tagged (mkActionCtx ...) context, disjoint from
                      ;; the boolean (mkITable ...) arm above.
                      ((mkActionCtx $nTrials $complexityRatio $targetScore) (scoreActionTree $tree $nTrials &actionScoreCache)))))
@@ -280,7 +301,12 @@
                    (println! (Demesize:
                                (List.length (second $sortedSInstList))))
                    ()))
-            ($unqCandidates (keepTopUniqueCandidates $rep $demeId $sortedSInstList))  ;;remove duplicates and limits the size by keeping the top scoring
+            ($unqCandidates
+              (case $scoringContext
+                (((mkContinCtx $table $error $ratio $mode $target)
+                  (let $keep keepTopContinCandidates ($keep $rep $sortedSInstList)))
+                 ((mkActionCtx $trials $ratio $target) (keepTopActionCandidates $rep $sortedSInstList))
+                 ($other (keepTopUniqueCandidates $rep $demeId $sortedSInstList)))))
             ($_ (if (param diagnostics)
                    (println! (KeptUniqueTopCandidates NewSize:
                                (List.length $unqCandidates)))
