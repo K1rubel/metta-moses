@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "purpose": "Step 14 causal ablations on coupled nonlinear regression; ten paired seeds; equal 500-evaluation allowance.",
+  "seeds": [400,401,402,403,404,405,406,407,408,409],
+  "training_error_targets": [1,0.1,0.01,1e-8],
+  "evaluation_checkpoints": [1,10,25,50,100,250,500],
+  "acceptance_error": 1e-8,
+  "algorithms": ["hc","hc_wide","univariate_rtr","boa_rtr","hboa","hboa_no_dependencies","hboa_elitist","hboa_fit1024","hboa_pop64"],
+  "algorithm_parameters": {
+    "hc_wide":{"optAlgo":"hc","hcWidenSearch":true},
+    "univariate_rtr":{"optAlgo":"univariate","edaReplacement":"rtr"},
+    "boa_rtr":{"optAlgo":"boa","edaReplacement":"rtr"},
+    "hboa_no_dependencies":{"optAlgo":"hboa","hboaLearnDependencies":false},
+    "hboa_elitist":{"optAlgo":"hboa","edaReplacement":"elitist"},
+    "hboa_fit1024":{"optAlgo":"hboa","hboaMaxScoreCalls":1024},
+    "hboa_pop64":{"optAlgo":"hboa","edaPopulationSize":64,"edaSelectionSize":32,"edaOffspringSize":32}
+  },
+  "parameters": {
+    "problem":"sr", "continDepth":2, "continStep":1, "continExpansion":2,
+    "continPolyDegree":2, "continScaffoldDepth":1, "continOperators":"(c_add c_mul)",
+    "continMaxScaffoldNodes":10000, "continComplexityRatio":0,
+    "continImprovementThreshold":-0.0001, "maxGen":10, "nDeme":1, "maxEvals":500,
+    "optimizerMaxProposals":100000, "optimizerMaxGenerations":1000,
+    "optimizerTimeLimitSec":-1, "hcWidenSearch":false, "hcCrossover":true,
+    "maxDist":4, "revisit":0, "diagnostics":true, "continTrace":true,
+    "edaPopulationSize":32, "edaSelectionSize":16, "edaOffspringSize":16,
+    "edaTournamentSize":2, "edaPseudocount":1, "edaExploration":0.1,
+    "edaMaxRefillAttempts":256, "edaStagnationGenerations":10,
+    "boaMaxParents":2, "boaMaxTableCells":256, "boaMaxIterations":16,
+    "boaMaxScoreCalls":256, "boaFitTimeLimitSec":10,
+    "hboaMaxParents":3, "hboaMaxDepth":3, "hboaMaxLeaves":8,
+    "hboaMinSupport":2, "hboaMaxIterations":16, "hboaMaxScoreCalls":256,
+    "hboaFitTimeLimitSec":10, "hboaLearnDependencies":true,
+    "edaRTRWindow":8, "edaReplacement":"auto"
+  },
+  "cases": [
+    {"name":"sr-interaction","family":"nonlinear","loss":"squared_error","equation":"1 + x*x + x*z - z*z","identifiable":false,"parameters":{"continPolyDegree":2,"continOperators":"(c_add c_mul)"}},
+    {"name":"sr-quartic-interaction","family":"nonlinear","loss":"squared_error","equation":"1 + x*z + x*x*z*z","identifiable":false,"parameters":{"continPolyDegree":4,"continOperators":"(c_add c_mul)"}},
+    {"name":"sr-sine","family":"nonlinear","loss":"squared_error","equation":"sin(x + x*x)","identifiable":false,"parameters":{"continPolyDegree":2,"continOperators":"(c_add c_mul c_sin)"}}
+  ]
+}

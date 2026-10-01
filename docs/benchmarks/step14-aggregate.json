@@ -1,0 +1,74 @@
+{
+  "status": "partial",
+  "paired_seeds_primary": [400,401,402,403,404,405,406,407,408,409],
+  "primary_equal_evaluations": {
+    "budget_actual_scorer_calls": 500,
+    "complete_fixtures": 8,
+    "complete_runs": 320,
+    "success_threshold": "training and test error <= 1e-8",
+    "successes": {
+      "linear": {"hc": 10, "univariate": 10, "boa": 10, "hboa": 10},
+      "multivariate": {"hc": 10, "univariate": 10, "boa": 10, "hboa": 10},
+      "absolute": {"hc": 0, "univariate": 10, "boa": 10, "hboa": 10},
+      "correlated": {"hc": 10, "univariate": 10, "boa": 10, "hboa": 10},
+      "sr-cubic": {"hc": 10, "univariate": 10, "boa": 10, "hboa": 8},
+      "sr-interaction": {"hc": 10, "univariate": 7, "boa": 9, "hboa": 3},
+      "sr-sine": {"hc": 0, "univariate": 0, "boa": 1, "hboa": 1},
+      "sr-exp": {"hc": 10, "univariate": 3, "boa": 2, "hboa": 3}
+    },
+    "median_calls_hc_hboa": {
+      "linear": [28,58], "multivariate": [78,243.5], "absolute": [33,25.5],
+      "correlated": [20,28], "sr-cubic": [37,253.5],
+      "sr-interaction": [53,500], "sr-sine": [412,500], "sr-exp": [7,452]
+    },
+    "median_process_seconds_hc_hboa": {
+      "linear": [2.05,2.70], "multivariate": [2.51,7.83], "absolute": [2.33,2.06],
+      "correlated": [2.07,2.16], "sr-cubic": [2.21,6.91],
+      "sr-interaction": [2.73,16.78], "sr-sine": [25.10,20.13], "sr-exp": [2.11,15.26]
+    }
+  },
+  "quartic_partial": {
+    "planned_runs": 40,
+    "recorded_runs": 9,
+    "safety_timeouts": 1,
+    "successes_and_recorded_n": {
+      "hc": [2,2], "univariate": [0,2], "boa": [0,3], "hboa": [0,1]
+    },
+    "note": "A timeout has no valid algorithm-time measurement; unequal arm sample counts must not be compared as rates."
+  },
+  "ablations": {
+    "paired_seeds": [400,401,402,403,404],
+    "fixtures": ["sr-interaction","sr-sine"],
+    "interaction_successes_out_of_5": {
+      "hc": 5, "hc_wide": 5, "univariate_rtr": 2, "boa_rtr": 1,
+      "hboa_rtr": 1, "hboa_no_dependencies": 2, "hboa_elitist": 3,
+      "hboa_fit1024": 1, "hboa_pop64": 1
+    },
+    "sine_successes_out_of_5": {
+      "hc": 0, "hc_wide": 5, "univariate_rtr": 1, "boa_rtr": 0,
+      "hboa_rtr": 0, "hboa_no_dependencies": 1, "hboa_elitist": 0,
+      "hboa_fit1024": 0, "hboa_pop64": 0
+    }
+  },
+  "equal_time_diagnostic": {
+    "runs": 60,
+    "fixtures": ["linear","sr-sine"],
+    "nominal_optimizer_deadline_seconds": 15,
+    "outer_generations": 1,
+    "qualified_as_global_equal_time": false,
+    "reason": "Per-optimizer deadline and one-expansion lifecycle are not a run-global MOSES wall-clock budget; many runs terminate before using the allowance."
+  },
+  "remaining": [
+    "complete quartic paired runs and investigate the timeout",
+    "noisy-data training with clean held-out splits",
+    "continuous fixed-deme comparison and run-global deadline",
+    "larger paired dependency/replacement ablations",
+    "direct selection diversity, active-field coverage and RTR-rejection telemetry"
+  ],
+  "raw_records": [
+    "step14-equal-evals/",
+    "step14-primary-unary/",
+    "step14-ablation/",
+    "step14-equal-time/"
+  ]
+}

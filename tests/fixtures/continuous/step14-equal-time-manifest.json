@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "purpose": "Step 14 equal optimizer-time qualification; ten paired seeds, 15-second search deadline and 5000-call safety allowance. Process startup is reported separately.",
+  "seeds": [400,401,402,403,404,405,406,407,408,409],
+  "training_error_targets": [1,0.1,0.01,1e-8],
+  "evaluation_checkpoints": [1,10,25,50,100,250,500,1000,2000,5000],
+  "acceptance_error": 1e-8,
+  "algorithms": ["hc","hboa","hboa_no_dependencies"],
+  "algorithm_parameters": {"hboa_no_dependencies":{"optAlgo":"hboa","hboaLearnDependencies":false}},
+  "parameters": {
+    "problem":"sr", "continDepth":2, "continStep":1, "continExpansion":2,
+    "continPolyDegree":2, "continScaffoldDepth":1, "continOperators":"(c_add c_mul)",
+    "continMaxScaffoldNodes":10000, "continComplexityRatio":0,
+    "continImprovementThreshold":-0.0001, "maxGen":1, "nDeme":1, "maxEvals":5000,
+    "optimizerMaxProposals":100000, "optimizerMaxGenerations":1000,
+    "optimizerTimeLimitSec":15, "hcWidenSearch":false, "hcCrossover":true,
+    "maxDist":4, "revisit":0, "diagnostics":true, "continTrace":true,
+    "edaPopulationSize":32, "edaSelectionSize":16, "edaOffspringSize":16,
+    "edaTournamentSize":2, "edaPseudocount":1, "edaExploration":0.1,
+    "edaMaxRefillAttempts":256, "edaStagnationGenerations":100,
+    "boaMaxParents":2, "boaMaxTableCells":256, "boaMaxIterations":16,
+    "boaMaxScoreCalls":256, "boaFitTimeLimitSec":10,
+    "hboaMaxParents":3, "hboaMaxDepth":3, "hboaMaxLeaves":8,
+    "hboaMinSupport":2, "hboaMaxIterations":16, "hboaMaxScoreCalls":256,
+    "hboaFitTimeLimitSec":10, "hboaLearnDependencies":true,
+    "edaRTRWindow":8, "edaReplacement":"auto"
+  },
+  "cases": [
+    {"name":"linear","family":"affine","loss":"squared_error","equation":"1 + 2*x","identifiable":true,"coefficients":{"bias":1,"x":2},"parameters":{"problem":"linear","continSearchMode":"linear"}},
+    {"name":"sr-quartic-interaction","family":"nonlinear","loss":"squared_error","equation":"1 + x*z + x*x*z*z","identifiable":false,"parameters":{"continPolyDegree":4,"continOperators":"(c_add c_mul)"}},
+    {"name":"sr-sine","family":"nonlinear","loss":"squared_error","equation":"sin(x + x*x)","identifiable":false,"parameters":{"continPolyDegree":2,"continOperators":"(c_add c_mul c_sin)"}}
+  ]
+}
