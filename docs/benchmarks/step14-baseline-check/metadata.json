@@ -1,0 +1,261 @@
+{
+  "created_utc": "2026-09-30T07:10:18.114162+00:00",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "processor": "Intel64 Family 6 Model 61 Stepping 4, GenuineIntel",
+  "python": "3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)]",
+  "swipl": "SWI-Prolog version 10.0.2 for x64-win64",
+  "petta_main": "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+  "petta_commit": null,
+  "petta_main_sha256": "51eb385e186de7fce1a4f3bda49cd2982799823f206c816361837c7599ecfa70",
+  "manifest": {
+    "version": 3,
+    "purpose": "Step 11 initial, untuned hBOA vs default HC; affine and fixed-deme linkage diagnostics. Equal evaluation allowances, not equal-time or nonlinear qualification.",
+    "development_seeds": [
+      0
+    ],
+    "seeds": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209
+    ],
+    "training_error_targets": [
+      1,
+      0.1,
+      0.01,
+      1e-08
+    ],
+    "evaluation_checkpoints": [
+      1,
+      10,
+      25,
+      50,
+      100,
+      250,
+      500,
+      1000
+    ],
+    "acceptance_error": 1e-08,
+    "parameters": {
+      "problem": "linear",
+      "continDepth": 2,
+      "continStep": 1,
+      "continExpansion": 2,
+      "continComplexityRatio": 0,
+      "continImprovementThreshold": -0.0001,
+      "continSearchMode": "linear",
+      "maxGen": 10,
+      "nDeme": 1,
+      "maxEvals": 1000,
+      "optimizerMaxProposals": 100000,
+      "optimizerMaxGenerations": 1000,
+      "optimizerTimeLimitSec": -1,
+      "hcWidenSearch": false,
+      "hcCrossover": true,
+      "maxDist": 4,
+      "minXoverNeighbors": 400,
+      "hcCrossoverPopSize": 120,
+      "hcFractionOfNN": 2,
+      "hcMinDemeSize": 50,
+      "revisit": 0,
+      "discardDominated": false,
+      "capCoef": 50,
+      "complexityTemperature": 6,
+      "maxCandPerDeme": 100,
+      "minPoolSize": 20,
+      "nToKeep": 50,
+      "nEval": 10000,
+      "maxCandOutput": 10,
+      "diagnostics": true,
+      "continTrace": true,
+      "edaPopulationSize": 32,
+      "edaSelectionSize": 16,
+      "edaOffspringSize": 16,
+      "edaTournamentSize": 2,
+      "edaPseudocount": 1,
+      "edaExploration": 0.1,
+      "edaMaxRefillAttempts": 256,
+      "edaStagnationGenerations": 10,
+      "boaMaxParents": 2,
+      "boaMaxTableCells": 256,
+      "boaMaxIterations": 16,
+      "boaMaxScoreCalls": 256,
+      "boaFitTimeLimitSec": 10,
+      "hboaMaxParents": 3,
+      "hboaMaxDepth": 3,
+      "hboaMaxLeaves": 8,
+      "hboaMinSupport": 2,
+      "hboaMaxIterations": 16,
+      "hboaMaxScoreCalls": 256,
+      "hboaFitTimeLimitSec": 10,
+      "hboaLearnDependencies": true,
+      "edaRTRWindow": 8,
+      "edaReplacement": "auto"
+    },
+    "cases": [
+      {
+        "name": "linear",
+        "loss": "squared_error",
+        "equation": "1 + 2*x",
+        "identifiable": true,
+        "coefficients": {
+          "bias": 1,
+          "x": 2
+        }
+      },
+      {
+        "name": "multivariate",
+        "loss": "squared_error",
+        "equation": "1 + 2*x - z",
+        "identifiable": true,
+        "coefficients": {
+          "bias": 1,
+          "x": 2,
+          "z": -1
+        }
+      },
+      {
+        "name": "absolute",
+        "loss": "abs_error",
+        "equation": "-1 + 0.5*x",
+        "identifiable": true,
+        "coefficients": {
+          "bias": -1,
+          "x": 0.5
+        }
+      },
+      {
+        "name": "correlated",
+        "loss": "squared_error",
+        "equation": "1 + 3*x, with z=2*x",
+        "identifiable": false,
+        "note": "Assess prediction on the z=2*x manifold; no unique coefficient recovery or off-manifold claim."
+      },
+      {
+        "name": "trap12",
+        "kind": "linkage",
+        "entrypoint": "optimization/hboa/tests/linkage-benchmark.metta",
+        "algorithms": [
+          "hc",
+          "hboa",
+          "hboa_no_dependencies"
+        ],
+        "target": 12,
+        "parameters": {
+          "problem": "trap12",
+          "maxEvals": 256,
+          "continTrace": false
+        },
+        "note": "Fixed bit-vector representation through action fitness seam and common counted scorer. Not a regression result. Identical initial vector across optimizers; EDA adds its configured prior population."
+      },
+      {
+        "name": "hiff8",
+        "kind": "linkage",
+        "entrypoint": "optimization/hboa/tests/linkage-benchmark.metta",
+        "algorithms": [
+          "hc",
+          "hboa",
+          "hboa_no_dependencies"
+        ],
+        "target": 32,
+        "parameters": {
+          "problem": "hiff8",
+          "maxEvals": 256,
+          "continTrace": false
+        },
+        "note": "Fixed bit-vector representation through action fitness seam and common counted scorer. Not a regression result. Identical initial vector across optimizers; EDA adds its configured prior population."
+      }
+    ],
+    "algorithms": [
+      "hc",
+      "hc_wide",
+      "univariate_rtr",
+      "boa",
+      "boa_rtr",
+      "hboa_elitist",
+      "hboa",
+      "hboa_no_dependencies"
+    ],
+    "algorithm_parameters": {
+      "hc_wide": {
+        "optAlgo": "hc",
+        "hcWidenSearch": true
+      },
+      "univariate_rtr": {
+        "optAlgo": "univariate",
+        "edaReplacement": "rtr"
+      },
+      "boa_rtr": {
+        "optAlgo": "boa",
+        "edaReplacement": "rtr"
+      },
+      "hboa_elitist": {
+        "optAlgo": "hboa",
+        "edaReplacement": "elitist"
+      },
+      "hboa_no_dependencies": {
+        "optAlgo": "hboa",
+        "hboaLearnDependencies": false
+      }
+    }
+  },
+  "manifest_sha256": "76b31cb2fb5c785c06040097134846f46fe50b0af239d415c31e2ea76ca971e7",
+  "source_sha256": "1aa345ff40938c0537a3ec6522df0708d8ae8b486855ff0838e0db6997e10209",
+  "git_commit": "5a84da8d1c1d6cfef103739a1a405daa1a33bdd2",
+  "git_status": " M README.md\n M deme/expand-deme.metta\n M deme/merge-demes.metta\n M deme/tests/create-deme-test.metta\n M deme/tests/expand-demes-test.metta\n M deme/tests/merge-demes-test.metta\n M examples/ant/tests/ant-integration-test.metta\n M examples/ant/tests/ant-pipeline-test.metta\n M examples/tests/ant-action-test.metta\n M examples/tests/bot-action-test.metta\n M feature-selection/tests/hc-testold.metta\n M moses.metta\n M moses/demo-problems.metta\n M moses/tests/demo-problems-benchmark-test.metta\n M moses/tests/demo-problems-test.metta\n M moses/tests/input-file-test.metta\n M moses/tests/neighborhood-sampling-test.metta\n M moses/tests/ttt-action-smoke-test.metta\n M optimization/hillclimbing/hill-climbing-helpers.metta\n M optimization/hillclimbing/test/hillclimbing-helpers-test.metta\n M optimization/optimizer-contract.metta\n M optimization/simulated-annealing-algo/test/simulated-annealing-test.metta\n M optimization/univariate/test/univariate-test.metta\n M parameters/defaults.metta\n M representation/contin-spec.metta\n M scoring/action-score.metta\n M scoring/cacheSpace.metta\n M scoring/contin-eval.metta\n M scoring/contin-score.metta\n M scripts/csv_helper.py\n M tests/continuous-reference-fixtures-test.metta\n?? docs/\n?? initial-continuous-domain-porting-plan.md\n?? moses/contin-pipeline.metta\n?? moses/tests/boa-pipeline-test.metta\n?? moses/tests/contin-linear-test.metta\n?? moses/tests/contin-pipeline-test.metta\n?? moses/tests/contin-sr-test.metta\n?? moses/tests/hboa-pipeline-test.metta\n?? moses/tests/univariate-pipeline-test.metta\n?? optimization/boa/\n?? optimization/eda/\n?? optimization/hboa/\n?? optimization/hillclimbing/test/optimizer-boundary-test.metta\n?? optimization/legal-instance-sampling.metta\n?? optimization/optimizer-runtime.metta\n?? reduct/contin-reduct/\n?? representation/build-contin.metta\n?? representation/build-nonlinear.metta\n?? representation/contin-canonize.metta\n?? representation/contin-nonlinear.metta\n?? representation/contin-representation.metta\n?? representation/contin-stepper.metta\n?? representation/field-schema.metta\n?? representation/tests/contin-affine-test.metta\n?? representation/tests/contin-fields-test.metta\n?? representation/tests/contin-nonlinear-test.metta\n?? scoring/candidate-evaluation.metta\n?? scoring/test/candidate-evaluation-test.metta\n?? scoring/test/contin-evaluation-test.metta\n?? scripts/continuous_baseline.py\n?? scripts/optimizer_comparison.py\n?? scripts/tests/\n?? tests/contin-stepper-reference.metta\n?? tests/continuous-nonlinear-reference-test.metta\n?? tests/fixtures/\n",
+  "seeds": [
+    200
+  ],
+  "cases": [
+    "linear"
+  ],
+  "exploratory_override": true,
+  "timing": "serial fresh processes; rotate algorithm order per seed; process time includes imports/CSV; continuous trace elapsed starts at cache reset; instrumentation included",
+  "dataset_hashes": {
+    "absolute-test.csv": "cc40ccbb84cad21b9efd0304c6de018bc8b6a0278bfc6003e3746e76ab12e8a5",
+    "absolute-train.csv": "ef657ed8a9387e22c73543d0c4adda6e96d8e9ac3cc7fb52f6f8d8c73daf37dd",
+    "absolute-validation.csv": "0395e53ea47df0d04b11fff0b0119c1bb33219d925ffc411e3d40423a5cf4149",
+    "correlated-test.csv": "e597b8049b4c1bbbdd33523b471aa0d423044666a09ee12aae5c7b505e2d76e8",
+    "correlated-train.csv": "d4e4ff0a2607d20d94a22a0e1fb172720185242cdb7587416584c9d4449c0b72",
+    "correlated-validation.csv": "154e10c66393c721fa185331c1a0b07f6c3498cba23faad684388aeda3a5c20d",
+    "invalid.csv": "a34ea3a0117304c0ccf0563624131272270ae0a7c0e751bb87c9707031220041",
+    "linear-test.csv": "050dd9ea9d8f1dfb01c991eff9822c87c02b966b0fc8ac12dd17a4833e85d153",
+    "linear-train.csv": "686ff194831803e4613ad149f31e0c37d641626117138a9b8cda40635ff98d62",
+    "linear-validation.csv": "938ab2a3d4dee829f37b8bb20f6e34fbe3ea54ac01aa56cdce289bed6fff4c89",
+    "multivariate-test.csv": "d9906f53970f672490c76c917b1f8f1ee90fa1a57afe63bd73ed80ddceb837e4",
+    "multivariate-train.csv": "90d535aed1b6779e7091428015bc8985fad97c8139001406323c0b5c9725d766",
+    "multivariate-validation.csv": "ce20eaf0e84618b80e777d56dbb055bfd920f14caba466c4264449558b57ff42",
+    "quoted-headers.csv": "1a6f9741eaa678cf953670d0f2ecc0e86758e0e78e8ab95382adeede72292909",
+    "sr-cubic-test.csv": "edf82b992835d533143c97c63fbcb4fef919a38beb1c4faf0ac0a335930f97ce",
+    "sr-cubic-train.csv": "21da1fa3ad3b1c4e49e119e386316f548986b61011010e83b51e8eb2abfdc9f8",
+    "sr-cubic-validation.csv": "b8f338e47ff1d5bbac75e306f203b077514890cccbcc98d49ebe08e8abeff868",
+    "sr-exp-test.csv": "9da068d9d726783418bdbdd65eb233769887147d9f765321263cbc6efa14a20e",
+    "sr-exp-train.csv": "ffb2a5d5150e6b7afb75a08166b12e294aaf0fdf8215d1492778cc9182bd793a",
+    "sr-exp-validation.csv": "04da409bb81dbefac5516d102f9a0015647ce6af8285008433f9cff1535ef2b2",
+    "sr-interaction-test.csv": "810c1698ff31595f01354b4a757b7b663cc4bfb7021ea640773380272b455a6f",
+    "sr-interaction-train.csv": "329166653c877fdfe8cfc5cc1acac5f9231a7b056c4a7b97c53a0d187b8b3500",
+    "sr-interaction-validation.csv": "e12535b7f5ce930dd86c8332de601eab9b34e7089f931dd8395c49a0f4d5e14a",
+    "sr-log-test.csv": "c0e054ec06926386ce81708bdb850367c9ee328f3147cde11bb24bce0fc33aae",
+    "sr-log-train.csv": "63a0e8ee1a32c4f2505b88332025b88b644f6a8c7206f42acf3285902b71dc77",
+    "sr-log-validation.csv": "049dfc534f4946e4e5f51e7c6e6672d28dcee84e80dcef48032f2930383a04bd",
+    "sr-order2-test.csv": "fd6e28652572ce62779a11312da2ca745eb40daee58114d8cef00762c28628c3",
+    "sr-order2-train.csv": "fbcb3f313d1534c695639150a0e3af8d7de59abfb4351c4ee81fa90597cde28c",
+    "sr-order2-validation.csv": "3f384d466a5361bb8751141515b8c35e7faed235ca2a50903bd09d5312577f07",
+    "sr-quartic-interaction-test.csv": "69db1b4cc27f873e4616aab9337b6e59a12eb7ebcc5bcdf0d9adcd5db880b110",
+    "sr-quartic-interaction-train.csv": "227991abaf563ee360bfc5e5126ecb9967d2c05195a5cce47bfce2ca9c28e252",
+    "sr-quartic-interaction-validation.csv": "af55533f55ca9fc0d24e2e65ba5b5d19e5760c4f55135ea4bf856e2d404140d3",
+    "sr-rational-test.csv": "ab05de3c7255510451afc6f9702a12b7c9da604b0dcf849af60ae24df83430c8",
+    "sr-rational-train.csv": "c14fc09bb7ddbef49cabf8e0083c9557e56314dc9faea315bc08fe7939095a26",
+    "sr-rational-validation.csv": "7cc9cfb718db08870ed5393732b6e1e089f4a0a6df4734ef67316f6b43625e1f",
+    "sr-sine-test.csv": "3098dae95f198cdff13cc316bc080e91de2d805e7894239d654da4acb96bac28",
+    "sr-sine-train.csv": "91ebec3c20a0cbd4fb7b83974958beb9d8b32d4238d5f003f40dafe39debf80b",
+    "sr-sine-validation.csv": "e434107d76a95342d03d98dd18d2d19bb0b9ea27a7c3f82951db25bd97a3010c",
+    "target-first.csv": "c3da6c11dc8ffc23adefa54838e0b6269869624fe31b54539be3d0f22c9e12c2"
+  }
+}

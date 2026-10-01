@@ -1,0 +1,823 @@
+{
+  "case": "linear",
+  "seed": 404,
+  "algorithm": "hboa",
+  "command": [
+    "C:/Program Files/swipl/bin/swipl.exe",
+    "--stack_limit=8g",
+    "-q",
+    "-s",
+    "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+    "--",
+    "moses.metta",
+    "-s",
+    "--problem=linear",
+    "--continDepth=2",
+    "--continStep=1",
+    "--continExpansion=2",
+    "--continPolyDegree=2",
+    "--continScaffoldDepth=1",
+    "--continOperators=(c_add c_mul)",
+    "--continMaxScaffoldNodes=10000",
+    "--continComplexityRatio=0",
+    "--continImprovementThreshold=-0.0001",
+    "--maxGen=1",
+    "--nDeme=1",
+    "--maxEvals=5000",
+    "--optimizerMaxProposals=100000",
+    "--optimizerMaxGenerations=1000",
+    "--optimizerTimeLimitSec=15",
+    "--hcWidenSearch=False",
+    "--hcCrossover=True",
+    "--maxDist=4",
+    "--revisit=0",
+    "--diagnostics=True",
+    "--continTrace=True",
+    "--edaPopulationSize=32",
+    "--edaSelectionSize=16",
+    "--edaOffspringSize=16",
+    "--edaTournamentSize=2",
+    "--edaPseudocount=1",
+    "--edaExploration=0.1",
+    "--edaMaxRefillAttempts=256",
+    "--edaStagnationGenerations=100",
+    "--boaMaxParents=2",
+    "--boaMaxTableCells=256",
+    "--boaMaxIterations=16",
+    "--boaMaxScoreCalls=256",
+    "--boaFitTimeLimitSec=10",
+    "--hboaMaxParents=3",
+    "--hboaMaxDepth=3",
+    "--hboaMaxLeaves=8",
+    "--hboaMinSupport=2",
+    "--hboaMaxIterations=16",
+    "--hboaMaxScoreCalls=256",
+    "--hboaFitTimeLimitSec=10",
+    "--hboaLearnDependencies=True",
+    "--edaRTRWindow=8",
+    "--edaReplacement=auto",
+    "--continSearchMode=linear",
+    "--optAlgo=hboa",
+    "--seed=404",
+    "--continErrorType=squared_error",
+    "--inputFile=tests/fixtures/continuous/linear-train.csv"
+  ],
+  "process_wall_seconds": 2.6944365999661386,
+  "exit_code": 0,
+  "success": false,
+  "held_out_success": false,
+  "actual_evaluations": 49,
+  "invalid_evaluations": 0,
+  "proposals": 499,
+  "cache_hits": 1,
+  "raw_champion": {
+    "program": [
+      "c_add",
+      1.0,
+      "x"
+    ],
+    "raw": -10.0,
+    "complexity": 2,
+    "penalized": -10.0,
+    "train": {
+      "sse": 10.0,
+      "sae": 6.0,
+      "rmse": 1.4142135623730951,
+      "mae": 1.2,
+      "raw": -10.0,
+      "rows": 5,
+      "valid_rows": 5
+    },
+    "validation": {
+      "sse": 4.75,
+      "sae": 3.5,
+      "rmse": 1.2583057392117916,
+      "mae": 1.1666666666666667,
+      "raw": -4.75,
+      "rows": 3,
+      "valid_rows": 3
+    },
+    "test": {
+      "sse": 18.0625,
+      "sae": 6.25,
+      "rmse": 2.4537386440559095,
+      "mae": 2.0833333333333335,
+      "raw": -18.0625,
+      "rows": 3,
+      "valid_rows": 3
+    },
+    "coefficients": {
+      "bias": 1.0,
+      "x": 1.0
+    },
+    "max_coefficient_error": 1.0
+  },
+  "penalized_champion": {
+    "program": [
+      "c_add",
+      1.0,
+      "x"
+    ],
+    "raw": -10.0,
+    "complexity": 2,
+    "penalized": -10.0,
+    "train": {
+      "sse": 10.0,
+      "sae": 6.0,
+      "rmse": 1.4142135623730951,
+      "mae": 1.2,
+      "raw": -10.0,
+      "rows": 5,
+      "valid_rows": 5
+    },
+    "validation": {
+      "sse": 4.75,
+      "sae": 3.5,
+      "rmse": 1.2583057392117916,
+      "mae": 1.1666666666666667,
+      "raw": -4.75,
+      "rows": 3,
+      "valid_rows": 3
+    },
+    "test": {
+      "sse": 18.0625,
+      "sae": 6.25,
+      "rmse": 2.4537386440559095,
+      "mae": 2.0833333333333335,
+      "raw": -18.0625,
+      "rows": 3,
+      "valid_rows": 3
+    },
+    "coefficients": {
+      "bias": 1.0,
+      "x": 1.0
+    },
+    "max_coefficient_error": 1.0
+  },
+  "returned_programs": [
+    {
+      "program": [
+        "c_add",
+        1.0,
+        "x"
+      ],
+      "raw": -10.0,
+      "complexity": 2,
+      "penalized": -10.0,
+      "train": {
+        "sse": 10.0,
+        "sae": 6.0,
+        "rmse": 1.4142135623730951,
+        "mae": 1.2,
+        "raw": -10.0,
+        "rows": 5,
+        "valid_rows": 5
+      },
+      "validation": {
+        "sse": 4.75,
+        "sae": 3.5,
+        "rmse": 1.2583057392117916,
+        "mae": 1.1666666666666667,
+        "raw": -4.75,
+        "rows": 3,
+        "valid_rows": 3
+      },
+      "test": {
+        "sse": 18.0625,
+        "sae": 6.25,
+        "rmse": 2.4537386440559095,
+        "mae": 2.0833333333333335,
+        "raw": -18.0625,
+        "rows": 3,
+        "valid_rows": 3
+      },
+      "coefficients": {
+        "bias": 1.0,
+        "x": 1.0
+      },
+      "max_coefficient_error": 1.0
+    },
+    {
+      "program": [
+        "c_add",
+        1.0,
+        [
+          "c_mul",
+          3.0,
+          "x"
+        ]
+      ],
+      "raw": -10.0,
+      "complexity": 3,
+      "penalized": -10.0,
+      "train": {
+        "sse": 10.0,
+        "sae": 6.0,
+        "rmse": 1.4142135623730951,
+        "mae": 1.2,
+        "raw": -10.0,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.5,
+        "x"
+      ],
+      "raw": -11.25,
+      "complexity": 2,
+      "penalized": -11.25,
+      "train": {
+        "sse": 11.25,
+        "sae": 6.5,
+        "rmse": 1.5,
+        "mae": 1.3,
+        "raw": -11.25,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": [
+        "c_add",
+        0.5,
+        [
+          "c_mul",
+          3.0,
+          "x"
+        ]
+      ],
+      "raw": -11.25,
+      "complexity": 3,
+      "penalized": -11.25,
+      "train": {
+        "sse": 11.25,
+        "sae": 6.5,
+        "rmse": 1.5,
+        "mae": 1.3,
+        "raw": -11.25,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    },
+    {
+      "program": 0.0,
+      "raw": -45.0,
+      "complexity": 1,
+      "penalized": -45.0,
+      "train": {
+        "sse": 45.0,
+        "sae": 13.0,
+        "rmse": 3.0,
+        "mae": 2.6,
+        "raw": -45.0,
+        "rows": 5,
+        "valid_rows": 5
+      }
+    }
+  ],
+  "targets": {
+    "1": null,
+    "0.1": null,
+    "0.01": null,
+    "1e-08": null
+  },
+  "evaluation_curve": [
+    {
+      "evaluation_budget": 1,
+      "best_raw": -45.0,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 10,
+      "best_raw": -10.0,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 25,
+      "best_raw": -10.0,
+      "run_already_ended": false
+    },
+    {
+      "evaluation_budget": 50,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    },
+    {
+      "evaluation_budget": 100,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    },
+    {
+      "evaluation_budget": 250,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    },
+    {
+      "evaluation_budget": 500,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    },
+    {
+      "evaluation_budget": 1000,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    },
+    {
+      "evaluation_budget": 2000,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    },
+    {
+      "evaluation_budget": 5000,
+      "best_raw": -10.0,
+      "run_already_ended": true
+    }
+  ],
+  "evaluation_trace": [
+    {
+      "scorerCallIndex": 1,
+      "elapsed": 0.004394099814817309,
+      "status": "candidateValid",
+      "raw": -45.0,
+      "penalized": -45.0,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 2,
+      "elapsed": 0.013495199847966433,
+      "status": "candidateValid",
+      "raw": -91.25,
+      "penalized": -91.25,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 3,
+      "elapsed": 0.01582490000873804,
+      "status": "candidateValid",
+      "raw": -60.0,
+      "penalized": -60.0,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 4,
+      "elapsed": 0.01864429982379079,
+      "status": "candidateValid",
+      "raw": -62.5,
+      "penalized": -62.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 5,
+      "elapsed": 0.02149199997074902,
+      "status": "candidateValid",
+      "raw": -110.0,
+      "penalized": -110.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 6,
+      "elapsed": 0.024343299912288785,
+      "status": "candidateValid",
+      "raw": -30.0,
+      "penalized": -30.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 7,
+      "elapsed": 0.027119299862533808,
+      "status": "candidateValid",
+      "raw": -63.75,
+      "penalized": -63.75,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 8,
+      "elapsed": 0.02998330001719296,
+      "status": "candidateValid",
+      "raw": -95.0,
+      "penalized": -95.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 9,
+      "elapsed": 0.03252829983830452,
+      "status": "candidateValid",
+      "raw": -10.0,
+      "penalized": -10.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 10,
+      "elapsed": 0.0350575998891145,
+      "status": "candidateValid",
+      "raw": -21.25,
+      "penalized": -21.25,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 11,
+      "elapsed": 0.03777769999578595,
+      "status": "candidateValid",
+      "raw": -82.5,
+      "penalized": -82.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 12,
+      "elapsed": 0.040987599873915315,
+      "status": "candidateValid",
+      "raw": -11.25,
+      "penalized": -11.25,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 13,
+      "elapsed": 0.04380089999176562,
+      "status": "candidateValid",
+      "raw": -261.25,
+      "penalized": -261.25,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 14,
+      "elapsed": 0.046868199948221445,
+      "status": "candidateValid",
+      "raw": -101.25,
+      "penalized": -101.25,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 15,
+      "elapsed": 0.04975499981082976,
+      "status": "candidateValid",
+      "raw": -110.0,
+      "penalized": -110.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 16,
+      "elapsed": 0.052843399811536074,
+      "status": "candidateValid",
+      "raw": -33.75,
+      "penalized": -33.75,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 17,
+      "elapsed": 0.05647720000706613,
+      "status": "candidateValid",
+      "raw": -90.0,
+      "penalized": -90.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 18,
+      "elapsed": 0.059628999792039394,
+      "status": "candidateValid",
+      "raw": -30.0,
+      "penalized": -30.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 19,
+      "elapsed": 0.06211790000088513,
+      "status": "candidateValid",
+      "raw": -51.25,
+      "penalized": -51.25,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 20,
+      "elapsed": 0.06551649980247021,
+      "status": "candidateValid",
+      "raw": -250.0,
+      "penalized": -250.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 21,
+      "elapsed": 0.06788300001062453,
+      "status": "candidateValid",
+      "raw": -60.0,
+      "penalized": -60.0,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 22,
+      "elapsed": 0.07083159987814724,
+      "status": "candidateValid",
+      "raw": -15.0,
+      "penalized": -15.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 23,
+      "elapsed": 0.073575499933213,
+      "status": "candidateValid",
+      "raw": -40.0,
+      "penalized": -40.0,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 24,
+      "elapsed": 0.07677209982648492,
+      "status": "candidateValid",
+      "raw": -42.5,
+      "penalized": -42.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 25,
+      "elapsed": 0.08081700000911951,
+      "status": "candidateValid",
+      "raw": -270.0,
+      "penalized": -270.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 26,
+      "elapsed": 0.08914379985071719,
+      "status": "candidateValid",
+      "raw": -330.0,
+      "penalized": -330.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 27,
+      "elapsed": 0.09692799998447299,
+      "status": "candidateValid",
+      "raw": -27.5,
+      "penalized": -27.5,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 28,
+      "elapsed": 0.10079749999567866,
+      "status": "candidateValid",
+      "raw": -251.25,
+      "penalized": -251.25,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 29,
+      "elapsed": 0.10511839995160699,
+      "status": "candidateValid",
+      "raw": -270.0,
+      "penalized": -270.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 30,
+      "elapsed": 0.10854759998619556,
+      "status": "candidateValid",
+      "raw": -23.75,
+      "penalized": -23.75,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 31,
+      "elapsed": 0.11438049981370568,
+      "status": "candidateValid",
+      "raw": -21.25,
+      "penalized": -21.25,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 32,
+      "elapsed": 0.1176934998948127,
+      "status": "candidateValid",
+      "raw": -90.0,
+      "penalized": -90.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 33,
+      "elapsed": 0.19373969989828765,
+      "status": "candidateValid",
+      "raw": -120.0,
+      "penalized": -120.0,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 34,
+      "elapsed": 0.19711509998887777,
+      "status": "candidateValid",
+      "raw": -255.0,
+      "penalized": -255.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 35,
+      "elapsed": 0.20133199985139072,
+      "status": "candidateValid",
+      "raw": -73.75,
+      "penalized": -73.75,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 36,
+      "elapsed": 0.20554519980214536,
+      "status": "candidateValid",
+      "raw": -41.25,
+      "penalized": -41.25,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 37,
+      "elapsed": 0.2095029999036342,
+      "status": "candidateValid",
+      "raw": -90.0,
+      "penalized": -90.0,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 38,
+      "elapsed": 0.22847839980386198,
+      "status": "candidateValid",
+      "raw": -170.0,
+      "penalized": -170.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 39,
+      "elapsed": 0.2483957998920232,
+      "status": "candidateValid",
+      "raw": -15.0,
+      "penalized": -15.0,
+      "complexity": 1
+    },
+    {
+      "scorerCallIndex": 40,
+      "elapsed": 0.25201459997333586,
+      "status": "candidateValid",
+      "raw": -30.0,
+      "penalized": -30.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 41,
+      "elapsed": 0.25533489999361336,
+      "status": "candidateValid",
+      "raw": -142.5,
+      "penalized": -142.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 42,
+      "elapsed": 0.2610956998541951,
+      "status": "candidateValid",
+      "raw": -67.5,
+      "penalized": -67.5,
+      "complexity": 2
+    },
+    {
+      "scorerCallIndex": 43,
+      "elapsed": 0.2758029999677092,
+      "status": "candidateValid",
+      "raw": -22.5,
+      "penalized": -22.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 44,
+      "elapsed": 0.30624329997226596,
+      "status": "candidateValid",
+      "raw": -102.5,
+      "penalized": -102.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 45,
+      "elapsed": 0.354714100016281,
+      "status": "candidateValid",
+      "raw": -42.5,
+      "penalized": -42.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 46,
+      "elapsed": 0.5166740999557078,
+      "status": "candidateValid",
+      "raw": -11.25,
+      "penalized": -11.25,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 47,
+      "elapsed": 0.5514965998008847,
+      "status": "candidateValid",
+      "raw": -82.5,
+      "penalized": -82.5,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 48,
+      "elapsed": 0.5871085999533534,
+      "status": "candidateValid",
+      "raw": -10.0,
+      "penalized": -10.0,
+      "complexity": 3
+    },
+    {
+      "scorerCallIndex": 49,
+      "elapsed": 0.6200472000055015,
+      "status": "candidateValid",
+      "raw": -30.0,
+      "penalized": -30.0,
+      "complexity": 3
+    }
+  ],
+  "optimizer_trace": [
+    {
+      "deme": [
+        "mkDemeId",
+        1
+      ],
+      "stop": "stopExhaustedSpace",
+      "actualEvaluations": 48,
+      "proposals": 499,
+      "cacheHits": 1,
+      "invalids": 0,
+      "modelSize": 16
+    }
+  ],
+  "generation_trace": [
+    {
+      "remaining": 1,
+      "expansion": 0,
+      "selected": 0.0,
+      "selectedVisits": 1,
+      "actualNewEvaluations": 48,
+      "cumulativeEvaluations": 49,
+      "uniqueCandidates": 49,
+      "retainedCandidates": 5,
+      "bestRaw": -10.0,
+      "bestPenalized": -10.0
+    }
+  ],
+  "fit_trace": [
+    {
+      "algorithm": "hboa",
+      "seconds": 0.06143489992246032,
+      "learnedEdges": 2,
+      "parameters": 12,
+      "treeNodes": 8,
+      "leaves": 6,
+      "iterations": 2,
+      "localFits": 111,
+      "scoreCacheHits": 0,
+      "stop": "fitConverged"
+    },
+    {
+      "algorithm": "hboa",
+      "seconds": 0.09170909994281828,
+      "learnedEdges": 4,
+      "parameters": 16,
+      "treeNodes": 12,
+      "leaves": 8,
+      "iterations": 4,
+      "localFits": 160,
+      "scoreCacheHits": 0,
+      "stop": "fitConverged"
+    }
+  ],
+  "population_trace": [
+    {
+      "generations": 3,
+      "population": 32,
+      "archive": 49,
+      "unretainedProposals": 450,
+      "stagnation": 2
+    }
+  ],
+  "replacement_trace": [
+    {
+      "policy": "rtr",
+      "offspring": 13,
+      "accepted": 5,
+      "window": 8
+    },
+    {
+      "policy": "rtr",
+      "offspring": 4,
+      "accepted": 2,
+      "window": 8
+    }
+  ],
+  "rtr_accepted": 7,
+  "rtr_offspring": 17,
+  "max_tree_nodes": 12,
+  "model_fitting_seconds": 0.1531439998652786,
+  "fits": 2,
+  "max_learned_edges": 4,
+  "max_model_parameters": 16,
+  "local_fits": 271,
+  "score_cache_hits": 0,
+  "unretained_proposals": 450,
+  "fitting_stops": {
+    "fitConverged": 2
+  }
+}
