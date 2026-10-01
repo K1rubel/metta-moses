@@ -48,6 +48,9 @@
 !(import! &self ../../../../metta-moses/scoring/cscore)
 !(import! &self ../../../../metta-moses/scoring/complexity-based-scorer)
 
+!(import! &self ../../../../metta-moses/optimization/optimizer-contract)
+!(import! &self ../../../../metta-moses/scoring/candidate-evaluation)
+!(import! &self ../../../../metta-moses/optimization/optimizer-runtime)
 !(import! &self ../../../../metta-moses/optimization/hillclimbing/hill-climbing-helpers)
 !(import! &self ../../../../metta-moses/moses/neighborhood-sampling)
 

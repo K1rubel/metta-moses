@@ -27,11 +27,14 @@
 !(import! &self ../../../scoring/cscore)
 !(import! &self ../../../scoring/complexity-based-scorer)
 
-!(import! &self ../../../representation/instance)
 
 !(import! &self ../../../deme/deme-id-creation)
 !(import! &self ../../../deme/create-deme)
 !(import! &self ../../../deme/score-deme)
+!(import! &self ../../../representation/instance)
+!(import! &self ../../../optimization/optimizer-contract)
+!(import! &self ../../../scoring/candidate-evaluation)
+!(import! &self ../../../optimization/optimizer-runtime)
 !(import! &self ../../../deme/expand-deme)
 
 !(import! &self ../../../optimization/hillclimbing/crossover-helpers)
