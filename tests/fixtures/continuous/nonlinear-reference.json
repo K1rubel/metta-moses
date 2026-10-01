@@ -1,0 +1,192 @@
+{
+  "reference_commit": "f88ccd3279f3dd853e8c23103be5376a0e7eafc1",
+  "provenance": "Source-derived semantic goldens, not output captured from a built C++ executable. Nonlinear normalization parity is restricted to listed closed/zero-gate cases; not the complete C++ algebraic reducer.",
+  "sources": [
+    "moses/comboreduct/interpreter/interpreter.cc:130-192",
+    "moses/comboreduct/reduct/contin_reduction.cc:57-83",
+    "moses/moses/scoring/bscores.cc:140-179",
+    "moses/moses/moses/complexity.cc:56-111",
+    "moses/moses/main/demo-problems.cc:223-282",
+    "moses/moses/representation/field_set.h:233-275"
+  ],
+  "absolute_tolerance": 1e-12,
+  "relative_tolerance": 1e-12,
+  "cases": [
+    {
+      "name": "sin-zero",
+      "tree": [
+        "c_sin",
+        0
+      ],
+      "value": 0,
+      "reduce_to": 0
+    },
+    {
+      "name": "log-one",
+      "tree": [
+        "c_log",
+        1
+      ],
+      "value": 0,
+      "reduce_to": 0
+    },
+    {
+      "name": "exp-zero",
+      "tree": [
+        "c_exp",
+        0
+      ],
+      "value": 1,
+      "reduce_to": 1
+    },
+    {
+      "name": "constant-product",
+      "tree": [
+        "c_mul",
+        2,
+        3
+      ],
+      "value": 6,
+      "reduce_to": 6
+    },
+    {
+      "name": "constant-division",
+      "tree": [
+        "c_div",
+        6,
+        3
+      ],
+      "value": 2,
+      "reduce_to": 2
+    },
+    {
+      "name": "gated-invalid-log",
+      "tree": [
+        "c_mul",
+        0,
+        [
+          "c_log",
+          -1
+        ]
+      ],
+      "value": 0,
+      "reduce_to": 0
+    },
+    {
+      "name": "zero-numerator",
+      "tree": [
+        "c_div",
+        0,
+        0
+      ],
+      "value": 0,
+      "reduce_to": 0
+    },
+    {
+      "name": "order-two",
+      "tree": [
+        "c_add",
+        "x",
+        [
+          "c_mul",
+          "x",
+          "x"
+        ]
+      ],
+      "environment": {
+        "x": 2
+      },
+      "value": 6
+    },
+    {
+      "name": "sin-one",
+      "tree": [
+        "c_sin",
+        "x"
+      ],
+      "environment": {
+        "x": 1
+      },
+      "value": 0.8414709848078965
+    },
+    {
+      "name": "log-two",
+      "tree": [
+        "c_log",
+        "x"
+      ],
+      "environment": {
+        "x": 2
+      },
+      "value": 0.6931471805599453
+    },
+    {
+      "name": "exp-one",
+      "tree": [
+        "c_exp",
+        "x"
+      ],
+      "environment": {
+        "x": 1
+      },
+      "value": 2.718281828459045
+    },
+    {
+      "name": "rational",
+      "tree": [
+        "c_div",
+        "x",
+        [
+          "c_add",
+          1,
+          [
+            "c_mul",
+            "x",
+            "x"
+          ]
+        ]
+      ],
+      "environment": {
+        "x": 2
+      },
+      "value": 0.4
+    },
+    {
+      "name": "division-zero",
+      "tree": [
+        "c_div",
+        1,
+        0
+      ],
+      "error": "DivisionByZero"
+    },
+    {
+      "name": "log-negative",
+      "tree": [
+        "c_log",
+        -1
+      ],
+      "error": "LogNonPositive"
+    },
+    {
+      "name": "exp-overflow",
+      "tree": [
+        "c_exp",
+        1000
+      ],
+      "error": "NonFinite"
+    },
+    {
+      "name": "ungated-invalid-log",
+      "tree": [
+        "c_mul",
+        [
+          "c_log",
+          -1
+        ],
+        0
+      ],
+      "error": "LogNonPositive"
+    }
+  ]
+}

@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "purpose": "Steps 12/13 nonlinear correctness fixtures and exploratory evaluation-budget comparison. Not Step 14 qualification; no tuning or default-optimizer claim.",
+  "seeds": [
+    300,
+    301,
+    302
+  ],
+  "development_seeds": [
+    0
+  ],
+  "training_error_targets": [
+    1,
+    0.1,
+    0.01,
+    1e-8
+  ],
+  "evaluation_checkpoints": [
+    1,
+    10,
+    25,
+    50,
+    100,
+    250,
+    500
+  ],
+  "acceptance_error": 1e-8,
+  "algorithms": [
+    "hc",
+    "univariate",
+    "boa",
+    "hboa"
+  ],
+  "parameters": {
+    "problem": "sr",
+    "continDepth": 2,
+    "continStep": 1,
+    "continExpansion": 2,
+    "continPolyDegree": 2,
+    "continScaffoldDepth": 1,
+    "continOperators": "(c_add c_mul)",
+    "continMaxScaffoldNodes": 10000,
+    "continComplexityRatio": 0,
+    "continImprovementThreshold": -0.0001,
+    "maxGen": 10,
+    "nDeme": 1,
+    "maxEvals": 500,
+    "optimizerMaxProposals": 100000,
+    "optimizerMaxGenerations": 1000,
+    "optimizerTimeLimitSec": -1,
+    "hcWidenSearch": false,
+    "hcCrossover": true,
+    "maxDist": 4,
+    "revisit": 0,
+    "diagnostics": true,
+    "continTrace": true,
+    "edaPopulationSize": 32,
+    "edaSelectionSize": 16,
+    "edaOffspringSize": 16,
+    "edaTournamentSize": 2,
+    "edaPseudocount": 1,
+    "edaExploration": 0.1,
+    "edaMaxRefillAttempts": 256,
+    "edaStagnationGenerations": 10,
+    "boaMaxParents": 2,
+    "boaMaxTableCells": 256,
+    "boaMaxIterations": 16,
+    "boaMaxScoreCalls": 256,
+    "boaFitTimeLimitSec": 10,
+    "hboaMaxParents": 3,
+    "hboaMaxDepth": 3,
+    "hboaMaxLeaves": 8,
+    "hboaMinSupport": 2,
+    "hboaMaxIterations": 16,
+    "hboaMaxScoreCalls": 256,
+    "hboaFitTimeLimitSec": 10,
+    "hboaLearnDependencies": true,
+    "edaRTRWindow": 8,
+    "edaReplacement": "auto"
+  },
+  "cases": [
+    {
+      "name": "sr-order2",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "x + x*x",
+      "identifiable": false,
+      "target_program": [
+        "c_add",
+        "x",
+        [
+          "c_mul",
+          "x",
+          "x"
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 2,
+        "continOperators": "(c_add c_mul)"
+      }
+    },
+    {
+      "name": "sr-interaction",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "1 + x*x + x*z - z*z",
+      "identifiable": false,
+      "target_program": [
+        "c_add",
+        1,
+        [
+          "c_mul",
+          "x",
+          "x"
+        ],
+        [
+          "c_mul",
+          "x",
+          "z"
+        ],
+        [
+          "c_mul",
+          -1,
+          [
+            "c_mul",
+            "z",
+            "z"
+          ]
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 2,
+        "continOperators": "(c_add c_mul)"
+      }
+    },
+    {
+      "name": "sr-cubic",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "1 + x - x*x + x*x*x",
+      "identifiable": false,
+      "target_program": [
+        "c_add",
+        1,
+        "x",
+        [
+          "c_mul",
+          -1,
+          [
+            "c_mul",
+            "x",
+            "x"
+          ]
+        ],
+        [
+          "c_mul",
+          "x",
+          "x",
+          "x"
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 3,
+        "continOperators": "(c_add c_mul)"
+      }
+    },
+    {
+      "name": "sr-quartic-interaction",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "1 + x*z + x*x*z*z",
+      "identifiable": false,
+      "target_program": [
+        "c_add",
+        1,
+        [
+          "c_mul",
+          "x",
+          "z"
+        ],
+        [
+          "c_mul",
+          "x",
+          "x",
+          "z",
+          "z"
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 4,
+        "continOperators": "(c_add c_mul)"
+      }
+    },
+    {
+      "name": "sr-sine",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "sin(x + x*x)",
+      "identifiable": false,
+      "target_program": [
+        "c_sin",
+        [
+          "c_add",
+          "x",
+          [
+            "c_mul",
+            "x",
+            "x"
+          ]
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 2,
+        "continOperators": "(c_add c_mul c_sin)"
+      }
+    },
+    {
+      "name": "sr-log",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "log(1 + x*x)",
+      "identifiable": false,
+      "target_program": [
+        "c_log",
+        [
+          "c_add",
+          1,
+          [
+            "c_mul",
+            "x",
+            "x"
+          ]
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 2,
+        "continOperators": "(c_add c_mul c_log)"
+      }
+    },
+    {
+      "name": "sr-exp",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "exp(x)",
+      "identifiable": false,
+      "target_program": [
+        "c_exp",
+        "x"
+      ],
+      "parameters": {
+        "continPolyDegree": 1,
+        "continOperators": "(c_add c_mul c_exp)"
+      }
+    },
+    {
+      "name": "sr-rational",
+      "family": "nonlinear",
+      "loss": "squared_error",
+      "equation": "x / (1 + x*x)",
+      "identifiable": false,
+      "target_program": [
+        "c_div",
+        "x",
+        [
+          "c_add",
+          1,
+          [
+            "c_mul",
+            "x",
+            "x"
+          ]
+        ]
+      ],
+      "parameters": {
+        "continPolyDegree": 2,
+        "continOperators": "(c_add c_mul c_div)"
+      }
+    }
+  ]
+}
