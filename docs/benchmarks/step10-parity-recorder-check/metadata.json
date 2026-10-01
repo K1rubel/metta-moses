@@ -1,0 +1,208 @@
+{
+  "created_utc": "2026-09-29T13:17:31.461193+00:00",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "processor": "Intel64 Family 6 Model 61 Stepping 4, GenuineIntel",
+  "python": "3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)]",
+  "swipl": "SWI-Prolog version 10.0.2 for x64-win64",
+  "petta_main": "C:\\Users\\KirA\\Desktop\\iCog\\PeTTa\\src\\main.pl",
+  "petta_commit": "429e22916630ea6fd1f24a3d45869f0082a85852",
+  "petta_main_sha256": "51eb385e186de7fce1a4f3bda49cd2982799823f206c816361837c7599ecfa70",
+  "manifest": {
+    "version": 2,
+    "purpose": "Step 10 initial affine and Boolean comparison; fixed evaluation allowances, no RTR/nonlinear or equal-time qualification",
+    "development_seeds": [
+      0
+    ],
+    "seeds": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129
+    ],
+    "training_error_targets": [
+      1,
+      0.1,
+      0.01,
+      1e-08
+    ],
+    "evaluation_checkpoints": [
+      1,
+      10,
+      25,
+      50,
+      100,
+      250,
+      500,
+      1000
+    ],
+    "acceptance_error": 1e-08,
+    "parameters": {
+      "problem": "linear",
+      "continDepth": 2,
+      "continStep": 1,
+      "continExpansion": 2,
+      "continComplexityRatio": 0,
+      "continImprovementThreshold": -0.0001,
+      "continSearchMode": "linear",
+      "maxGen": 10,
+      "nDeme": 1,
+      "maxEvals": 1000,
+      "optimizerMaxProposals": 100000,
+      "optimizerMaxGenerations": 1000,
+      "optimizerTimeLimitSec": -1,
+      "hcWidenSearch": true,
+      "hcCrossover": true,
+      "maxDist": 4,
+      "minXoverNeighbors": 400,
+      "hcCrossoverPopSize": 120,
+      "hcFractionOfNN": 2,
+      "hcMinDemeSize": 50,
+      "revisit": 0,
+      "discardDominated": false,
+      "capCoef": 50,
+      "complexityTemperature": 6,
+      "maxCandPerDeme": 100,
+      "minPoolSize": 20,
+      "nToKeep": 50,
+      "nEval": 10000,
+      "maxCandOutput": 10,
+      "diagnostics": true,
+      "continTrace": true,
+      "edaPopulationSize": 32,
+      "edaSelectionSize": 16,
+      "edaOffspringSize": 16,
+      "edaTournamentSize": 2,
+      "edaPseudocount": 1,
+      "edaExploration": 0.1,
+      "edaMaxRefillAttempts": 256,
+      "edaStagnationGenerations": 10,
+      "boaMaxParents": 2,
+      "boaMaxTableCells": 256,
+      "boaMaxIterations": 16,
+      "boaMaxScoreCalls": 256,
+      "boaFitTimeLimitSec": 10
+    },
+    "cases": [
+      {
+        "name": "linear",
+        "loss": "squared_error",
+        "equation": "1 + 2*x",
+        "identifiable": true,
+        "coefficients": {
+          "bias": 1,
+          "x": 2
+        }
+      },
+      {
+        "name": "multivariate",
+        "loss": "squared_error",
+        "equation": "1 + 2*x - z",
+        "identifiable": true,
+        "coefficients": {
+          "bias": 1,
+          "x": 2,
+          "z": -1
+        }
+      },
+      {
+        "name": "absolute",
+        "loss": "abs_error",
+        "equation": "-1 + 0.5*x",
+        "identifiable": true,
+        "coefficients": {
+          "bias": -1,
+          "x": 0.5
+        }
+      },
+      {
+        "name": "correlated",
+        "loss": "squared_error",
+        "equation": "1 + 3*x, with z=2*x",
+        "identifiable": false,
+        "note": "Assess prediction on the z=2*x manifold; no unique coefficient recovery or off-manifold claim."
+      },
+      {
+        "name": "disjunction3",
+        "kind": "boolean",
+        "parameters": {
+          "problem": "disjunction3",
+          "maxEvals": 200,
+          "maxGen": 3,
+          "continTrace": false
+        },
+        "note": "Complete 3-input truth table, no held-out split. 200 charged local scorer calls. Legacy Boolean initial exemplar remains unscored."
+      },
+      {
+        "name": "parity3",
+        "kind": "boolean",
+        "parameters": {
+          "problem": "parity3",
+          "maxEvals": 200,
+          "maxGen": 3,
+          "continTrace": false
+        },
+        "note": "Complete 3-input truth table, no held-out split. 200 charged local scorer calls. Legacy Boolean initial exemplar remains unscored."
+      }
+    ],
+    "algorithms": [
+      "hc",
+      "univariate",
+      "boa"
+    ]
+  },
+  "manifest_sha256": "58de85c3903124dc449585c9ddc29967dc4ddc0775e63d899361f8bfc98cef09",
+  "source_sha256": "37c5db93e78c122014a1537d96a0d53d261c405a17932c66effddc9b21ce3aea",
+  "git_commit": "5a84da8d1c1d6cfef103739a1a405daa1a33bdd2",
+  "git_status": " M README.md\n M deme/expand-deme.metta\n M deme/merge-demes.metta\n M deme/tests/create-deme-test.metta\n M deme/tests/expand-demes-test.metta\n M deme/tests/merge-demes-test.metta\n M examples/ant/tests/ant-integration-test.metta\n M examples/ant/tests/ant-pipeline-test.metta\n M examples/tests/ant-action-test.metta\n M examples/tests/bot-action-test.metta\n M feature-selection/tests/hc-testold.metta\n M moses.metta\n M moses/demo-problems.metta\n M moses/tests/demo-problems-benchmark-test.metta\n M moses/tests/demo-problems-test.metta\n M moses/tests/input-file-test.metta\n M moses/tests/neighborhood-sampling-test.metta\n M moses/tests/ttt-action-smoke-test.metta\n M optimization/hillclimbing/hill-climbing-helpers.metta\n M optimization/hillclimbing/test/hillclimbing-helpers-test.metta\n M optimization/optimizer-contract.metta\n M optimization/simulated-annealing-algo/test/simulated-annealing-test.metta\n M optimization/univariate/test/univariate-test.metta\n M parameters/defaults.metta\n M representation/contin-spec.metta\n M scoring/action-score.metta\n M scoring/cacheSpace.metta\n M scoring/contin-eval.metta\n M scoring/contin-score.metta\n M scripts/csv_helper.py\n M tests/continuous-reference-fixtures-test.metta\n?? docs/\n?? initial-continuous-domain-porting-plan.md\n?? moses/contin-pipeline.metta\n?? moses/tests/boa-pipeline-test.metta\n?? moses/tests/contin-linear-test.metta\n?? moses/tests/contin-pipeline-test.metta\n?? moses/tests/univariate-pipeline-test.metta\n?? optimization/boa/\n?? optimization/eda/\n?? optimization/hillclimbing/test/optimizer-boundary-test.metta\n?? optimization/legal-instance-sampling.metta\n?? optimization/optimizer-runtime.metta\n?? reduct/contin-reduct/\n?? representation/build-contin.metta\n?? representation/contin-canonize.metta\n?? representation/contin-representation.metta\n?? representation/contin-stepper.metta\n?? representation/field-schema.metta\n?? representation/tests/contin-affine-test.metta\n?? representation/tests/contin-fields-test.metta\n?? scoring/candidate-evaluation.metta\n?? scoring/test/candidate-evaluation-test.metta\n?? scoring/test/contin-evaluation-test.metta\n?? scripts/continuous_baseline.py\n?? scripts/optimizer_comparison.py\n?? scripts/tests/\n?? tests/contin-stepper-reference.metta\n?? tests/fixtures/\n",
+  "seeds": [
+    0
+  ],
+  "cases": [
+    "parity3"
+  ],
+  "exploratory_override": true,
+  "timing": "serial fresh processes; rotate algorithm order per seed; process time includes imports/CSV; affine trace elapsed starts at cache reset; instrumentation included",
+  "dataset_hashes": {
+    "absolute-test.csv": "cc40ccbb84cad21b9efd0304c6de018bc8b6a0278bfc6003e3746e76ab12e8a5",
+    "absolute-train.csv": "ef657ed8a9387e22c73543d0c4adda6e96d8e9ac3cc7fb52f6f8d8c73daf37dd",
+    "absolute-validation.csv": "0395e53ea47df0d04b11fff0b0119c1bb33219d925ffc411e3d40423a5cf4149",
+    "correlated-test.csv": "e597b8049b4c1bbbdd33523b471aa0d423044666a09ee12aae5c7b505e2d76e8",
+    "correlated-train.csv": "d4e4ff0a2607d20d94a22a0e1fb172720185242cdb7587416584c9d4449c0b72",
+    "correlated-validation.csv": "154e10c66393c721fa185331c1a0b07f6c3498cba23faad684388aeda3a5c20d",
+    "invalid.csv": "a34ea3a0117304c0ccf0563624131272270ae0a7c0e751bb87c9707031220041",
+    "linear-test.csv": "050dd9ea9d8f1dfb01c991eff9822c87c02b966b0fc8ac12dd17a4833e85d153",
+    "linear-train.csv": "686ff194831803e4613ad149f31e0c37d641626117138a9b8cda40635ff98d62",
+    "linear-validation.csv": "938ab2a3d4dee829f37b8bb20f6e34fbe3ea54ac01aa56cdce289bed6fff4c89",
+    "multivariate-test.csv": "d9906f53970f672490c76c917b1f8f1ee90fa1a57afe63bd73ed80ddceb837e4",
+    "multivariate-train.csv": "90d535aed1b6779e7091428015bc8985fad97c8139001406323c0b5c9725d766",
+    "multivariate-validation.csv": "ce20eaf0e84618b80e777d56dbb055bfd920f14caba466c4264449558b57ff42",
+    "quoted-headers.csv": "1a6f9741eaa678cf953670d0f2ecc0e86758e0e78e8ab95382adeede72292909",
+    "target-first.csv": "c3da6c11dc8ffc23adefa54838e0b6269869624fe31b54539be3d0f22c9e12c2"
+  }
+}
