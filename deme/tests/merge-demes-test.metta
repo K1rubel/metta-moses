@@ -56,9 +56,12 @@
 
 !(import! &self ../../metapopulation/exemplar-type)
 !(import! &self ../../metapopulation/metapopulation)
+!(import! &self ../../optimization/optimizer-contract)
+!(import! &self ../../scoring/candidate-evaluation)
+!(import! &self ../../representation/instance)
+!(import! &self ../../optimization/optimizer-runtime)
 !(import! &self ../../optimization/hillclimbing/hill-climbing-helpers)
 
-!(import! &self ../../representation/instance)  
 
 !(import! &self ../deme-id-creation)
 !(import! &self ../create-deme)

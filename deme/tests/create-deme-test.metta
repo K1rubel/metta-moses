@@ -51,6 +51,9 @@
 
 !(import! &self optimization/hillclimbing/crossover-helpers)
 !(import! &self optimization/hillclimbing/crossover)
+!(import! &self optimization/optimizer-contract)
+!(import! &self scoring/candidate-evaluation)
+!(import! &self optimization/optimizer-runtime)
 !(import! &self optimization/hillclimbing/hill-climbing-helpers)
 
 !(import! &self metapopulation/exemplar-type)

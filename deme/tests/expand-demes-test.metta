@@ -61,8 +61,12 @@
 !(import! &self ../../scoring/cscore)
 !(import! &self ../../scoring/complexity-based-scorer)
 
+!(import! &self ../../representation/instance)
 !(import! &self ../../optimization/hillclimbing/crossover-helpers)
 !(import! &self ../../optimization/hillclimbing/crossover)
+!(import! &self ../../optimization/optimizer-contract)
+!(import! &self ../../scoring/candidate-evaluation)
+!(import! &self ../../optimization/optimizer-runtime)
 !(import! &self ../../optimization/hillclimbing/hill-climbing-helpers)
 
 !(import! &self ../create-deme)
@@ -73,7 +77,6 @@
 !(import! &self ../../metapopulation/exemplar-selection)
 !(import! &self ../../metapopulation/metapopulation)
 
-!(import! &self ../../representation/instance)
 
 !(import! &self ../deme-id-creation)
 !(import! &self ../score-deme)
@@ -185,12 +188,10 @@
 ;; This tests the shared budget dispatcher without starting a stochastic
 ;; feature-selection search.
 (= (budgetProbeOptimizer
-      (mkDeme $rep $scoredInstances $demeId) $context $initialInstance)
-   (let $localLimit (get-state &localEvalLimit)
-     ($initialInstance
-      (mkDeme $rep $scoredInstances (mkDemeId $localLimit))
-      (False False False $initialInstance 0 0
-       (worstCscore) -1 $localLimit 1 1))))
+      (mkDeme $rep $scoredInstances $demeId) $context $initialInstance $limits $rng $config)
+   (let $localLimit (limitsMaxEvals $limits)
+     (mkOptimizerResult (mkDeme $rep $scoredInstances (mkDemeId $localLimit))
+       $initialInstance $localLimit stopBudgetExhausted (mkOptimizerDiag 0 0 0 0) $rng)))
 
 ;; Extract the numeric share encoded by budgetProbeOptimizer in a deme ID.
 (= (numericDemeId
@@ -213,7 +214,7 @@
    (optimizerContextFor (actionAdapterContext) 7)
    (mergeContextFor (actionAdapterContext))
    (initialEvaluationCount (actionAdapterContext)))
-  ((table1) (ttable1) 0
+  ((mkOptimizerContext (table1) 7) (ttable1) 0
    (mkOptimizerContext (mkActionCtx 10 3.5 7) 7) (mkActionCtx 10 3.5 0) 0))
 
 !(assertEqual
