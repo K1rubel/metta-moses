@@ -94,8 +94,12 @@
 !(import! &self ../../examples/tic-tac-toe/ttt-action-episode)
 !(import! &self ../../examples/tic-tac-toe/ttt-action-registration)
 
+!(import! &self ../../representation/instance)
 !(import! &self ../../optimization/hillclimbing/crossover-helpers)
 !(import! &self ../../optimization/hillclimbing/crossover)
+!(import! &self ../../optimization/optimizer-contract)
+!(import! &self ../../scoring/candidate-evaluation)
+!(import! &self ../../optimization/optimizer-runtime)
 !(import! &self ../../optimization/hillclimbing/hill-climbing-helpers)
 
 !(import! &self ../../deme/create-deme)
@@ -105,7 +109,6 @@
 !(import! &self ../../metapopulation/exemplar-selection)
 !(import! &self ../../metapopulation/metapopulation)
 
-!(import! &self ../../representation/instance)
 
 !(import! &self ../../deme/deme-id-creation)
 !(import! &self ../../deme/score-deme)

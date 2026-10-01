@@ -9,6 +9,9 @@
 !(import! &self ../../representation/knob-representation)
 
 !(import! &self ../../scoring/cscore)
+!(import! &self ../../optimization/optimizer-contract)
+!(import! &self ../../scoring/candidate-evaluation)
+!(import! &self ../../optimization/optimizer-runtime)
 !(import! &self ../../optimization/hillclimbing/hill-climbing-helpers) ;; using / for additional nested dir level 
 !(import! &self ../../deme/create-deme)
 
