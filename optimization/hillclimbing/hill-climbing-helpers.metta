@@ -223,10 +223,13 @@
     (let*
       (
        ($nToMake (min $nNewInstances (param hcCrossoverPopSize)))
+       ($third (if (get-state &hcActive) (floor-math (/ $nToMake 3)) (/ $nToMake 3)))
    
-       ($newInstances1 (crossTopOne $deme (+ (/ $nToMake 3) (% $nToMake 3)) $sampleStart $sampleSize $centerInst))
-       ($newInstances2 (crossTopTwo $deme (/ $nToMake 3) $sampleStart $sampleSize $centerInst))
-       ($newInstances3 (crossTopThree $deme (/ $nToMake 3) $sampleStart $sampleSize $centerInst))
+       ($newInstances1 (crossTopOne $deme (+ $third (% $nToMake 3)) $sampleStart $sampleSize $centerInst))
+       ($newInstances2 (crossTopTwo $deme $third $sampleStart $sampleSize $centerInst))
+       ($newInstances3 (crossTopThree $deme $third $sampleStart $sampleSize $centerInst))
+       ($_proposals (hcRecordProposals (+ (List.length $newInstances1)
+                          (+ (List.length $newInstances2) (List.length $newInstances3)))))
       )
       (mergeOffspring $deme $newInstances1 $newInstances2 $newInstances3)
 )
@@ -243,151 +246,7 @@
 (= (bestRawDeme (mkDeme $rep (mkSInstSet $scoredInstances) $id))
    (bestRawScore $scoredInstances))
 
-;; `()` is a safe cache-miss marker because real scores are constructed values.
-(= (cachedScoreForTree $tree ()) ())
-(= (cachedScoreForTree
-      $tree
-      (cons (mkTreeScore $cachedTree $cachedScore) $rest))
-   (if (== $tree $cachedTree)
-       $cachedScore
-       (cachedScoreForTree $tree $rest)))
-
-;; Action candidate reconstruction uses the representation helper directly.
-;; The public getCandidate wrapper also consults treeSpace, which is cleared
-;; between lifecycle stages and can leave this counted path unresolved.
-(= (materializeCandidateForContext $rep $id $inst
-                                 (mkActionScoreContext $complexityRatio $nTrials))
-   (getCandidateHelper $inst (getRepTree $rep)))
-(= (materializeCandidateForContext $rep $id $inst
-                                   (mkActionCtx $nTrials $complexityRatio $targetScore))
-   (getCandidateHelper $inst (getRepTree $rep)))
-(= (materializeCandidateForContext $rep $id $inst $context)
-   (case $context
-     (($other (getCandidate $rep $id $inst)))))
-
-;; Score a materialized program without reconstructing it through the
-;; representation-specific scorer.
-(= (scoreMaterializedTree $tree
-                          ((mkITable $rows $labels) $complexityRatio))
-   (getCscore (mkITable $rows $labels) $tree
-              $complexityRatio &bscoreCache))
-;; The action arm receives a tagged packed payload from the optimizer. A
-;; numeric-headed tuple is interpreted as a partial application by PeTTa.
-(= (scoreMaterializedTree $tree (mkActionScoreContext $complexityRatio $nTrials))
-   (getActionCscore $tree (mkActionCtx $nTrials)
-                    $complexityRatio &actionScoreCache))
-(= (scoreMaterializedTree $tree (mkActionCtx $nTrials $complexityRatio $targetScore))
-   (getActionCscore $tree (mkActionCtx $nTrials)
-                    $complexityRatio &actionScoreCache))
-
-;; New rows are marked explicitly with worstCscore. Structural comparison
-;; states that invariant directly and cannot misclassify a legitimate, very
-;; poor score through an arbitrary numeric threshold.
-(= (scoreNeedsEvaluation $score) (== $score (worstCscore)))
-
-;; Seed both the batch cache and run cache from rows that already carry real
-;; scores. A new vector that reduces to an old program then reuses that score.
-(= (seedTreeScoreCache () $rep $id $context $cache) $cache)
-(= (seedTreeScoreCache
-      (cons (mkSInst (mkPair $inst $score)) $rest)
-      $rep $id $context $cache)
-   (let $nextCache
-        (if (scoreNeedsEvaluation $score)
-            $cache
-            (let $tree
-                 (materializeCandidateForContext
-                   $rep $id $inst $context)
-              (let* (
-                     ($_global
-                       (cacheCandidateScore $context $tree $score))
-                     ($updated
-                       (if (== (cachedScoreForTree $tree $cache) ())
-                           (cons (mkTreeScore $tree $score) $cache)
-                           $cache))
-                    )
-                $updated)))
-     (seedTreeScoreCache
-       $rest $rep $id $context $nextCache)))
-
-;; Preserve input order and count only a genuinely new scorer invocation.
-(= (scoreNewInstancesCachedCounted
-      () $rep $id $context $treeScoreCache)
-   (() 0 $treeScoreCache))
-(= (scoreNewInstancesCachedCounted
-      (cons (mkSInst (mkPair $inst $score)) $rest)
-      $rep $id $context $treeScoreCache)
-   (if (scoreNeedsEvaluation $score)
-       (let* (
-              ($tree
-                (materializeCandidateForContext
-                  $rep $id $inst $context))
-              ($batchScore
-                (cachedScoreForTree $tree $treeScoreCache))
-              ($runScore
-                (if (== $batchScore ())
-                    (cachedCandidateScore $context $tree)
-                    $batchScore))
-              (($resolvedScore $didEvaluate $updatedCache)
-                (if (== $runScore ())
-                    (let $newScore (scoreMaterializedTree $tree $context)
-                      (let $_cached
-                           (cacheCandidateScore $context $tree $newScore)
-                        ($newScore
-                         1
-                         (cons (mkTreeScore $tree $newScore)
-                               $treeScoreCache))))
-                    ($runScore
-                     0
-                     (if (== $batchScore ())
-                         (cons (mkTreeScore $tree $runScore)
-                               $treeScoreCache)
-                         $treeScoreCache))))
-              (($scoredRest $restCount $finalCache)
-                (scoreNewInstancesCachedCounted
-                  $rest $rep $id $context $updatedCache))
-             )
-         ((cons (mkSInst (mkPair $inst $resolvedScore)) $scoredRest)
-          (+ $didEvaluate $restCount)
-          $finalCache))
-       (let ($scoredRest $restCount $finalCache)
-            (scoreNewInstancesCachedCounted
-              $rest $rep $id $context $treeScoreCache)
-         ((cons (mkSInst (mkPair $inst $score)) $scoredRest)
-          $restCount
-          $finalCache))))
-
-;; Seed local deduplication from attached scores, score every unresolved row at
-;; most once, and return the exact number of newly invoked scorers.
-(= (scoreNewInstancesCounted $instances $rep $id $context)
-   (let* (
-          ($initialCache
-            (seedTreeScoreCache $instances $rep $id $context ()))
-          (($scored $count $finalCache)
-            (scoreNewInstancesCachedCounted
-              $instances $rep $id $context $initialCache))
-         )
-     ($scored $count)))
-
-;; Incrementally score a complete instance set while preserving its wrapper.
-(= (transformIncremental (mkSInstSet $instances) $rep $id $context)
-   (let ($scored $count)
-        (scoreNewInstancesCounted $instances $rep $id $context)
-     ((mkSInstSet $scored) $count)))
-
-;; Sampling and crossover both append new rows after the existing scored
-;; population. Preserve that prefix byte-for-byte and traverse only the suffix
-;; that can need work. This avoids rematerializing an ever-growing deme twice
-;; on every hill-climbing iteration.
-(= (transformAppendedIncremental
-      (mkSInstSet $instances) $prefixSize $rep $id $context)
-   (let* (
-          ($prefix (List.takeN $prefixSize $instances))
-          ($suffix (List.drop $prefixSize $instances))
-          (($scoredSuffix $count $finalCache)
-            (scoreNewInstancesCachedCounted
-              $suffix $rep $id $context ()))
-         )
-     ((mkSInstSet (List.concat $prefix $scoredSuffix)) $count)))
+;; Candidate scoring/cache/counting adapters live in scoring/candidate-evaluation.
 
 ;; Feature-selection hill climbing has no representation/id pair, but it still
 ;; appends new rows after an already-scored prefix. Score only that suffix and
@@ -409,12 +268,6 @@
      ((mkSInstSet (List.concat $prefix $scoredRows))
       (List.length $suffix))))
 
-;; Direct hill-climbing callers may provide an already-scored initial deme.
-;; Seed those attached scores once at the public boundary; recursive iterations
-;; then use the run cache and the suffix-only path above.
-(= (seedAttachedCandidateScores
-      (mkDeme $rep (mkSInstSet $instances) $id) $context)
-   (seedTreeScoreCache $instances $rep $id $context ()))
 ;; crossover for feature selection
 ; (: crossoverFs (-> Number Number Instance (InstanceSet $a) ((InstanceSet $a) Number)))
 (= (crossoverFs $size $nNewInstances $sampleStart $sampleSize $centerInst $scoredInstSet)
@@ -533,7 +386,15 @@
                                     sampleNewInstances transform)))
     )))
 
-(= (hillClimbing ($maxDist $minXoverNeighbors $bestPossibleScore) ;; Constant parameters
+(= (hillClimbing $constants $state $deme $payload $center $hyper $estimate $cross $sample $transform)
+   (let $reason (hcBoundaryStop $constants $state $deme)
+     (if (== $reason ())
+         (let $_generation (if (get-state &hcActive)
+                              (change-state! &hcGenerations (+ 1 (get-state &hcGenerations))) True)
+           (hillClimbingStep $constants $state $deme $payload $center $hyper $estimate $cross $sample $transform))
+         (let $_stop (change-state! &hcStop $reason) ($center $deme $state)))))
+
+(= (hillClimbingStep ($maxDist $minXoverNeighbors $bestPossibleScore) ;; Constant parameters
                  ($alreadyXover $lastChance $__ $prevCenter $prevStart $prevSize $bestSscore $bestScore $currentNInstances $d $i)
                  $POASet
                  ($neighborhood $rowOCoeff $size $iTable)
@@ -560,12 +421,14 @@
         ;; numeric allowance represents the documented negative/unlimited mode.
         ($outerLimit (get-state &localEvalLimit))
         ($configuredLimit
-          (if (< $outerLimit 0) (param maxEvals) $outerLimit))
+          (if (get-state &hcActive)
+              (limitsMaxEvals (get-state &hcLimits))
+              (if (< $outerLimit 0) (param maxEvals) $outerLimit)))
         ($maxEvals
           (if (< $configuredLimit 0)
               (pow-math 10 18)
               $configuredLimit))
-        ($nNewNeighbors (nNewInstances $d $maxEvals $currentNInstances $totalNNeighbors))
+        ($nNewNeighbors (hcProposalAllowance (nNewInstances $d $maxEvals $currentNInstances $totalNNeighbors)))
 
         ;; Evaluation count and population index are different quantities.
         ($currentDemeSize
@@ -602,7 +465,9 @@
                                                                 ((False ()) (let ($updatedInstSet $newInstances) ($samplingFunction $totalNNeighbors $nNewNeighbors $centerInst (mkITable $rowOCoeff $neighborhood) $POASet $d)
                                                                               ((mkDeme () $updatedInstSet ()) $newInstances)))
                                                                 ((False $notEmpty)
-                                                                        (let $result ($samplingFunction $totalNNeighbors $nNewNeighbors $centerInst $POASet $d)
+                                                                        (let $result (if (get-state &hcActive)
+                                                                                         (hcSampleCounted $nNewNeighbors $centerInst $POASet $d)
+                                                                                         ($samplingFunction $totalNNeighbors $nNewNeighbors $centerInst $POASet $d))
                                                                         ;; (trace! ("Result: " $result)
                                                                                 $result
                                                                         ;; )
@@ -625,7 +490,8 @@
         ;; the canonical lifecycle context used by Boolean runs.
         ($incrementalContext
           (case $iTable
-            (((mkITable $rows $labels) ($iTable $rowOCoeff))
+            (((mkContinCtx $table $error $ratio $mode $target) $iTable)
+             ((mkITable $rows $labels) ($iTable $rowOCoeff))
              ($other (mkActionScoreContext $iTable $rowOCoeff)))))
         ($scoreBatch
           (if (or (== $rep ()) (== $id ()))
@@ -634,11 +500,17 @@
                 (mkITable $rowOCoeff $neighborhood)
                 $miConfi $prePenalty $preMinActivation
                 $preMaxActivation $prePositive $scorerType)
-              (transformAppendedIncremental
-                $updatedInstSet $currentDemeSize
-                $rep $id $incrementalContext)))
+              (if (get-state &hcActive)
+                  (hcScoreAppended $updatedInstSet $currentDemeSize $rep $id $incrementalContext
+                    (optimizerRemaining (limitsMaxEvals (get-state &hcLimits)) $currentNInstances))
+                  (transformAppendedIncrementalBounded
+                    $updatedInstSet $currentDemeSize $rep $id $incrementalContext
+                    (max 0 (- $maxEvals $currentNInstances))))))
         (($scoredSet $actualNewEvals) $scoreBatch)
         ((mkSInstSet $scoredInstances) $scoredSet)
+        ($retainedNewInstances (if (get-state &hcActive)
+                                  (- (List.length $scoredInstances) $currentDemeSize)
+                                  $newInstances))
         ($updatedEvalCount (+ $currentNInstances $actualNewEvals))
         ($_evalDiagnostics
           (if (param diagnostics)
@@ -658,11 +530,18 @@
         ;; ($_ (println! (Scored instances....)))
         ;; ($_ (println! ""))
 
-        ((mkSInst $newBestInstPair) (List.foldl hillScoreHelper (mkSInst (mkPair $centerInst $bestSscore)) $scoredInstances))
+        ((mkSInst $newBestInstPair)
+          (if (and (get-state &hcActive) (not (== $scoredInstances ())))
+              (optimizerBestRow $scoredInstances)
+              (List.foldl hillScoreHelper (mkSInst (mkPair $centerInst $bestSscore)) $scoredInstances)))
         ($newBestScore (if (or (== $rep ()) (== $id ())) 
                           (Pair.second $newBestInstPair)
                           (getPenScore (Pair.second $newBestInstPair)))) ;; This could be the original best candidate or a new one.
-        ($hasImproved (> $newBestScore (+ $bestScore (param hcScoreImprovedThreshold))))
+        ($hasImproved
+          (case $incrementalContext
+            (((mkContinCtx $improvementTable $improvementError $improvementRatio $improvementMode $improvementTarget)
+              (let $improved scoreImproved ($improved $incrementalContext $newBestScore $bestScore)))
+             ($nonContinuousImprovement (> $newBestScore (+ $bestScore (param hcScoreImprovedThreshold)))))))
         
         ;; ($_ (println! (Best instance: (Pair.first $newBestInstPair))))
         ;; ($_ (println! (Best candidate: (preOrder (getCandidate $rep (Pair.first $newBestInstPair))))))
@@ -687,7 +566,7 @@
                                                 $nextCenterInst
                                                 $hyperparamsfs
                                                 $estimateFunction $crossoverFunction $samplingFunction $transformFunction)
-                                  ($nextCenterInst $updatedDeme ((and $xOver (not $hasImproved)) $lastChance $hasImproved $centerInst $currentDemeSize $newInstances $nextBestSscore $nextBestScore $updatedEvalCount $nextDistance $i))))
+                                  ($nextCenterInst $updatedDeme ((and $xOver (not $hasImproved)) $lastChance $hasImproved $centerInst $currentDemeSize $retainedNewInstances $nextBestSscore $nextBestScore $updatedEvalCount $nextDistance $i))))
         (($newCenter $newDeme ($newXover $newLastChance $newHasImproved $newPrevCenter $newPrevStart $newPrevSize $newBestSscore $nextNewBestScore $newCurrentNInstance $newDistance $newI)) $hillStepResult)
         
         ;; Termination check compares against the scalar `$bestPossibleScore`,
@@ -776,3 +655,181 @@
    (let $knobList (MultiMap.values $disc)
      (let $initSpecs (List.map getInitDiscSpec $knobList)
        (mkInst $initSpecs))))
+
+;; Common-contract adapter. All legacy HC state interpretation stays here.
+(= (hcContextParts $context)
+   (case $context
+     (((mkOptimizerContext $inner $target)
+       (let ($scoring $unusedTarget) (hcContextParts $inner) ($scoring $target)))
+      ((mkContinCtx $table $error $ratio $mode $target) ($context $target))
+      ((mkTruthTableBScore $ratio $size $table) (($table $ratio) 0))
+      ((mkActionCtx $trials $ratio $target) ((mkActionScoreContext $ratio $trials) $target)))))
+
+(= (hcSnapshot)
+   ((get-state &hcActive) (get-state &hcLimits) (get-state &hcRng) (get-state &hcDeadline)
+    (get-state &hcProposals) (get-state &hcGenerations) (get-state &hcHits)
+    (get-state &hcInvalids) (get-state &hcStop) (get-state &localEvalLimit)))
+(= (hcRestore ($active $limits $rng $deadline $props $gens $hits $invalids $stop $local))
+   (let* (($_a (change-state! &hcActive $active)) ($_l (change-state! &hcLimits $limits))
+          ($_r (change-state! &hcRng $rng)) ($_d (change-state! &hcDeadline $deadline))
+          ($_p (change-state! &hcProposals $props)) ($_g (change-state! &hcGenerations $gens))
+          ($_h (change-state! &hcHits $hits)) ($_i (change-state! &hcInvalids $invalids))
+          ($_s (change-state! &hcStop $stop)) ($_e (change-state! &localEvalLimit $local))) True))
+
+(= (hillClimbingOptimizer $deme $context $initial $limits $rng $config)
+   (let* (($saved (hcSnapshot))
+          ($seconds (limitsTimeLimitSec $limits))
+          ($deadline (if (< $seconds 0) -1 (+ (candidateNow) $seconds)))
+          ($_scope (hcRestore (True $limits $rng $deadline 0 0 0 0 () (limitsMaxEvals $limits))))
+          ;; collapse contains the legacy engine's cut and permits cleanup on
+          ;; an empty result. Domain callbacks must tag native runtime errors.
+          ($results (collapse (hcStartCommon $deme $context $initial $limits)))
+          ($_restore (hcRestore $saved)))
+     (case $results
+       ((($one) $one)
+        ($other (Error $results "HC did not return one optimizer result"))))))
+
+(= (hcPrepareRows $rep $rows $context)
+   (case $context
+     (((mkContinCtx $table $error $ratio $mode $target)
+       (let $canonical canonicalizeContinCandidateRows ($canonical $rep $rows)))
+      ($other $rows))))
+(= (hcAppendRows $prefix $suffix $context)
+   (case $context
+     (((mkContinCtx $table $error $ratio $mode $target)
+       (let $dedup uniqueUnseenScoredInstances
+         (List.concat $prefix ($dedup $suffix $prefix))))
+      ($other (List.concat $prefix $suffix)))))
+
+(= (hcInputRows () $rep $id $context) ())
+(= (hcInputRows (cons $row $rest) $rep $id $context)
+   (cons (case $row
+           (((mkEvaluatedCandidate $inst $tree $score $status) $row)
+            ((mkSInst (mkPair $inst $score))
+             (List.head (legacyCandidateRows ($row) $rep $id $context)))))
+         (hcInputRows $rest $rep $id $context)))
+
+(= (hcStartCommon (mkDeme $rep (mkSInstSet $inputRows) $id) $context $initial $limits)
+   (let* ((($scoring $target) (hcContextParts $context))
+          ($rows (hcPrepareRows $rep (hcInputRows $inputRows $rep $id $scoring) $scoring))
+          ($attached (filter-atom $rows $row (candidateIsEvaluated $row)))
+          ($validAttached (filter-atom $attached $row (candidateIsValid $row)))
+          ($_attachedInvalids (change-state! &hcInvalids
+             (List.length (filter-atom $attached $row (not (candidateIsValid $row))))))
+          ($known (legacyScoredRows $validAttached))
+          ($initialDeme (mkDeme $rep (mkSInstSet $known) $id))
+          ($_seed (seedEvaluatedCandidates $attached (candidateEvaluationContext $scoring)))
+          ($early (hcStopForDeme $initialDeme $target 0)))
+     (if (not (== $early ()))
+         (hcCommonResult $initialDeme 0 $early)
+         (let* (($pending (filter-atom $rows $row (not (candidateIsEvaluated $row))))
+                ($instances (List.map candidateInstance $rows))
+                ($toScore (if (once (is-member $initial $instances)) $pending
+                             (cons (mkEvaluatedCandidate $initial () () candidatePending) $pending)))
+                ($selected (List.takeN (hcProposalAllowance (List.length $toScore)) $toScore))
+                ($_props (hcRecordProposals (List.length $selected)))
+                ($_gen (change-state! &hcGenerations 1))
+                ($batch (evaluateCandidateBatchUntil (hcPrepareRows $rep $selected $scoring) $rep $id $scoring (limitsMaxEvals $limits)
+                          materializeCandidateForContext scoreMaterializedCandidate (get-state &hcDeadline)))
+                ($_stats (hcRecordBatch $batch))
+                ($valid (filter-atom (batchEvaluated $batch) $row (candidateIsValid $row)))
+                ($scored (hcAppendRows $known (legacyScoredRows $valid) $scoring))
+                ($deme (mkDeme $rep (mkSInstSet $scored) $id))
+                ($calls (batchActualEvaluations $batch))
+                ($reason (hcStopForDeme $deme $target $calls)))
+           (if (not (== $reason ()))
+               (hcCommonResult $deme $calls $reason)
+               (let* (($best (optimizerBestRow $scored))
+                      ($center (if (== $best ()) $initial (getInst $best)))
+                      ($score (if (== $best ()) (worstCscore) (getSInstScore $best)))
+                      ($state (False False True $initial 0 (List.length $scored) $score (getPenScore $score) $calls 1 2))
+                      (($ignored $finalDeme $finalState)
+                        (hcRunCommonEngine $deme $scoring $target $center $state))
+                      ($used (hcStateEvaluations $finalState))
+                      ($stop (hcStopForDeme $finalDeme $target $used)))
+                 (hcCommonResult $finalDeme $used (if (== $stop ()) stopStagnation $stop))))))))
+
+(= (hcStateEvaluations ($x $last $improved $center $start $size $score $pen $evals $dist $iteration)) $evals)
+(= (hcBoundaryStop ($maxDist $minXover $target) $state $deme)
+   (if (get-state &hcActive)
+       (let $stop (get-state &hcStop)
+         (if (== $stop ()) (hcStopForDeme $deme $target (hcStateEvaluations $state)) $stop))
+       ()))
+(= (hcStopForDeme (mkDeme $rep (mkSInstSet $rows) $id) $target $evals)
+   (if (if (== $rows ()) False (>= (bestRawScore $rows) $target)) stopTargetReached
+       (let $resource (hcResourceStop $evals)
+         (if (not (== $resource ())) $resource
+             (if (and (== $rows ()) (> (get-state &hcInvalids) 0)) stopAllInvalid
+                 (let $space (foldl-atom (getDisk (mkDeme $rep (mkSInstSet $rows) $id)) 1 $size $entry
+                                (let (mkMultip $m) (getKnobMultip (second $entry)) (* $size $m)))
+                   (if (>= (List.length (unique-atom (List.map getInst $rows))) $space)
+                       stopExhaustedSpace ())))))))
+
+(= (hcRunCommonEngine $deme $scoring $target $center $state)
+   (let $disc (getDisk $deme)
+     (case $scoring
+       (((mkContinCtx $table $error $ratio $mode $targetScore)
+         (hillClimbing ((min (param maxDist) (List.length (second $center))) (param minXoverNeighbors) $target)
+           $state $deme ($disc $ratio mkContinCtx $scoring) $center ()
+           estimateNeighborhood crossover sampleNewInstances transform))
+        (((mkITable $rows $labels) $ratio)
+         (hillClimbing ((min (param maxDist) (List.length (second $center))) (param minXoverNeighbors) $target)
+           $state $deme ($disc $ratio (List.length $rows) (mkITable $rows $labels)) $center ()
+           estimateNeighborhood crossover sampleNewInstances transform))
+        ((mkActionScoreContext $ratio $trials)
+         (hillClimbing ((param maxDist) (param minXoverNeighbors) $target)
+           $state $deme ($disc $trials mkActionCtx $ratio) $center ()
+           estimateNeighborhood crossover sampleNewInstances transform))))))
+
+(= (hcCommonResult (mkDeme $rep (mkSInstSet $rows) $id) $calls $reason)
+   (let $best (optimizerBestRow $rows)
+     (mkOptimizerResult (mkDeme $rep (mkSInstSet $rows) $id)
+       (if (== $best ()) () (getInst $best)) $calls $reason
+       (mkOptimizerDiag (get-state &hcProposals) (get-state &hcHits) (get-state &hcInvalids) 0)
+       (get-state &hcRng))))
+
+(= (hcScoreAppended (mkSInstSet $rows) $prefixSize $rep $id $context $left)
+   (let* (($prefix (List.takeN $prefixSize $rows))
+          ($pending (hcPrepareRows $rep (legacyCandidateRows (List.drop $prefixSize $rows) $rep $id $context) $context))
+          ($batch (evaluateCandidateBatchUntil $pending $rep $id $context $left
+                    materializeCandidateForContext scoreMaterializedCandidate (get-state &hcDeadline)))
+          ($_stats (hcRecordBatch $batch))
+          ($valid (filter-atom (batchEvaluated $batch) $row (candidateIsValid $row))))
+     ((mkSInstSet (hcAppendRows $prefix (legacyScoredRows $valid) $context)) (batchActualEvaluations $batch))))
+
+;; Bounded pure sampling. Select coordinates without replacement (no rejection
+;; loop over already-picked coordinates), then choose a different legal value.
+(= (hcRandomNeighbor 0 $pool $values $disc $rng) ((mkInst $values) $rng))
+(= (hcRandomNeighbor $distance $pool $values $disc $rng)
+   (if (> $distance 0)
+       (let* ((($choice $rng1) (optimizerRandomInt 0 (- (List.length $pool) 1) $rng))
+              ($index (List.getByIdx $pool $choice))
+              ($remaining (filter-atom $pool $i (not (== $i $index))))
+              (($spec $knob) (MultiMap.getByIdx $index $disc))
+              ((mkMultip $m) (getKnobMultip $knob))
+              (($value $rng2) (optimizerRandomInt 1 (- $m 1) $rng1))
+              ($old (List.getByIdx $values $index))
+              ($new (if (== $old $value) 0 $value)))
+         (hcRandomNeighbor (- $distance 1) $remaining (List.replaceAt $values $index $new) $disc $rng2))
+       (empty)))
+(= (hcRandomNeighbors 0 $distance $disc $center $pool $rng) (() $rng))
+(= (hcRandomNeighbors $n $distance $disc (mkInst $values) $pool $rng)
+   (if (> $n 0)
+       (let* ((($inst $rng1) (hcRandomNeighbor $distance $pool $values $disc $rng))
+              (($rest $next) (hcRandomNeighbors (- $n 1) $distance $disc (mkInst $values) $pool $rng1)))
+         ((cons $inst $rest) $next)) (empty)))
+(= (hcSampleCounted $requested $center (mkDeme (mkRep (mkKbMap (mkDscMp $disc)) $tree) (mkSInstSet $rows) $id) $distance)
+   (let* (($kb (mkKbMap (mkDscMp $disc)))
+          ($available (countNeighborhood $kb $center $distance $requested))
+          ($pool (filter-atom (genList (- (List.length (second $center)) 1)) $i
+                   (let ($spec $knob) (MultiMap.getByIdx $i $disc)
+                     (let (mkMultip $m) (getKnobMultip $knob) (> $m 1)))))
+          (($proposals $nextRng)
+            (if (or (== $requested 0) (> $distance (List.length $pool))) (() (get-state &hcRng))
+              (if (<= $available $requested)
+                  ((let $enumerate generateAllInNeighborhoodForDisc ($enumerate (mkDscMp $disc) $center $distance)) (get-state &hcRng))
+                  (hcRandomNeighbors $requested $distance $disc $center $pool (get-state &hcRng)))))
+          ($_rng (change-state! &hcRng $nextRng))
+          ($_props (hcRecordProposals (List.length $proposals)))
+          ($fresh (let $dedup uniqueUnseenScoredInstances ($dedup (List.map initInstScore $proposals) $rows))))
+     ((mkDeme (mkRep $kb $tree) (mkSInstSet (List.concat $rows $fresh)) $id) (List.length $fresh))))

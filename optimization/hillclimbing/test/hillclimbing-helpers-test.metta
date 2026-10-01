@@ -23,8 +23,8 @@
 !(import! &self ../../../representation/representation)
 !(import! &self ../../../representation/create-representation)
 
-!(import! &self ../../../representation/instance)
 
+!(import! &self ../../../representation/instance)
 !(import! &self ../crossover-helpers)
 !(import! &self ../crossover)
 
@@ -46,6 +46,9 @@
 !(import! &self ../../../deme/deme-id-creation)
 !(import! &self ../../../deme/create-deme)
 !(import! &self ../../../deme/score-deme)
+!(import! &self ../../../optimization/optimizer-contract)
+!(import! &self ../../../scoring/candidate-evaluation)
+!(import! &self ../../../optimization/optimizer-runtime)
 !(import! &self ../../../deme/expand-deme)
 
 !(import! &self ../hill-climbing-helpers)
@@ -307,6 +310,43 @@
    (mkSInst (mkPair (mkInst (1 0))
                     (mkCscore -5 2 1.0 0.0 -6.0)))
    1 1 False))
+
+;; The shared service, not just the sampler, enforces the remaining allowance.
+;; Pending suffix rows must never be returned to HC as scored training data.
+!(assertEqual
+  (let* (($_reset (resetCandidateScoreCache))
+         ((mkDeme $rep $unusedSet $id) (deme))
+         ($old (mkSInst (mkPair (mkInst (0 0)) (mkCscore -7 3 1.5 0.0 -8.5))))
+         ($new (mkSInst (mkPair (mkInst (1 1)) (worstCscore)))))
+    (transformAppendedIncrementalBounded (mkSInstSet ($old $new)) 1 $rep $id ((itable) 2) 0))
+  ((mkSInstSet ((mkSInst (mkPair (mkInst (0 0)) (mkCscore -7 3 1.5 0.0 -8.5))))) 0))
+
+!(assertEqual
+  (let* (($_reset (resetCandidateScoreCache))
+         ((mkDeme $rep $unusedSet $id) (deme))
+         ($new1 (mkSInst (mkPair (mkInst (1 1)) (worstCscore))))
+         ($new2 (mkSInst (mkPair (mkInst (1 0)) (worstCscore))))
+         (((mkSInstSet $scored) $calls)
+           (transformAppendedIncrementalBounded
+             (mkSInstSet ($new1 $new2)) 0 $rep $id ((itable) 2) 1)))
+    ((List.length $scored) $calls))
+  (1 1))
+
+;; A cached failure stays evaluated even when legacy rows can only carry its
+;; worstCscore projection. Neither unlimited nor zero-budget adapters rescore it.
+!(assertEqual
+  (let* (($_reset (resetCandidateScoreCache))
+         ((mkDeme $rep $unusedSet $id) (deme))
+         ($context ((itable) 2))
+         ($inst (mkInst (1 1)))
+         ($tree (materializeCandidateForContext $rep $id $inst $context))
+         ($_cache (cacheCandidateEvaluation $context $tree
+                    (mkCandidateScore (worstCscore) (candidateInvalid "Fixture failure"))))
+         ($set (mkSInstSet ((mkSInst (mkPair $inst (worstCscore)))))))
+    ((transformIncremental $set $rep $id $context)
+     (transformAppendedIncrementalBounded $set 0 $rep $id $context 0)))
+  (((mkSInstSet ((mkSInst (mkPair (mkInst (1 1)) (worstCscore))))) 0)
+   ((mkSInstSet ((mkSInst (mkPair (mkInst (1 1)) (worstCscore))))) 0)))
 
 ;; Feature-selection batches obey the same append-only contract even though
 ;; they do not have a representation/id pair. This test transform deliberately
