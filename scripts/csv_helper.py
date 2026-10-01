@@ -1,5 +1,5 @@
 """
-CSV -> MeTTa input-table loader for the MOSES boolean problem path.
+CSV -> MeTTa input-table loaders, with separate Boolean/numeric validation.
 
 Called from MeTTa via:
     (py-call (csv_helper.load_boolean_table <path> <target_feature>))
@@ -14,6 +14,9 @@ failures are loud and locatable.
 """
 
 import csv
+import json
+import math
+import re
 
 BOOLEAN_LITERALS = {
     "true":  "True",
@@ -116,3 +119,82 @@ def load_boolean_table(path, target_feature=""):
     columns_sexpr = _expr_list(_expr_list(col) for col in validated_columns)
     labels_sexpr = _expr_list(new_labels)
     return "(mkITable {rows} {labels})".format( rows=columns_sexpr, labels=labels_sexpr,)
+
+
+_DECIMAL = re.compile(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?\Z")
+
+
+def read_continuous_table(path, target_feature=""):
+    """Return (exact labels, binary64 columns), with the target moved last.
+
+    Unlike the Boolean loader, headers are preserved verbatim and serialized
+    as string labels, never executable MeTTa symbols. Empty/duplicate headers,
+    blank or ragged rows, non-decimal cells and non-finite values are rejected.
+    UTF-8 (including a leading BOM) and standard CSV quoting are supported.
+    A target-only table is valid for intercept-only regression.
+    """
+    with open(path, encoding="utf-8-sig", newline="") as stream:
+        reader = csv.reader(stream, strict=True)
+        try:
+            rows = list(reader)
+        except csv.Error as error:
+            raise csv.Error(f"row {reader.line_num}: malformed CSV: {error}") from error
+    if not rows:
+        raise ValueError(f"{path!r}: empty CSV")
+    labels = rows[0]
+    if not labels:
+        raise ValueError("row 1: missing header columns")
+    seen = set()
+    for index, label in enumerate(labels, 1):
+        if not label.strip():
+            raise ValueError(f"row 1, column {index}: empty header")
+        if any(ord(char) < 32 and char not in '\t\r\n' for char in label):
+            raise ValueError(f"row 1, column {index}: unsupported control character in header")
+        if label in seen:
+            raise ValueError(f"row 1, column {index}: duplicate header {label!r}")
+        seen.add(label)
+    if len(rows) == 1:
+        raise ValueError(f"{path!r}: header only, no data rows")
+    if target_feature in ("", None):
+        target_index = len(labels) - 1
+    elif target_feature in labels:
+        target_index = labels.index(target_feature)
+    else:
+        raise ValueError(f"target feature {target_feature!r} not found in columns {labels!r}")
+    order = [i for i in range(len(labels)) if i != target_index] + [target_index]
+    columns = [[] for _ in labels]
+    for row_number, row in enumerate(rows[1:], 2):
+        if len(row) != len(labels):
+            raise ValueError(f"row {row_number}: {len(row)} columns, expected {len(labels)}")
+        for output_index, input_index in enumerate(order):
+            cell = row[input_index].strip()
+            where = f"row {row_number}, column {input_index + 1} ({labels[input_index]!r})"
+            if not _DECIMAL.fullmatch(cell):
+                raise ValueError(f"{where}: {row[input_index]!r} is not a finite decimal number")
+            value = float(cell)
+            if not math.isfinite(value):
+                raise ValueError(f"{where}: {row[input_index]!r} is not finite in binary64")
+            columns[output_index].append(value)
+    return [labels[i] for i in order], columns
+
+
+def load_continuous_table(path, target_feature=""):
+    """Render a validated numeric CSV as a column-major MeTTa mkITable.
+
+    repr(float) round-trips binary64 values; JSON string quoting protects exact
+    headers containing spaces, punctuation, quotes, numeric text or operators.
+    Errors raise with CSV row/column context; Boolean parsing is unchanged.
+    """
+    labels, columns = read_continuous_table(path, target_feature)
+    return "(mkITable {} {})".format(
+        _expr_list(_expr_list(repr(value) for value in column) for column in columns),
+        _expr_list(json.dumps(label, ensure_ascii=False) for label in labels),
+    )
+
+
+def load_continuous_table_result(path, target_feature=""):
+    """MeTTa bridge: return one parseable table or tagged, printable failure."""
+    try:
+        return load_continuous_table(path, target_feature)
+    except (OSError, ValueError, csv.Error) as error:
+        return "(mkCEvalError {})".format(json.dumps(str(error), ensure_ascii=False))
