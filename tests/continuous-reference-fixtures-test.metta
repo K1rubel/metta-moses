@@ -17,7 +17,7 @@
 ;;     - production stepper defaults (depth=5, step=1, expansion=2) from
 ;;       build_knobs constructor defaults (expansion=1, depth=4)
 ;;     - continuous relative improvement threshold from Boolean absolute threshold
-;;   The stepper decode logic below is an inline reference simulation used only
+;;   The stepper decode logic imported below is a reference simulation used only
 ;;   to verify fixture values.  The production stepper lives in
 ;;   representation/contin-stepper.metta (Phase 2).
 ;; ==============================================================================
@@ -36,7 +36,8 @@
 ;; ------------------------------------------------------------------------------
 ;; Part 1: Stepper Reference Simulation
 ;; ------------------------------------------------------------------------------
-;; Inline simulation of field_set.h contin_stepper (L233-275).
+;; Independent simulation of field_set.h contin_stepper (L233-275), extracted
+;; unchanged into contin-stepper-reference.metta so Step 5 can cross-check it.
 ;; This is NOT the production implementation — it is a reference decode used only
 ;; to compute and check the fixture values in the table below.
 ;; Production implementation: representation/contin-stepper.metta (Phase 2).
@@ -49,34 +50,7 @@
 ;;   $exp      — expansion factor
 ;;   trit list — remaining trits to process
 
-(= (decodeTritList $val $step $allLeft $allRight $exp ())
-   ;; No more trits: return accumulated value.
-   $val)
-
-(= (decodeTritList $val $step $allLeft $allRight $exp (cons $head $tail))
-   (if (== $head 0)
-       ;; STOP: halt immediately; remaining trits are dead tail.
-       $val
-       (if (== $head 1)
-           ;; LEFT move
-           (if $allLeft
-               ;; Purely-left streak: subtract step, expand for next time.
-               (decodeTritList (- $val $step) (* $step $exp) True False $exp $tail)
-               ;; Reversal or refinement continuation:
-               ;;   On the very first reversal from a purely-right streak,
-               ;;   divide step by (expansion * 2) before applying.
-               ;;   Thereafter (both $allLeft and $allRight are False), just use step.
-               (let $s (if $allRight (/ $step (* $exp 2)) $step)
-                 (decodeTritList (- $val $s) (/ $s 2) False False $exp $tail)))
-           ;; RIGHT move; malformed trits must not silently become RIGHT.
-           (if (== $head 2)
-             (if $allRight
-               ;; Purely-right streak: add step, expand for next time.
-               (decodeTritList (+ $val $step) (* $step $exp) False True $exp $tail)
-               ;; Reversal or refinement continuation:
-               (let $s (if $allLeft (/ $step (* $exp 2)) $step)
-                 (decodeTritList (+ $val $s) (/ $s 2) False False $exp $tail)))
-             (mkCEvalError "InvalidTrit")))))
+!(import! &self contin-stepper-reference)
 
 ;; Convenience entry point using production defaults: mean=0, step=1, expansion=2.
 (= (runStepper $trits)
