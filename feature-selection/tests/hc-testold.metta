@@ -44,6 +44,9 @@
 !(import! &self metta-moses:scoring:precision-bscore)
 
 !(import! &self metta-moses:optimization/hillclimbing:cross-top-one)
+!(import! &self metta-moses:optimization:optimizer-contract)
+!(import! &self metta-moses:scoring:candidate-evaluation)
+!(import! &self metta-moses:optimization:optimizer-runtime)
 !(import! &self metta-moses:optimization/hillclimbing:hill-climbing-helpers)
 !(import! &self metta-moses:optimization/hillclimbing:cross-top-one-helpers)
 
