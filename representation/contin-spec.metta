@@ -2,7 +2,7 @@
 ;; Module: representation/contin-spec.metta
 ;; Purpose: Continuous Knob Specification and Raw Trit Field Definitions
 ;;
-;; Phase: Phase 0 — Freeze Contracts (closes Step 1)
+;; Records frozen in Step 1; production validation/decoding/schema in Step 5.
 ;;
 ;; Reference (commit f88ccd3279f3dd853e8c23103be5376a0e7eafc1):
 ;;   - moses/moses/representation/field_set.h
@@ -58,10 +58,15 @@
 (: ContinSpec Type)
 (: mkContinSpec (-> Number Number Number Number ContinSpec))
 
-;; Production defaults, independent of the future CLI configuration layer.
+;; Fixed production defaults; configured builders take explicit CLI values.
+;;   $mean: Anchor value decoded by an all-STOP trit sequence.
+;;   Returns: A specification with production step, expansion, and depth defaults.
 (= (defaultContinSpec $mean) (mkContinSpec $mean 1.0 2.0 5))
 
-;; Accessor functions
+;; Accessors expose one stored parameter without changing the specification.
+;;   Argument: one mkContinSpec record. Results: continSpecMean returns $mean,
+;;   continSpecStep returns $step, continSpecExpansion returns $exp, and
+;;   continSpecDepth returns $depth.
 (= (continSpecMean     (mkContinSpec $mean $step $exp $depth)) $mean)
 (= (continSpecStep     (mkContinSpec $mean $step $exp $depth)) $step)
 (= (continSpecExpansion (mkContinSpec $mean $step $exp $depth)) $exp)
@@ -86,6 +91,8 @@
 (: ContinTreeKnob Type)
 (: mkCTK (-> ContinSpec Number ContinTreeKnob))
 
+;;   Argument: one mkCTK record. ctkSpec returns its search specification;
+;;   ctkStartIdx returns the first flat-field index owned by the knob.
 (= (ctkSpec     (mkCTK $spec $startIdx)) $spec)
 (= (ctkStartIdx (mkCTK $spec $startIdx)) $startIdx)
 
@@ -104,6 +111,8 @@
 (: ContinTritField Type)
 (: mkContinTritField (-> Atom Number ContinTritField))
 
+;;   Argument: one mkContinTritField. continFieldOwner returns the owning
+;;   knob/node identity; continFieldOffset returns this trit's local position.
 (= (continFieldOwner  (mkContinTritField $owner $offset)) $owner)
 (= (continFieldOffset (mkContinTritField $owner $offset)) $offset)
 
@@ -112,15 +121,22 @@
 ;; ------------------------------------------------------------------------------
 ;; The generic representation layer (knob-representation.metta) queries any knob
 ;; through `getKnobMultip` and `getKnobDefault`.  Adding clauses here for
-;; `mkContinTritField` supplies the multiplicity/default interface. Activation,
-;; decoding, schema validation, and optimizer integration are later milestones;
+;; `mkContinTritField` supplies the multiplicity/default interface. Step 5's
+;; contin-stepper, contin-representation and field-schema modules implement
+;; decoding, activation and validation. End-to-end optimizer routing is Step 7;
 ;; these accessors alone do not make continuous runs production-ready.
 
 ;; Multiplicity is always 3: a trit takes values 0 (STOP), 1 (LEFT), 2 (RIGHT).
+;;   $knob: continuous trit field; returns mkMultip 3.
 (= (getKnobMultip (mkContinTritField $owner $offset))
    (mkMultip 3))
 
 ;; Default is 0 (STOP).
 ;; Consequence: the all-default instance decodes every knob to its exact mean.
+;;   $knob: continuous trit field; returns its STOP default as mkDiscSpec 0.
 (= (getKnobDefault (mkContinTritField $owner $offset))
    (mkDiscSpec 0))
+
+;; Raw map key stores the field cardinality, not the default trit.
+;;   $knob: continuous trit field; returns raw-map cardinality mkDiscSpec 3.
+(= (getKnobSpec (mkContinTritField $owner $offset)) (mkDiscSpec 3))
