@@ -110,8 +110,9 @@
          )
      (case $context
        (((mkContinCtx $table $error $ratio $mode $target)
-         (if (<= $nDeme 0) ()
-             (let $build createContinDemes ($build $demeIds $tree $context))))
+         (if (<= $nDeme 0) 
+            ()
+            (createContinDemes $demeIds $tree $context))
         ((mkActionCtx $nTrials $cpxRatio $targetScore) (createDeme $nDeme $demeIds $tree (param actions) (param perceptions)))
         (($prune $fsAlgo $truthTableBScore $itable) (createDeme $nDeme $demeIds $tree $itable $fsAlgo $prune () mi))))))
 
@@ -142,12 +143,16 @@
 
 ;; Legacy Boolean/action setup uses a synthetic seed and spends no scorer
 ;; call here. Continuous seed calls are returned by prepareRunPopulation.
+;; XXX -- ?????
+
 (= (initialEvaluationCount $context)
    (case $context
      (($other 0))))
 
 ;; Legacy synthetic seeds must not enter the candidate cache. Continuous run
 ;; initialization populates it through the counted evaluator instead.
+;; XXX --- ???
+
 (= (seedInitialCandidateCache $context $metaPop)
    (case $context
      (($other ()))))
@@ -155,6 +160,7 @@
 ;; Tree materialization is keyed by deme ID and instance. Boolean subtree
 ;; scores are additionally keyed only by expression, so a new table run must
 ;; clear that domain cache before scoring starts.
+
 (= (resetDomainRunCaches $context)
    (let $_trees (clearSpace &treeSpace)
      (case $context
@@ -168,6 +174,7 @@
 
 ;; Optimize one deme under its fair share of the remaining complete-run
 ;; allowance. Only common result accessors cross the algorithm boundary.
+
 (= (optimizeDemeCounted (mkDeme (mkRep (mkKbMap (mkDscMp $dscKbMp)) $tree) $scoredInstances $demeId) $optimizerContext $optimize $localLimit)
    (let* (
           ($generatedList (createInitialInstance $dscKbMp))
@@ -193,6 +200,7 @@
 
 ;; Divide a finite allowance evenly, assigning remainder calls to the earliest
 ;; demes. The sum of local shares never exceeds the remaining global budget.
+
 (= (expandDemesWithShares () $optimizerContext $optimize $baseLimit $extraSlots) (() 0))
 (= (expandDemesWithShares (cons $deme $rest) $optimizerContext $optimize $baseLimit $extraSlots)
    (let* (
@@ -367,10 +375,11 @@
 ;; One shared loop handles visits, budgets, expansion, merging, raw-target
 ;; termination, and finalization for every problem family. The main public entry
 ;; keeps the init state inline and avoids any extra helper layer.
+
 (= (prepareRunPopulation $context $supplied)
    (case $context
-     (((mkContinCtx $table $error $ratio $mode $target)
-       (let $initialize initializeContinRun ($initialize $context $supplied)))
+     (
+      ((mkContinCtx $table $error $ratio $mode $target) (initializeContinRun $context $supplied))
       ($other
        (let $_seed (seedInitialCandidateCache $context $supplied)
          ($supplied (initialEvaluationCount $context)))))))
