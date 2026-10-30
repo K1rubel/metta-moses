@@ -2,14 +2,26 @@
 ;; and contin-stepper's late-call helper for mutual recursion.
 ;; Folding is attempted on closed expressions only. Failed folds stay as ASTs
 ;; so the counted scorer records the numerical failure (or a parent skips it).
+;; XXX -- to do the conditional could be done in a one liner using (and ... ...)
+
 (= (crClosedChildren $children)
    (case $children
-     ((() True)
-      ((cons $child $rest)
-       (if (continCall1 crClosed $child) (crClosedChildren $rest) False)))))
+     (
+        (() True)
+        ((cons $child $rest)
+          (if (crClosed $child) 
+              (crClosedChildren $rest) 
+              False)))))
+
 (= (crClosed (mkTree (mkNode $op) $children))
-   (if (== $children ()) (== (get-type $op) Number)
+   (if (== $children ()) 
+       (== (get-type $op) Number)
        (and (continIsOperator $op) (crClosedChildren $children))))
+
 (= (crFoldClosed $tree)
    (if (crClosed $tree)
-       (case (continEval $tree ()) (((mkCEvalOk $value) (crLeaf $value)) ($failed $tree))) $tree))
+       (case (continEval $tree ()) 
+          (
+            ((mkCEvalOk $value) (crLeaf $value)) 
+            ($failed $tree))) 
+       $tree))
