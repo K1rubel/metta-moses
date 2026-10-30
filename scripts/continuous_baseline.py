@@ -115,6 +115,11 @@ def metrics(tree, table, loss):
     errors = []
     for row in zip(*columns):
         errors.append(finite(predict(tree, dict(zip(labels[:-1], row[:-1]))) - row[-1]))
+    return residual_metrics(errors, loss)
+
+
+def residual_metrics(errors, loss):
+    """Summarize prediction residuals; also used for the known noise reference."""
     sse = sae = 0.0
     for error in errors:
         sse = finite(sse + finite(error * error))
@@ -169,12 +174,19 @@ def analyze(stdout, case, manifest):
     penalized_best = max(programs, key=lambda p: (p['penalized'], -p['complexity']), default=None)
     if raw_best is None:
         raise ValueError("FinalResult contains no scored programs")
-    if raw_best is None:
-        raise ValueError("FinalResult contains no scored programs")
+    extra_splits = {}
+    for split, key in (('train_clean', 'clean_training_file'),
+                       ('test_extrapolation', 'extrapolation_file')):
+        if key in case:
+            path = (FIXTURES / case[key]).resolve()
+            if not path.is_relative_to(FIXTURES.resolve()):
+                raise ValueError('extra dataset must be inside the fixture directory')
+            extra_splits[split] = read_continuous_table(path)
+    tables.update(extra_splits)
     for champion in (raw_best, penalized_best):
         if champion is None:
             continue
-        for split in ('validation', 'test'):
+        for split in ('validation', 'test', *extra_splits):
             try:
                 champion[split] = metrics(champion['program'], tables[split], case['loss'])
             except (ValueError, KeyError, OverflowError) as error:
@@ -197,7 +209,26 @@ def analyze(stdout, case, manifest):
     tolerance = manifest['acceptance_error']
     success = raw_best is not None and raw_best['raw'] >= -tolerance
     held_out_success = bool(success and raw_best['test'].get('raw', -math.inf) >= -tolerance)
-    return {"success": success, "held_out_success": held_out_success,
+    quality = {"program_complexity": raw_best['complexity']}
+    for split in ('train', 'validation', 'test', *extra_splits):
+        if 'rmse' in raw_best[split]:
+            quality[split + '_rmse'] = raw_best[split]['rmse']
+    if 'noise' in case:
+        quality['noise'] = case['noise']
+        quality['qualification'] = 'clean_test_rmse; legacy success means exact training fit'
+        threshold = case['clean_test_rmse_target']
+        if not math.isfinite(threshold) or threshold < 0:
+            raise ValueError('invalid clean test RMSE threshold')
+        quality['clean_test_rmse_target'] = threshold
+        quality['clean_test_success'] = raw_best['test'].get('rmse', math.inf) <= threshold
+        if 'train_clean' in tables:
+            labels, noisy = tables['train']
+            clean_labels, clean = tables['train_clean']
+            if labels != clean_labels or noisy[:-1] != clean[:-1]:
+                raise ValueError('clean/noisy training inputs are not aligned')
+            quality['known_target_training_error'] = residual_metrics(
+                [a - b for a, b in zip(clean[-1], noisy[-1])], case['loss'])
+    return {**quality, "success": success, "held_out_success": held_out_success,
             "actual_evaluations": len(evaluations), "invalid_evaluations": len(evaluations) - len(valid_events),
             "proposals": sum(r['proposals'] for r in optimizers),
             "cache_hits": sum(r['cacheHits'] for r in optimizers),
@@ -234,9 +265,9 @@ def summarize(runs):
     summary = {}
     for name in sorted({r['case'] for r in runs}):
         group = [r for r in runs if r['case'] == name]
-        valid = [r for r in group if 'actual_evaluations' in r]
-        summary[name] = {"runs": len(group), "successful_runs": sum(r.get('success', False) for r in group),
-                         "held_out_successes": sum(r.get('held_out_success', False) for r in group),
+        valid = [r for r in group if 'actual_evaluations' in r and not r.get('failure')]
+        summary[name] = {"runs": len(group), "successful_runs": sum(r.get('success', False) for r in valid),
+                         "held_out_successes": sum(r.get('held_out_success', False) for r in valid),
                          "failed_processes_or_reports": len(group) - len(valid)}
         n = len(group)
         proportion = summary[name]['successful_runs'] / n
@@ -250,6 +281,15 @@ def summarize(runs):
         coefficients = [r['raw_champion'].get('max_coefficient_error') for r in valid if r['raw_champion']]
         coefficients = [v for v in coefficients if v is not None]
         summary[name]['max_coefficient_error'] = max(coefficients) if coefficients else None
+        # Predictive quality is meaningful even without exact noisy-training fit.
+        for key in ('train_rmse', 'train_clean_rmse', 'validation_rmse', 'test_rmse',
+                    'test_extrapolation_rmse', 'program_complexity'):
+            values = [r[key] for r in valid if key in r]
+            summary[name][key] = ({'median': statistics.median(values), 'min': min(values),
+                                   'max': max(values), 'measured_runs': len(values)} if values else None)
+        if any('clean_test_success' in r for r in group):
+            summary[name]['clean_test_successes'] = sum(r.get('clean_test_success', False) for r in valid)
+            summary[name]['qualification'] = 'clean_test_rmse; exact-training success is secondary'
     return summary
 
 
