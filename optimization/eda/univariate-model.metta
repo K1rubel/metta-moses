@@ -12,6 +12,7 @@
 ;;   $alpha: Dirichlet pseudocount smoothing parameter.
 ;;   $index: Current category index counter.
 ;;   Returns: List of positive category weights with pseudocounts added.
+
 (= (edaCategoryWeights $values $card $alpha $index)
    (if (== $index $card) ()
        (cons (+ $alpha (List.length (filter-atom $values $v (== $v $index))))
@@ -22,9 +23,11 @@
 ;;   $views: List of candidate model views.
 ;;   $alpha: Smoothing pseudocount.
 ;;   Returns: List of category weight lists, one per field.
+
 (= (edaFitFields $fields $views $alpha)
    (case $fields
-     ((() ())
+     (
+      (() ())
       ((cons $field $rest)
        (let* (($index (fieldIndex $field))
               ($observations (map-atom $views $view (List.getByIdx $view $index)))
@@ -39,6 +42,7 @@
 ;;   $selected: Selected population candidate rows.
 ;;   $alpha: Dirichlet pseudocount.
 ;;   Returns: mkUnivariateModel holding per-field categorical sampling weights.
+
 (= (edaFitUnivariate $schema $selected $alpha)
    (mkUnivariateModel (edaFitFields (schemaFields $schema)
      (map-atom $selected $row (instanceModelView $schema (candidateInstance $row))) $alpha)))
@@ -50,9 +54,11 @@
 ;;   $draw: Random threshold scaled between 0 and sum of weights.
 ;;   $index: Current category index.
 ;;   Returns: Selected category index.
+
 (= (edaChooseWeight $weights $draw $index)
    (case $weights
-     (((cons $weight ()) $index)
+     (
+      ((cons $weight ()) $index)
       ((cons $weight $rest)
        (if (< $draw $weight) $index
            (edaChooseWeight $rest (- $draw $weight) (+ $index 1)))))))
@@ -63,9 +69,11 @@
 ;;   $active: Boolean activation status for current coordinate.
 ;;   $rng: Random number generator state.
 ;;   Returns: Tuple ($values $nextRng) containing sampled coordinate values.
+
 (= (edaSampleFields $fields $weights $active $rng)
    (case $fields
-     ((() (() $rng))
+     (
+      (() (() $rng))
       ((cons $field $rest)
        (let* (($now (if (== (fieldOffset $field) 0) True $active))
               (($value $next)
@@ -83,6 +91,7 @@
 ;;   (mkUnivariateModel $weights): Fitted univariate model.
 ;;   $rng: Random number generator state.
 ;;   Returns: mkLegalSample containing canonical instance and updated RNG state.
+
 (= (edaSampleUnivariate $schema (mkUnivariateModel $weights) $rng)
    (let ($values $next) (edaSampleFields (schemaFields $schema) $weights True $rng)
      (mkLegalSample (mkInst $values) $next)))
