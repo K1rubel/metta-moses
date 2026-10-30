@@ -88,6 +88,9 @@
                  (boaScan $fields $views $fixed $nodes $alpha $cfg $deadline $child (+ $parent 1) $cache $best)
                  (let* ((($node $nextCache) (boaCachedLocal $fields $views $child (List.insert $parent $parents)
                                               $alpha $maxCells $cache))
+                        ($_trace (if (== (param edaSearchTrace) True)
+                          (println! (EDATrace (event boaCandidate) (child $child) (parent $parent)
+                            (oldScore (boaNodeScore $old)) (node $node))) ()))
                         ($nextBest (if (== $node boaTooLarge) $best
                            (let* (($gain (- (boaNodeScore $node) (boaNodeScore $old)))
                                   ($bestGain (case $best ((() 0.0) ((mkBOAEdge $c $p $n $g) $g)))))
@@ -113,7 +116,10 @@
          (case $best
            ((() ($nodes $nextCache $iterations $reason))
             ((mkBOAEdge $child $parent $node $gain)
-             (let $nextNodes (List.replaceAt $nodes $child $node)
+             (let* (($nextNodes (List.replaceAt $nodes $child $node))
+                    ($_trace (if (== (param edaSearchTrace) True)
+                      (println! (EDATrace (event committedEdge) (child $child) (parent $parent)
+                        (gain $gain) (iteration $iterations) (scanStop $reason))) ())))
                (if (== $reason fitConverged)
                  (boaSearch $fields $views $fixed $nextNodes $alpha $cfg $deadline (+ $iterations 1) $nextCache)
                  ($nextNodes $nextCache (+ $iterations 1) $reason))))))))))
