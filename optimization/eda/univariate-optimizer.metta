@@ -6,9 +6,11 @@
 
 ;; Validates EDA parameters and returns the configured univariate optimizer entry point.
 ;;   Returns: univariateOptimizer function reference, or halts execution if parameters are invalid.
+
 (= (configuredUnivariateOptimizer)
-   (if (and (edaConfigValid (edaConfigured)) (edaReplacementValid)) univariateOptimizer
-       (let $_message (println! (OptimizerError "Invalid EDA configuration" (edaConfigured)))
+   (if (and (edaConfigValid (edaConfigured)) (edaReplacementValid)) 
+      univariateOptimizer
+      (let $_message (println! (OptimizerError "Invalid EDA configuration" (edaConfigured)))
          (callPredicate (Predicate (halt 1))))))
 
 ;; Public six-argument optimizer contract entry point for the independent univariate EDA.
@@ -19,6 +21,7 @@
 ;;   $rng: Random number generator state.
 ;;   $config: Optimizer configuration arguments.
 ;;   Returns: mkOptimizerResult containing optimized deme, best instance, and diagnostic stats.
+
 (= (univariateOptimizer $deme $context $initial $limits $rng $config)
    (edaStart $deme $context $initial $limits $rng (edaConfigured)
      edaFitUnivariate edaSampleUnivariate))
