@@ -7,9 +7,35 @@
 ;; policy common across univariate, BOA, and hBOA searches.
 ;; Config: population, selection, offspring, tournament, alpha, exploration,
 ;;         max refill attempts PER generation, stagnation generations.
+;; Diagnostic rows contain canonical instances and already-computed fitness.
+;;   $rows: evaluated candidates. No scoring or random sampling is performed.
+
+(= (edaTraceRows $rows)
+   (map-atom $rows $row
+     ((candidateInstance $row) (getScore (candidateScore $row))
+       (getPenScore (candidateScore $row)) (getComp (candidateScore $row)))))
+
+;; Snapshot a local generation; empty archives have no best score, not zero.
+;;   $env/$state: existing search records; $phase: before, after, or final.
+;; The runner assigns invocation IDs from start/end events, even for reused demes.
+
+(= (edaTraceState $env $state $phase)
+   (if (== (param edaSearchTrace) True)
+     (let* (((mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample $space) $env)
+            ((mkEDAState $p $a $s $c $n $h $i $r $g $z) $state))
+       (println! (EDATrace (event state) (phase $phase) (deme $id) (generation $g)
+         (calls $c) (proposals $n) (cacheHits $h) (invalids $i) (seen (List.length $s))
+         (archiveSize (List.length $a)) (stagnation $z) (target $target)
+         (archiveBest (if (== $a ()) () (getScore (candidateScore (edaRawBest $a)))))
+         (archivePenalizedBest (if (== $a ()) ()
+           (getPenScore (candidateScore (foldl-atom $a () $best $row
+             (if (edaBetter $row $best) $row $best))))))
+         (population (edaTraceRows $p))))) ()))
+
 ;; Constructs the active EDA configuration record from global parameters.
 ;;   Arguments: None; values are read from the optimizer parameter environment.
 ;;   Returns: mkEDAConfig record containing population, selection, offspring, and replacement bounds.
+
 (= (edaConfigured)
    (mkEDAConfig (param edaPopulationSize) (param edaSelectionSize)
      (param edaOffspringSize) (param edaTournamentSize) (param edaPseudocount)
@@ -23,9 +49,11 @@
 ;; Validates that all EDA configuration parameters satisfy type and range constraints.
 ;;   $config: Candidate mkEDAConfig record.
 ;;   Returns: True if configuration values are valid finite bounds, False otherwise.
+
 (= (edaConfigValid $config)
    (case $config
-     (((mkEDAConfig $p $s $o $t $a $e $r $stale)
+     (
+      ((mkEDAConfig $p $s $o $t $a $e $r $stale)
        ;; MeTTa and is eager: guard types before any arithmetic comparison.
        (if (all ((edaPositiveInt $p) (edaPositiveInt $s) (edaPositiveInt $o)
                  (edaPositiveInt $t) (edaPositiveInt $r) (edaPositiveInt $stale)))
@@ -39,10 +67,11 @@
 ;; Unpacks the inner scoring context and objective scalar target from an optimizer context.
 ;;   $context: Problem scoring context (optimizer context, continuous, Boolean, or action).
 ;;   Returns: Tuple ($scoring $target) for candidate evaluation.
+
 (= (edaContext $context)
    (case $context
-     (((mkOptimizerContext $inner $target)
-       (let ($scoring $ignored) (edaContext $inner) ($scoring $target)))
+     (
+      ((mkOptimizerContext $inner $target) (let ($scoring $ignored) (edaContext $inner) ($scoring $target)))
       ((mkContinCtx $table $loss $ratio $mode $target) ($context $target))
       ((mkTruthTableBScore $ratio $size $table) (($table $ratio) 0))
       ((mkActionCtx $trials $ratio $target) ((mkActionScoreContext $ratio $trials) $target)))))
@@ -51,18 +80,23 @@
 ;;   (mkRep $map $tree): Representation containing knob map and tree template.
 ;;   $context: Problem scoring context.
 ;;   Returns: Field schema defining field indices, continuous depths, and cardinalities.
+
 (= (edaSchema (mkRep $map $tree) $context)
    (case $context
-     (((mkContinCtx $table $loss $ratio $mode $target) (continFieldSchema (mkRep $map $tree)))
-      ($discrete (case $map
-        (((mkKbMap (mkDscMp $rows)) (discreteFieldSchema (mkDscMp $rows)))
-         ((mkKbMap $otherMap (mkDscMp $rows)) (discreteFieldSchema (mkDscMp $rows)))))))))
+     (
+      ((mkContinCtx $table $loss $ratio $mode $target) (continFieldSchema (mkRep $map $tree)))
+      ($discrete 
+        (case $map
+          (
+            ((mkKbMap (mkDscMp $rows)) (discreteFieldSchema (mkDscMp $rows)))
+            ((mkKbMap $otherMap (mkDscMp $rows)) (discreteFieldSchema (mkDscMp $rows)))))))))
 
 ;; Validates candidate rows and determines if $new is strictly better than $old.
 ;; Stable ties retain the incumbent; rank by penalized score, then reduced complexity.
 ;;   $new: Candidate to compare.
 ;;   $old: Incumbent candidate (or empty list if none).
 ;;   Returns: True if $new has higher penalized score or lower complexity on tie, False otherwise.
+
 (= (edaBetter $new $old)
    (if (== $old ()) True
        (let* (($a (candidateScore $new)) ($b (candidateScore $old)))
@@ -73,6 +107,7 @@
 ;;   $row: Candidate row to insert.
 ;;   $rows: Existing sorted list of candidate rows.
 ;;   Returns: Updated sorted list of candidate rows.
+
 (= (edaInsert $row $rows)
    (case $rows
      ((() ($row))
@@ -82,6 +117,7 @@
 ;; Sorts a list of evaluated candidate rows in descending order of fitness.
 ;;   $rows: Unsorted list of evaluated candidate rows.
 ;;   Returns: Sorted list of candidate rows.
+
 (= (edaRank $rows) (foldl-atom $rows () $sorted $row (edaInsert $row $sorted)))
 
 ;; Performs elitist truncation replacement, keeping the top $size individuals from population and offspring.
@@ -89,6 +125,7 @@
 ;;   $offspring: Newly evaluated offspring candidate rows.
 ;;   $size: Target population size to retain.
 ;;   Returns: Ranked list of the top $size candidate rows.
+
 (= (edaReplace $population $offspring $size)
    (List.takeN $size (edaRank (List.concat $population $offspring))))
 ;; RTR distance is Hamming over CANONICAL raw fields (inactive tails are 0).
@@ -100,6 +137,7 @@
 ;;   (mkInst $a): First candidate instance.
 ;;   (mkInst $b): Second candidate instance.
 ;;   Returns: Integer number of coordinate positions where $a and $b differ.
+
 (= (edaHamming (mkInst $a) (mkInst $b))
    (List.sum (List.zipWith edaDifferent $a $b)))
 
@@ -107,6 +145,7 @@
 ;;   $a: First value.
 ;;   $b: Second value.
 ;;   Returns: 1 if $a != $b, 0 if $a == $b.
+
 (= (edaDifferent $a $b) (if (== $a $b) 0 1))
 
 ;; Samples a random window of unique population indices without replacement.
@@ -114,6 +153,7 @@
 ;;   $left: Number of indices left to sample.
 ;;   $rng: Random number generator state.
 ;;   Returns: Tuple ($sampledIndices $nextRng).
+
 (= (edaWindow $indices $left $rng)
    (if (or (<= $left 0) (== $indices ())) (() $rng)
      (let* ((($pick $next) (optimizerRandomInt 0 (- (List.length $indices) 1) $rng))
@@ -125,6 +165,7 @@
 ;;   $row: Offspring candidate row.
 ;;   $indices: List of candidate population indices in the tournament window.
 ;;   Returns: Index of closest incumbent individual.
+
 (= (edaClosest $population $row $indices)
    (foldl-atom (cdr-atom $indices) (car-atom $indices) $best $index
      (if (< (edaHamming (candidateInstance $row) (candidateInstance (List.getByIdx $population $index)))
@@ -139,6 +180,7 @@
 ;;   $rng: Random number generator state.
 ;;   $accepted: Count of offspring that successfully replaced an incumbent.
 ;;   Returns: Tuple (($rankedPopulation) $nextRng $acceptedCount).
+
 (= (edaRTR $population $offspring $size $window $rng $accepted)
    (case $offspring
      ((() ((edaRank $population) $rng $accepted))
@@ -147,13 +189,20 @@
          (edaRTR (List.append $row $population) $rest $size $window $rng (+ $accepted 1))
          (let* ((($indices $next) (edaWindow (fieldPriorIndices 0 (List.length $population)) $window $rng))
                 ($closest (edaClosest $population $row $indices))
-                ($better (edaBetter $row (List.getByIdx $population $closest))))
+                ($better (edaBetter $row (List.getByIdx $population $closest)))
+                ($_trace (if (== (param edaSearchTrace) True)
+                  (println! (EDATrace (event rtr) (window $indices) (closest $closest)
+                    (distance (edaHamming (candidateInstance $row) (candidateInstance (List.getByIdx $population $closest))))
+                    (offspring (edaTraceRows ($row)))
+                    (incumbent (edaTraceRows ((List.getByIdx $population $closest))))
+                    (accepted $better))) ())))
            (edaRTR (if $better (List.replaceAt $population $closest $row) $population)
              $rest $size $window $next (+ $accepted (if $better 1 0)))))))))
 
 ;; Validates whether the replacement policy and RTR window size parameters are legal.
 ;;   Arguments: None; reads edaReplacement and edaRTRWindow from optimizer parameters.
 ;;   Returns: True if policy is auto/elitist/rtr and window is a positive integer, False otherwise.
+
 (= (edaReplacementValid)
    (and (continContains (param edaReplacement) (auto elitist rtr)) (edaPositiveInt (param edaRTRWindow))))
 
@@ -164,6 +213,7 @@
 ;;   $size: Target population size.
 ;;   $rng: Random number generator state.
 ;;   Returns: Tuple ($newPopulation $nextRng).
+
 (= (edaReplacementStep $sample $population $offspring $size $rng)
    (let $policy (if (== (param edaReplacement) auto)
                     (if (== $sample hboaSample) rtr elitist) (param edaReplacement))
@@ -177,6 +227,7 @@
 ;; Finds the candidate with the highest unpenalized raw score among a collection of candidate rows.
 ;;   $rows: List of evaluated candidate rows.
 ;;   Returns: Candidate row achieving maximal raw score.
+
 (= (edaRawBest $rows)
    (foldl-atom $rows () $best $row
      (if (== $best ()) $row
@@ -188,10 +239,13 @@
 ;;   $best: Current best competitor in this tournament.
 ;;   $rng: Random number generator state.
 ;;   Returns: Tuple ($winner $nextRng).
+
 (= (edaTournament $population $left $best $rng)
    (if (== $left 0) ($best $rng)
        (let* ((($index $next) (optimizerRandomInt 0 (- (List.length $population) 1) $rng))
-              ($row (List.getByIdx $population $index)))
+              ($row (List.getByIdx $population $index))
+              ($_trace (if (== (param edaSearchTrace) True)
+                (println! (EDATrace (event tournamentDraw) (remaining $left) (index $index))) ())))
          (edaTournament $population (- $left 1) (if (edaBetter $row $best) $row $best) $next))))
 
 ;; Selects $count individuals from the population using repeated tournament selection.
@@ -200,6 +254,7 @@
 ;;   $tournament: Tournament size per selection round.
 ;;   $rng: Random number generator state.
 ;;   Returns: Tuple ($selectedRows $nextRng).
+
 (= (edaSelect $population $count $tournament $rng)
    (if (== $count 0) (() $rng)
        (let* ((($winner $next) (edaTournament $population $tournament () $rng))
@@ -212,6 +267,7 @@
 ;;   $depth: Remaining tree depth.
 ;;   $size: Cumulative prefix state size.
 ;;   Returns: Canonical state space size or -1 if exceeding representation limits.
+
 (= (edaPrefixSpace $depth $size)
    (if (== $depth 0) $size
        (if (> $size 1073741823) -1 (edaPrefixSpace (- $depth 1) (+ 1 (* 2 $size))))))
@@ -220,6 +276,7 @@
 ;;   $fields: List of schema field specifications.
 ;;   $size: Running product accumulator.
 ;;   Returns: Total number of valid discrete/continuous states, or -1 if unbounded/overflowing.
+
 (= (edaSpace $fields $size)
    (case $fields
      ((() $size)
@@ -236,12 +293,14 @@
 ;;   $state: EDA internal state, represented as mkEDAState with population,
 ;;           archive, seen genotypes, counters, RNG, generation, and stagnation.
 ;;   Returns: Evaluated candidate archive list $a.
+
 (= (edaArchive (mkEDAState $p $a $s $c $n $h $i $r $g $z)) $a)
 
 ;; Checks whether any execution boundary, budget limit, or termination condition is triggered.
 ;;   $env: EDA environment context.
 ;;   $state: Current EDA state.
 ;;   Returns: Stop symbol (stopTargetReached, stopTimeExhausted, stopBudgetExhausted, etc.) or () if search continues.
+
 (= (edaResourceStop (mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample $space)
                    (mkEDAState $p $a $s $calls $props $hits $invalids $rng $gens $stale))
    (if (if (== $a ()) False (>= (getScore (candidateScore (edaRawBest $a))) $target)) stopTargetReached
@@ -255,9 +314,15 @@
 ;;   $state: Current EDA state.
 ;;   $reason: Stop condition identifier.
 ;;   Returns: mkOptimizerResult containing resulting deme, best candidate, evals, and diagnostics.
+
 (= (edaResult (mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample $space)
               (mkEDAState $p $a $s $calls $props $hits $invalids $rng $gens $stale) $reason)
    (let* (($ranked (edaRank $a))
+          ($_snapshot (edaTraceState
+            (mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample $space)
+            (mkEDAState $p $a $s $calls $props $hits $invalids $rng $gens $stale) final))
+          ($_trace (if (== (param edaSearchTrace) True)
+            (println! (EDATrace (event end) (stop $reason) (calls $calls))) ()))
           ($_diag (if (param diagnostics)
              (println! (PopulationDiagnostics (generations $gens) (population (List.length $p))
                (archive (List.length $a)) (unretainedProposals (max 0 (- $props (List.length $s))))
@@ -276,18 +341,26 @@
 ;;   $row: Proposed candidate row.
 ;;   $state: Current EDA state.
 ;;   Returns: Updated EDA state with new evaluation counts, cache hits, and archive additions.
+
 (= (edaEvaluate $env $row
                  (mkEDAState $p $a $seen $calls $props $hits $invalids $rng $gens $stale))
    (let* (((mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample $space) $env)
           ($instance (candidateInstance $row))
-          ($nextProps (+ $props 1)))
+          ($nextProps (+ $props 1))
+          ($_trace (if (== (param edaSearchTrace) True)
+            (println! (EDATrace (event proposal) (instance $instance)
+              (duplicate (continContains $instance $seen)) (calls $calls))) ())))
      (if (continContains $instance $seen)
          (mkEDAState $p $a $seen $calls $nextProps $hits $invalids $rng $gens $stale)
          (let* (($batch (evaluateCandidateBatchUntil ($row) $rep $id $ctx
                           (optimizerRemaining (limitsMaxEvals $limits) $calls)
                           materializeCandidateForContext scoreMaterializedCandidate $deadline))
                 ($done (batchEvaluated $batch))
-                ($valid (filter-atom $done $v (candidateIsValid $v))))
+                ($valid (filter-atom $done $v (candidateIsValid $v)))
+                ($_trace (if (== (param edaSearchTrace) True)
+                  (println! (EDATrace (event evaluation) (instance $instance)
+                    (evaluated (List.length $done)) (valid (List.length $valid))
+                    (actualCalls (batchActualEvaluations $batch)) (cacheHits (batchCacheHits $batch)))) ())))
            (mkEDAState $p (List.concat $a $valid)
              (if (== $done ()) $seen (cons $instance $seen))
              (+ $calls (batchActualEvaluations $batch)) $nextProps (+ $hits (batchCacheHits $batch))
@@ -296,6 +369,7 @@
 ;; Extracts the genotype instance payload from an evaluated candidate or scored instance row.
 ;;   $row: Candidate record (mkEvaluatedCandidate or mkSInst).
 ;;   Returns: Genotype mkInst payload.
+
 (= (edaInputInstance $row)
    (case $row (((mkEvaluatedCandidate $inst $tree $score $status) $inst)
               ((mkSInst (mkPair $inst $score)) $inst))))
@@ -307,14 +381,17 @@
 ;;   $instances: List of initial genotype instances to ingest.
 ;;   $state: Current EDA state.
 ;;   Returns: Updated EDA state with evaluated seed rows.
+
 (= (edaInitialRows $env $instances $state)
    (if (not (== (edaResourceStop $env $state) ())) $state
        (case $instances
-         ((() $state)
+         (
+          (() $state)
           ((cons $inst $rest)
            (let (mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample $space) $env
              (case (canonicalizeInstance $schema $inst)
-               (((mkCEvalError $reason) (Error $inst $reason))
+               (
+                ((mkCEvalError $reason) (Error $inst $reason))
                 ($canonical (edaInitialRows $env $rest
                   (edaEvaluate $env (mkEvaluatedCandidate $canonical () () candidatePending) $state)))))))))))
 
@@ -330,6 +407,7 @@
 ;;   $attempts: Maximum refill attempts allowed before aborting.
 ;;   $state: Current EDA state.
 ;;   Returns: Updated EDA state with newly sampled and evaluated candidates.
+
 (= (edaFill $env $model $wanted $attempts $state)
    (if (or (<= $attempts 0) (>= (List.length (edaArchive $state)) $wanted)) $state
        (if (not (== (edaResourceStop $env $state) ())) $state
@@ -337,9 +415,14 @@
                              (mkEDAConfig $pop $sel $offs $tour $alpha $explore $refill $stagnation) $fit $sample $space) $env)
                   ((mkEDAState $p $a $s $c $n $h $i $rng $g $z) $state)
                   ((mkLegalSample $inst $end)
-                    (if (== $model ()) (sampleLegalInstance $schema $rng)
+                    (if (== $model ())
+                        (let $_origin (if (== (param edaSearchTrace) True)
+                               (println! (EDATrace (event sample) (origin prior))) ())
+                          (sampleLegalInstance $schema $rng))
                         (let ($unit $next) (optimizerRandomUnit $rng)
-                          (if (< $unit $explore) (sampleLegalInstance $schema $next) ($sample $schema $model $next)))))
+                          (let $_origin (if (== (param edaSearchTrace) True)
+                                 (println! (EDATrace (event sample) (origin (if (< $unit $explore) prior model)))) ())
+                            (if (< $unit $explore) (sampleLegalInstance $schema $next) ($sample $schema $model $next))))))
                   ($advanced (mkEDAState $p $a $s $c $n $h $i $end $g $z))
                   ($evaluated (edaEvaluate $env (mkEvaluatedCandidate $inst () () candidatePending) $advanced)))
              (edaFill $env $model $wanted (- $attempts 1) $evaluated)))))
@@ -353,11 +436,14 @@
 ;;   $alpha: Dirichlet pseudocount.
 ;;   $deadline: Cutoff timestamp.
 ;;   Returns: Fitted probabilistic model.
+
 (= (edaFitTimed $fit $schema $selected $alpha $deadline)
    (let* (($started (candidateNow))
           ($model (if (or (== $fit boaFitConfigured) (== $fit hboaFitConfigured)) ($fit $schema $selected $alpha $deadline)
                       ($fit $schema $selected $alpha)))
           ($elapsed (- (candidateNow) $started))
+          ($_trace (if (== (param edaSearchTrace) True)
+            (println! (EDATrace (event model) (model $model))) ()))
           ($_diag (if (param diagnostics)
             (case $model
               (((mkBOAModel $nodes $order $a (mkBOAFitStats $seconds $edges $parameters $cells $iterations $scores $hits $reason))
@@ -374,6 +460,7 @@
 ;; Extracts the model parameter count from a fitted model record.
 ;;   $model: Fitted probabilistic model (BOA, hBOA, or univariate).
 ;;   Returns: Number of free parameters in the model.
+
 (= (edaModelSize $model)
    (case $model
      (((mkBOAModel $nodes $order $alpha (mkBOAFitStats $seconds $edges $parameters $cells $iterations $scores $hits $reason)) $parameters)
@@ -386,6 +473,7 @@
 ;;   $reason: Stop condition identifier.
 ;;   $size: Model parameter size.
 ;;   Returns: mkOptimizerResult with model size in diagnostics.
+
 (= (edaSizedResult $env $state $reason $size)
    (let (mkOptimizerResult $deme $best $calls $stop (mkOptimizerDiag $props $hits $invalids $old) $rng)
         (edaResult $env $state $reason)
@@ -395,6 +483,7 @@
 ;;   $env: EDA environment context.
 ;;   $state: Current EDA state.
 ;;   Returns: Result of edaGenerationSized.
+
 (= (edaGeneration $env $state) (edaGenerationSized $env $state 0))
 
 ;; Executes the generational cycle: selection, model fitting, offspring sampling, evaluation, and replacement.
@@ -405,6 +494,7 @@
 ;;   $state: Current EDA state.
 ;;   $modelSize: Maximum model parameter size observed so far.
 ;;   Returns: mkOptimizerResult when terminated, or recurses to next generation.
+
 (= (edaGenerationSized $env $state $modelSize)
    (let* (((mkEDAEnv $rep $id $schema $ctx $target $limits $deadline
                       (mkEDAConfig $pop $sel $offs $tour $alpha $explore $refill $stagnation) $fit $sample $space) $env)
@@ -415,15 +505,23 @@
                       (if (optimizerLimitReached (limitsMaxGenerations $limits) $gens) stopGenerationsExhausted
                         (if (>= $stale $stagnation) stopStagnation ()))))))
      (if (not (== $stop ())) (edaSizedResult $env $state $stop $modelSize)
-         (let* ((($selected $selectedRng) (edaSelect $p $sel $tour $rng))
+         (let* (($_before (edaTraceState $env $state before))
+                (($selected $selectedRng) (edaSelect $p $sel $tour $rng))
+                ($_selection (if (== (param edaSearchTrace) True)
+                  (println! (EDATrace (event selection) (rows (edaTraceRows $selected))
+                    (views (map-atom $selected $row (instanceModelView $schema (candidateInstance $row)))))) ()))
                 ($model (edaFitTimed $fit $schema $selected $alpha $deadline))
                 ($ready (mkEDAState $p $a $s $calls $props $hits $invalids $selectedRng $gens $stale))
                 ((mkEDAState $unusedP $newA $newS $newC $newN $newH $newI $newR $unusedG $unusedZ)
                   (edaFill $env $model (+ (List.length $a) $offs) $refill $ready))
+                ($_offspring (if (== (param edaSearchTrace) True)
+                  (println! (EDATrace (event offspring)
+                    (rows (edaTraceRows (List.drop (List.length $a) $newA))))) ()))
                 (($newP $replaceRng) (edaReplacementStep $sample $p (List.drop (List.length $a) $newA) $pop $newR))
                 ($improved (edaBetter (car-atom $newP) (car-atom $p)))
                 ($newState (mkEDAState $newP $newA $newS $newC $newN $newH $newI $replaceRng
-                             (+ $gens 1) (if $improved 0 (+ $stale 1)))))
+                             (+ $gens 1) (if $improved 0 (+ $stale 1))))
+                ($_after (edaTraceState $env $newState after)))
            (edaGenerationSized $env $newState (max $modelSize (edaModelSize $model)))))))
 
 ;; Main engine entry point for EDA-based optimizers (univariate, BOA, hBOA).
@@ -439,28 +537,39 @@
 ;;   $fit: Model fitting callback.
 ;;   $sample: Model sampling callback.
 ;;   Returns: mkOptimizerResult containing optimized deme, best instance, and diagnostics.
+
 (= (edaStart $deme $context $initial $limits $rng $cfg $fit $sample)
    (if (not (and (optimizerLimitsValid $limits) (optimizerRngValid $rng)))
        (Error $limits "Invalid EDA limits or RNG")
        (if (not (and (edaConfigValid $cfg) (edaReplacementValid))) (Error $cfg "Invalid EDA configuration or replacement policy")
            (let* (((mkDeme $rep (mkSInstSet $input) $id) $deme)
                   (($ctx $target) (edaContext $context))
-                  ($schema (edaSchema $rep $ctx)))
-             (if (not (fieldSchemaValid $schema)) (Error $schema "Invalid EDA schema")
-                 (if (not (legalSamplingFieldsValid (schemaFields $schema))) (Error $schema "Unsupported EDA cardinality")
-                   (let* (($seconds (limitsTimeLimitSec $limits))
+                  ($schema (edaSchema $rep $ctx))
+                  ($_trace (if (== (param edaSearchTrace) True)
+                                (println! (EDATrace (event start) (deme $id) (schema $schema)
+                                          (replacement (param edaReplacement)) (sampler $sample))) 
+                                ())))
+             (if (not (fieldSchemaValid $schema)) 
+                  (Error $schema "Invalid EDA schema")
+                  (if (not (legalSamplingFieldsValid (schemaFields $schema))) 
+                      (Error $schema "Unsupported EDA cardinality")
+                      (let* (($seconds (limitsTimeLimitSec $limits))
                           ($deadline (if (< $seconds 0) -1 (+ (candidateNow) $seconds)))
                           ($env (mkEDAEnv $rep $id $schema $ctx $target $limits $deadline $cfg $fit $sample
                                   (edaSpace (schemaFields $schema) 1)))
                           ($empty (mkEDAState () () () 0 0 0 0 $rng 0 0))
                           ($early (edaResourceStop $env $empty)))
-                     (if (not (== $early ())) (edaResult $env $empty $early)
-                       (if (== (limitsMaxGenerations $limits) 0) (edaResult $env $empty stopGenerationsExhausted)
-                         (let* (((mkEDAConfig $pop $sel $offs $tour $alpha $explore $refill $stagnation) $cfg)
-                                ($seeded (edaInitialRows $env (cons $initial (map-atom $input $row (edaInputInstance $row))) $empty)))
-                           (case $seeded
-                             (((Error $value $reason) $seeded)
-                              ($validSeeded
-                               (let (mkEDAState $p $a $s $c $n $h $i $r $g $z)
-                                    (edaFill $env () $pop $refill $validSeeded)
-                                 (edaGeneration $env (mkEDAState (List.takeN $pop (edaRank $a)) $a $s $c $n $h $i $r 1 0))))))))))))))))
+                          
+                          (if (not (== $early ())) 
+                              (edaResult $env $empty $early)
+                              (if (== (limitsMaxGenerations $limits) 0) 
+                                  (edaResult $env $empty stopGenerationsExhausted)
+                                  (let* (((mkEDAConfig $pop $sel $offs $tour $alpha $explore $refill $stagnation) $cfg)
+                                        ($seeded (edaInitialRows $env (cons $initial (map-atom $input $row (edaInputInstance $row))) $empty)))
+                                        (case $seeded
+                                          (
+                                            ((Error $value $reason) $seeded)
+                                            ($validSeeded
+                                                (let (mkEDAState $p $a $s $c $n $h $i $r $g $z)
+                                                      (edaFill $env () $pop $refill $validSeeded)
+                                                      (edaGeneration $env (mkEDAState (List.takeN $pop (edaRank $a)) $a $s $c $n $h $i $r 1 0))))))))))))))))
