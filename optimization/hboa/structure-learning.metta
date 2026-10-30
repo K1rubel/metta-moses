@@ -78,6 +78,9 @@
              (let* (((mkHNode $i $ps $tree $n) (List.getByIdx $nodes $child))
                     ($active (filter-atom $views $v
                                (and (>= (boaObservation $v $child) 0) (hboaMatches $v $path))))
+                    ($_trace (if (== (param edaSearchTrace) True)
+                      (println! (EDATrace (event splitCandidate) (child $child)
+                        (parent $parent) (value $value) (path $path) (fitScoreCall $calls))) ()))
                     ($split (hboaSplit $active $child $parent $value
                               (fieldCardinality (List.getByIdx $fields $child)) $n $counts $support))
                     ($next (case $split
@@ -102,14 +105,22 @@
    (let (mkHConfig $parents $depth $leaves $support $maxIterations $scores $seconds $learn) $cfg
      (if (not $learn) ($nodes $iterations $calls fitDependenciesDisabled)
        (if (>= $iterations $maxIterations) ($nodes $iterations $calls fitIterationLimit)
-         (let ($best $nextCalls $reason)
-              (hboaScan (hboaCandidates $fields $fixed $nodes $cfg) $fields $views $nodes $cfg $deadline $calls ())
+         (let* (($candidates (hboaCandidates $fields $fixed $nodes $cfg))
+                ($_trace (if (== (param edaSearchTrace) True)
+                  (println! (EDATrace (event scanStart) (iteration $iterations)
+                    (candidates (List.length $candidates)) (fitScoreCalls $calls))) ()))
+                (($best $nextCalls $reason)
+                  (hboaScan $candidates $fields $views $nodes $cfg $deadline $calls ())))
            (case $best
              ((() ($nodes $iterations $nextCalls $reason))
               ((mkHChange $child $parent $tree $gain)
                (let* (((mkHNode $i $ps $oldTree $n) (List.getByIdx $nodes $child))
                       ($next (List.replaceAt $nodes $child
-                               (mkHNode $child (boaUnion $ps ($parent)) $tree $n))))
+                               (mkHNode $child (boaUnion $ps ($parent)) $tree $n)))
+                      ($_trace (if (== (param edaSearchTrace) True)
+                        (println! (EDATrace (event committedSplit) (child $child)
+                          (parent $parent) (gain $gain) (iteration $iterations)
+                          (fitScoreCalls $nextCalls) (scanStop $reason))) ())))
                  (if (== $reason fitConverged)
                    (hboaSearch $fields $views $fixed $next $cfg $deadline (+ $iterations 1) $nextCalls)
                    ($next (+ $iterations 1) $nextCalls $reason)))))))))))
