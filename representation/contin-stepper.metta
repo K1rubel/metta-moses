@@ -3,24 +3,33 @@
 ;; independently retained there as the C++ field_set.h reference simulation.
 ;;   $x: Candidate number; must be finite and equal to its integer floor.
 ;;   Returns: True for finite integral values, False otherwise.
+
 (= (continInteger $x)
    (if (continFiniteNumber $x) (== $x (floor-math $x)) False))
+
 ;; !(py-call (builtins.isinstance 5 "int"))
 ;;   $x: candidate number; returns True only for a finite nonnegative integer.
+
 (= (continNatural $x) (if (continInteger $x) (>= $x 0) False))
+
 ;;   $spec: mkContinSpec; returns whether mean/step/expansion are finite,
 ;;   step and expansion positive, and depth a positive integer.
+
 (= (continSpecValid $spec)
    (case $spec
-     (((mkContinSpec $mean $step $exp $depth)
+     (
+      ((mkContinSpec $mean $step $exp $depth)
        (if (and (continFiniteNumber $mean) (and (continFiniteNumber $step) (continFiniteNumber $exp)))
            (and (and (> $step 0) (> $exp 0)) (if (continInteger $depth) (> $depth 0) False)) False))
       ($bad False))))
+
 ;;   $trits: Raw trit list for one knob.
 ;;   Returns: True only when the list is proper and every value is 0, 1, or 2.
+
 (= (continTritsValid $trits)
    (case $trits
-     ((() True)
+     (
+      (() True)
       ((cons $head $tail) (if (once (is-member $head (0 1 2))) (continTritsValid $tail) False))
       ($bad False))))
 
@@ -33,9 +42,11 @@
 ;;   $exp: Same-direction step expansion multiplier.
 ;;   $trits: Remaining validated trit choices.
 ;;   Returns: Decoded numeric value after consuming choices up to STOP or end.
+
 (= (decodeContinTritList $val $step $allLeft $allRight $exp $trits)
    (case $trits
-     ((() $val)
+     (
+      (() $val)
       ((cons $head $tail)
        (if (== $head 0) $val
          (if (== $head 1)
@@ -57,6 +68,7 @@
 ;;   $spec: Knob's finite, valid geometric decoding parameters.
 ;;   $trits: Full raw slice, exactly the configured depth.
 ;;   Returns: mkCEvalError on invalid input or a checked decoded number.
+
 (= (decodeContinSlice $spec $trits)
    (if (continSpecValid $spec)
        (if (== (continListLength $trits) (continSpecDepth $spec))
@@ -72,18 +84,29 @@
 ;; Internal list helpers consume validated lengths/lists only.
 ;;   $xs: Input list.  $n: Number of leading values to retain.
 ;;   Returns: First n elements; caller must provide a valid range.
+
 (= (continTake $xs $n)
    (if (== $n 0) () (let (cons $head $tail) $xs (cons $head (continTake $tail (- $n 1))))))
+
 ;;   $xs: input list; $n: number of leading items to skip. Returns remaining suffix.
+
 (= (continDrop $xs $n)
    (if (== $n 0) $xs (let (cons $head $tail) $xs (continDrop $tail (- $n 1)))))
+
 ;;   $xs: first list (empty or cons); $ys: suffix list.
 ;;   Returns concatenation in original order.
+;; XXX --- can be replace by already existing utility functions
+
 (= (continAppend () $ys) $ys)
 (= (continAppend (cons $head $tail) $ys) (cons $head (continAppend $tail $ys)))
+
 ;;   $x: value to repeat; $n: nonnegative count. Returns an n-element list.
+;; XXX --- this also can be replaced with an existing utility helper
+
 (= (continRepeat $x $n) (if (== $n 0) () (cons $x (continRepeat $x (- $n 1)))))
 ;;   $xs: input list; $i: zero-based position. Returns item i (valid index required).
+;; XXX --- replace with utility helper
+
 (= (continAt $xs $i) (car-atom (continDrop $xs $i)))
 
 ;;   $trits: raw knob slice; $active: whether earlier trits have avoided STOP.
@@ -93,8 +116,10 @@
      ((() ())
       ((cons $head $tail)
        (cons (if $active $head 0) (canonicalContinTail $tail (and $active (not (== $head 0)))))))))
+
 ;;   $spec: validated knob parameters; $trits: exact-depth trit vector.
 ;;   Returns its canonical form or a structured spec/length/trit error.
+
 (= (canonicalContinSlice $spec $trits)
    (if (continSpecValid $spec)
        (if (== (continListLength $trits) (continSpecDepth $spec))
