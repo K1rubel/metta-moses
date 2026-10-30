@@ -197,11 +197,13 @@
 ;; path; if the table is noisy (duplicate input rows with conflicting
 ;; targets), 0 will be unreachable and the algorithm will instead
 ;; terminate via `maxGen`.
+
 (= (getBestPossibleScore) 0)
 
 ;; Return the ITable to evolve against. If --inputFile is set, load it from
 ;; a CSV via the Python helper; otherwise dispatch to the demo problem
 ;; function whose name is in (param problem).
+
 (= (resolve-itable)
    (if (== (param inputFile) "")
        (let $p (param problem) ($p))
@@ -232,6 +234,7 @@
 ;;   both    -> loud error + help (no silent precedence)
 ;;   neither -> help
 ;;   action  -> (moses-run-action)   table -> (moses-run)
+
 (= (moses)
    (let* (($actionConfigured (not (== (param fitness) ())))
           ($tableConfigured  (not (and (== (param problem)   ())
@@ -247,6 +250,7 @@
 ;; Shown when BOTH an action fitness and a table problem are configured:
 ;; there is no meaningful precedence between them, so the run refuses loudly
 ;; instead of silently picking one.
+
 (= (both-configured-error-and-exit)
    (let*
       (
@@ -261,6 +265,7 @@
 ;; Shown when (moses) is invoked with neither a table problem (--problem= /
 ;; --inputFile=) nor an action fitness (--fitness=). Falls through to
 ;; the standard --help dump so the user sees every knob and value.
+
 (= (no-problem-help-and-exit)
    (let*
       (
@@ -293,6 +298,7 @@
 ;; lets the shared action arms do the work. New action experiments instead
 ;; follow the fitness-package interface (ttt-action-registration / domain
 ;; files) and run via --fitness=<fn> or --domainFile=.
+
 (= (configure-ant-action-params)
    (let* (
           ($_1 (set-param fitness antFitness))
@@ -305,8 +311,9 @@
 
 (= (problem-context)
    (case (param problem)
-     ((linear (let $setup linearProblemContext ($setup)))
-      (sr (let $setupSr srProblemContext ($setupSr)))
+     (
+      (linear (linearProblemContext))
+      (sr (srProblemContext))
       (ant
         (let* (
                ($_        (configure-ant-action-params))
@@ -347,6 +354,7 @@
 ;; Single unified entry point for every domain family.
 ;; Reads all hyperparameters from &params; all domain-specific logic is
 ;; encapsulated in (problem-context) and the expand-deme.metta adapters.
+
 (= (moses-run)
    (let*
       (
@@ -457,9 +465,9 @@
      (case $optimizer
           (
             (hc hillClimbingOptimizer)
-            (univariate (let $configured configuredUnivariateOptimizer ($configured)))
-            (boa (let $configuredBOA configuredBOAOptimizer ($configuredBOA)))
-            (hboa (let $configuredHBOA configuredHBOAOptimizer ($configuredHBOA)))
+            (univariate (configuredUnivariateOptimizer))
+            (boa (configuredBOAOptimizer))
+            (hboa (configuredHBOAOptimizer))
             ;; (sa simulated-annealing)
             ($other (let*
                       (
