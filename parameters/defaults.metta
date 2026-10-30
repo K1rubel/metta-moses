@@ -166,6 +166,8 @@
 ;; ---- Population EDA (univariate; shared foundation for BOA/hBOA) ----
 ;; Explicit initial settings, not a claim of benchmark-optimal tuning.
 !(add-atom &params (edaPopulationSize 32))
+;; Detailed Step 14 mechanism traces. Adds I/O overhead; disabled for timing runs.
+!(add-atom &params (edaSearchTrace False))
 !(add-atom &params (edaSelectionSize 16))
 !(add-atom &params (edaOffspringSize 16))
 !(add-atom &params (edaTournamentSize 2))
