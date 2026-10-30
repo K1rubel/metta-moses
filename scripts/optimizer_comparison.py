@@ -21,6 +21,7 @@ import time
 
 from continuous_baseline import (ROOT, FIXTURES, analyze, fields, records,
                                 source_hash, file_hash, runtime_commit, summarize)
+from search_trace import analyze_search_trace
 
 
 def distribution(values):
@@ -88,7 +89,8 @@ def model_diagnostics(stdout):
             'local_fits': sum(r.get('localFits', 0) for r in fits),
             'score_cache_hits': sum(r.get('scoreCacheHits', 0) for r in fits),
             'unretained_proposals': sum(r['unretainedProposals'] for r in populations),
-            'fitting_stops': dict(Counter(r.get('stop', 'univariate') for r in fits))}
+            'fitting_stops': dict(Counter(r.get('stop', 'univariate') for r in fits)),
+            'search_trace': analyze_search_trace(stdout)}
 
 
 def paired_delta(left, right, key):
@@ -123,10 +125,16 @@ def comparison_summary(runs, algorithms):
                 group[key] = distribution(r[key] for r in rows if key in r)
             group['optimizer_stops'] = dict(Counter(o['stop'] for r in rows for o in r.get('optimizer_trace', [])))
             group['fitting_stops'] = dict(sum((Counter(r.get('fitting_stops', {})) for r in rows), Counter()))
+            detailed = [r['search_trace'] for r in rows if r.get('search_trace', {}).get('enabled')]
+            group['detailed_trace_runs'] = len(detailed)
+            group['search_mechanisms'] = {key: distribution(trace[key] for trace in detailed)
+                for key in ('invocations', 'duplicate_tournament_draws', 'duplicate_proposals',
+                            'rtr_attempts', 'rtr_rejections', 'split_support_rejections')}
             target_keys = sorted({t for r in rows for t in r.get('targets', {})})
             group['targets'] = {}
             for target in target_keys:
-                hits = [r['targets'][target] for r in rows if r.get('targets', {}).get(target) is not None]
+                hits = [r['targets'][target] for r in rows if not r.get('failure')
+                        and r.get('targets', {}).get(target) is not None]
                 group['targets'][target] = {'reached': len(hits), 'total': len(rows),
                     'calls_among_reached': distribution(h['evaluations'] for h in hits),
                     'search_seconds_among_reached': distribution(h['search_elapsed_seconds'] for h in hits)}
@@ -138,7 +146,8 @@ def comparison_summary(runs, algorithms):
             if left and right:
                 pairs[f'{name}:{treatment}-minus-{control}'] = {
                     key: paired_delta(left, right, key)
-                    for key in ('actual_evaluations', 'process_wall_seconds', 'model_fitting_seconds')}
+                    for key in ('actual_evaluations', 'process_wall_seconds', 'model_fitting_seconds',
+                                'test_rmse', 'test_extrapolation_rmse', 'program_complexity')}
     return {'groups': groups, 'paired_differences': pairs,
             'note': 'Call deltas are work consumed, not time-to-success when a run fails. '
                     'Unreached targets stay censored; target medians explicitly condition on reaching.'}
@@ -283,7 +292,7 @@ def main():
                             else:
                                 record.update(analyze(stdout, case, {**manifest, 'parameters': params}))
                             record.update(model_diagnostics(stdout))
-                        except (ValueError, KeyError, TypeError, OverflowError) as error:
+                        except (ValueError, KeyError, TypeError, OverflowError, IndexError) as error:
                             record['failure'] = str(error)
                 except subprocess.TimeoutExpired as error:
                     stdout = error.stdout or ''
