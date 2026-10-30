@@ -3,21 +3,27 @@
 ;; from 0..depth, then fair LEFT/RIGHT within that prefix, then STOP padding.
 ;; This is NOT uniform over legal vectors or decoded numbers. Discrete fields
 ;; use their schema cardinality. Every draw threads the shared explicit RNG.
+
 (= (legalSamplingFieldsValid $fields)
    (case $fields
-     ((() True)
+     (
+      (() True)
       ((cons $field $rest)
-       (if (and (<= (fieldCardinality $field) 2147483646) (< (fieldDepth $field) 2147483646))
-           (legalSamplingFieldsValid $rest) False)))))
+          (if (and (<= (fieldCardinality $field) 2147483646) (< (fieldDepth $field) 2147483646))
+            (legalSamplingFieldsValid $rest) False)))))
+
 (= (legalSamplingRngValid $rng)
    (if (continNatural $rng) (and (> $rng 0) (< $rng 2147483647)) False))
+
 (= (legalDraw $low $high $rng)
    (if (== $low $high) ($low $rng) (optimizerRandomInt $low $high $rng)))
+
 (= (sampleContinPrefix $length $rng)
    (if (== $length 0) (mkSampleValues () $rng)
        (let* ((($value $next) (legalDraw 1 2 $rng))
               ((mkSampleValues $tail $end) (sampleContinPrefix (- $length 1) $next)))
          (mkSampleValues (cons $value $tail) $end))))
+
 (= (sampleLegalFields $fields $rng)
    (case $fields
      ((() (mkSampleValues () $rng))
@@ -31,6 +37,7 @@
            (let* ((($value $nextDiscrete) (legalDraw 0 (- (fieldCardinality $field) 1) $rng))
                   ((mkSampleValues $tail $last) (sampleLegalFields $rest $nextDiscrete)))
              (mkSampleValues (cons $value $tail) $last)))))))
+
 (= (sampleLegalInstance $schema $rng)
    (if (fieldSchemaValid $schema)
        (if (and (legalSamplingFieldsValid (schemaFields $schema)) (legalSamplingRngValid $rng))
@@ -42,6 +49,7 @@
 ;; Bounded UNIQUE initialization. Defaults once, then at most maxAttempts fresh
 ;; draws (duplicates count). No rejection by phenotype/score, no hidden scorer
 ;; calls. Models/consumers must scope these instances to their representation.
+
 (= (legalPopulationFill $fields $wanted $left $rng $rows $count $proposals)
    (if (>= $count $wanted) (mkLegalPopulation $rows $rng $proposals sampleComplete)
        (if (== $left 0) (mkLegalPopulation $rows $rng $proposals sampleAttemptsExhausted)
@@ -51,6 +59,7 @@
              (legalPopulationFill $fields $wanted (- $left 1) $next
                (if $duplicate $rows (continAppend $rows ($inst)))
                (if $duplicate $count (+ $count 1)) (+ $proposals 1))))))
+
 (= (sampleLegalPopulation $schema $wanted $maxAttempts $rng)
    (if (fieldSchemaValid $schema)
        (if (and (and (continNatural $wanted) (continNatural $maxAttempts))
@@ -60,9 +69,15 @@
                  ((schemaDefaultInstance $schema)) 1 0))
            (mkCEvalError "InvalidSamplingConfiguration"))
        (mkCEvalError "InvalidFieldSchema")))
+
 (= (legalSampleInstance (mkLegalSample $inst $rng)) $inst)
+
 (= (legalSampleRng (mkLegalSample $inst $rng)) $rng)
+
 (= (legalPopulationInstances (mkLegalPopulation $rows $rng $proposals $reason)) $rows)
+
 (= (legalPopulationRng (mkLegalPopulation $rows $rng $proposals $reason)) $rng)
+
 (= (legalPopulationProposals (mkLegalPopulation $rows $rng $proposals $reason)) $proposals)
+
 (= (legalPopulationReason (mkLegalPopulation $rows $rng $proposals $reason)) $reason)
