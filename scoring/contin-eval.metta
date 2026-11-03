@@ -153,6 +153,11 @@
    (if (== (get-type $value) Number)
        (== (catch (py-call (builtins.int (py-call (math.isfinite $value))))) 1) False))
 
+!(get-type Inf)
+;; turns out conversion to float works with double quotations only
+!(py-call (builtins.float "5.3"))
+!(py-call (builtins.float "Inf"))
+!(get-type (py-call (float "Inf")))
 ;; continCheckedNumber: $value is the result of a numeric operation. Returns
 ;; mkCEvalOk with the unchanged value when finite, otherwise NonFinite error.
 
@@ -207,15 +212,18 @@
 
 (= (continEvalFold $op $children $env $acc)
    (case $children
-     ((() (mkCEvalOk $acc))
+     (
+      (() (mkCEvalOk $acc))
       ((cons $child $rest)
-       (case (continCall2 continEval $child $env)
-         (((mkCEvalError $reason) (mkCEvalError $reason))
+        (case (continEval $child $env)
+         (
+          ((mkCEvalError $reason) (mkCEvalError $reason))
           ((mkCEvalOk $value)
            (let $next (continCheckedNumber
                        (catch (if (== $op c_add) (+ $acc $value) (* $acc $value))))
              (case $next
-               (((mkCEvalError $failure) (mkCEvalError $failure))
+               (
+                ((mkCEvalError $failure) (mkCEvalError $failure))
                 ((mkCEvalOk $result)
                  (if (and (== $op c_mul) (continIsZero $result))
                      (mkCEvalOk $result)
@@ -229,12 +237,15 @@
 
 (= (continEvalUnary $op $children $env)
    (case $children
-     ((($child)
-       (case (continCall2 continEval $child $env)
-         (((mkCEvalError $reason) (mkCEvalError $reason))
+     (
+      (($child)
+       (case (continEval $child $env)
+         (
+          ((mkCEvalError $reason) (mkCEvalError $reason))
           ((mkCEvalOk $value)
            (case $op
-             ((c_log (if (<= $value 0) (mkCEvalError "LogNonPositive")
+             (
+              (c_log (if (<= $value 0) (mkCEvalError "LogNonPositive")
                          (continCheckedNumber (catch (py-call (math.log $value))))))
               (c_exp (continCheckedNumber (catch (py-call (math.exp $value)))))
               (c_sin (continCheckedNumber (catch (py-call (math.sin $value)))))))))))
@@ -247,13 +258,16 @@
 
 (= (continEvalDivision $children $env)
    (case $children
-     ((($numerator $denominator)
-       (case (continCall2 continEval $numerator $env)
-         (((mkCEvalError $reason) (mkCEvalError $reason))
+     (
+      (($numerator $denominator)
+       (case (continEval $numerator $env)
+         (
+          ((mkCEvalError $reason) (mkCEvalError $reason))
           ((mkCEvalOk $num)
            (if (continIsZero $num) (mkCEvalOk $num)
                (case (continCall2 continEval $denominator $env)
-                 (((mkCEvalError $denError) (mkCEvalError $denError))
+                 (
+                  ((mkCEvalError $denError) (mkCEvalError $denError))
                   ((mkCEvalOk $den)
                    (if (continIsZero $den) (mkCEvalError "DivisionByZero")
                        (continCheckedNumber (catch (/ $num $den))))))))))))
@@ -267,7 +281,8 @@
 
 (= (continEval $tree $env)
    (case $tree
-     (((mkTree (mkNode $op) $children)
+     (
+      ((mkTree (mkNode $op) $children)
        (case $op
          ((c_add (if (== $children ()) (mkCEvalError "ArityMismatch")
                      (continEvalFold c_add $children $env 0.0)))
