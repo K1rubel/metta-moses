@@ -55,7 +55,10 @@
    (selectionSort $xs (size-atom $xs) $op))
 
 ; (: List.length (-> (List $a) Number))
-(= (List.length $xs) (size-atom $xs))
+;(= (List.length $xs) (size-atom $xs))
+(= (List.length ()) 0)
+(= (List.length (cons $x $xs))
+  (+ 1 (List.length $xs)))
 
 ; (: List.map (-> (-> $a $b) (List $a) (List $b)))
 (= (List.map $f $xs) (map-atom $xs $x ($f $x)))

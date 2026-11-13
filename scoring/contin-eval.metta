@@ -69,7 +69,8 @@
 
 (= (isContinContext $context)
    (case $context
-     (((mkContinCtx $tbl $err $ratio $mode $target) True)
+     (
+      ((mkContinCtx $tbl $err $ratio $mode $target) True)
       ($other False))))
 
 ;; ------------------------------------------------------------------------------
@@ -153,11 +154,6 @@
    (if (== (get-type $value) Number)
        (== (catch (py-call (builtins.int (py-call (math.isfinite $value))))) 1) False))
 
-!(get-type Inf)
-;; turns out conversion to float works with double quotations only
-!(py-call (builtins.float "5.3"))
-!(py-call (builtins.float "Inf"))
-!(get-type (py-call (float "Inf")))
 ;; continCheckedNumber: $value is the result of a numeric operation. Returns
 ;; mkCEvalOk with the unchanged value when finite, otherwise NonFinite error.
 
@@ -178,10 +174,19 @@
 
 ;; continIsOperator: $op is a candidate AST operator/label. Returns True for
 ;; the supported continuous operators and False for every other atom.
+;; XXX -- to do this could be done using is-member very neatly
+;;(= (continIsOperator $op)
+;;   (case $op 
+;;    (
+;;      (c_add True) 
+;;      (c_mul True) 
+;;      (c_div True) 
+;;      (c_sin True)
+;;      (c_log True) 
+;;      (c_exp True) 
+;;      ($other False))))
 
-(= (continIsOperator $op)
-   (case $op ((c_add True) (c_mul True) (c_div True) (c_sin True)
-              (c_log True) (c_exp True) ($other False))))
+(= (continIsOperator $op) (is-member $op (c_add c_mul c_div c_sin c_log c_exp )))
 
 ;; continLookup: $label is an input feature name and $env is a list of
 ;; mkContinBinding(label,value) records. Returns the finite bound value, or
@@ -190,7 +195,8 @@
 
 (= (continLookup $label $env)
    (case $env
-     ((() (mkCEvalError "UnknownLabel"))
+     (
+      (() (mkCEvalError "UnknownLabel"))
       ((cons (mkContinBinding $key $value) $rest)
        (if (== $label $key) (continLiteral $value) (continLookup $label $rest)))
       ($badEnv (mkCEvalError "InvalidEnvironment")))))
@@ -309,8 +315,10 @@
      (((mkTree (mkNode $op) $children)
        (continCall1 continChildrenWellFormed $children))
       ($badTree False))))
+
 ;; continChildrenWellFormed: $children is a proper list of AST children.
 ;; Returns True only when every child subtree passes continTreeWellFormed.
+
 (= (continChildrenWellFormed $children)
    (case $children
      (
@@ -356,27 +364,34 @@
 
 ;; continFiniteColumn: $column is one table column. Returns True when it is a
 ;; proper list containing only finite numbers.
+;; XXX --- to do -> this could be done with fold
+;;(= (continFiniteColumn $column)
+;;   (case $column
+;;     (
+;;      (() True)
+;;      ((cons $value $rest)
+;;       (if (continFiniteNumber $value) (continFiniteColumn $rest) False))
+;;      ($badColumn False))))
 
-(= (continFiniteColumn $column)
-   (case $column
-     (
-      (() True)
-      ((cons $value $rest)
-       (if (continFiniteNumber $value) (continFiniteColumn $rest) False))
-      ($badColumn False))))
+(= (continFiniteColumn $column)  (foldl-atom $column True $acc $val (and (continFiniteNumber $val) $acc)))
 
 ;; continValidColumns: $columns is a list of table columns and $n is the
 ;; required row count. Returns True when every column is finite and has length n.
+;; XXX --- to do -- use fold for this one too
 
-(= (continValidColumns $columns $n)
-   (case $columns
-     (
-      (() True)
-      ((cons $column $rest)
-       (if (and (== (continListLength $column) $n) (continFiniteColumn $column))
-           (continValidColumns $rest $n) False))
-      ($badColumns False))))
+;;(= (continValidColumns $columns $n)
+;;   (case $columns
+;;     (
+;;      (() True)
+;;      ((cons $column $rest)
+;;       (if (and (== (continListLength $column) $n) (continFiniteColumn $column))
+;;           (continValidColumns $rest $n) 
+;;           False))
+;;      ($badColumns False))))
 
+(= (continValidColumns $columns $n) 
+  (foldl-atom $columns True $acc $column 
+                                        (and $acc (and (== (continListLength $column) $n) (continFiniteColumn $column)))))
 ;; continSplitTable: 
 ;;      $columns is validated column-major data and 
 ;;      $labels is its header (inputs followed by target). 

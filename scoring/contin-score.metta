@@ -62,21 +62,31 @@
 ;; A single dispatcher prevents overlapping clauses from producing duplicate
 ;; answers under PeTTa. Unknown internal operators follow C++'s zero weight;
 ;; operator/arity validation is the evaluator's responsibility.
-(= (continOperatorCost $op)
-   (case $op
-     ((c_div 1) (c_exp 1) (c_log 1) (c_sin 1) ($other 0))))
+;; XXX -- to do --> this could be done in a simpler manner
+;;(= (continOperatorCost $op)
+;;   (case $op
+;;     (
+;;      (c_div 1) 
+;;      (c_exp 1) 
+;;      (c_log 1) 
+;;      (c_sin 1) 
+;;      ($other 0))))
+(= (continOperatorCost $op) 
+  (if (is-member $op (c_div c_exp c_log c_sin)) 1 0)
 
 ;; Empty c_add/c_mul are still operator nodes, not unit-cost variable leaves.
 (= (continLeafCost $value)
    (case $value
-     ((c_add 0) (c_mul 0) ($other 1))))
+     (
+      (c_add 0) (c_mul 0) ($other 1))))
 
 ;; C++ tree_complexity stops at *(0 subtree) during knob probing. Match numeric
 ;; zero (both integer and float), not an arbitrary variable label or expression.
 ;; XXX -- the if clause could be avoided
 (= (continZeroProduct $op $children)
    (case ($op $children)
-     (((c_mul (cons (mkTree (mkNode $value) ()) $rest))
+     (
+      ((c_mul (cons (mkTree (mkNode $value) ()) $rest))
        (if (== (get-type $value) Number)
            (and (<= $value 0) (>= $value 0)) 
            False))
