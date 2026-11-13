@@ -198,3 +198,240 @@ def load_continuous_table_result(path, target_feature=""):
         return load_continuous_table(path, target_feature)
     except (OSError, ValueError, csv.Error) as error:
         return "(mkCEvalError {})".format(json.dumps(str(error), ensure_ascii=False))
+
+
+# ===========================================================================
+# Generalised table loader  (mirrors C++ MOSES table_io.cc two-pass pipeline)
+# ===========================================================================
+
+from enum import Enum, auto
+
+
+class _ColType(Enum):
+    """Inferred column domain, ordered from most to least specific.
+
+    Widening order (matches C++ infer_type_from_token2):
+        BOOLEAN  ->  CONTIN  ->  ENUM
+    """
+    BOOLEAN = auto()
+    CONTIN  = auto()
+    ENUM    = auto()
+
+
+# Tokens that are unambiguously boolean (matches C++ infer_type_from_token).
+_BOOL_TOKENS = frozenset({"0", "1", "T", "F", "t", "f"})
+
+# Tokens that the existing load_boolean_table also accepts as boolean aliases.
+_BOOL_ALIASES = {
+    "true": "True",  "false": "False",
+    "yes":  "True",  "no":    "False",
+}
+
+
+def _infer_token_type(token):
+    """Return the most specific _ColType for a single string token.
+
+    Mirrors C++ infer_type_from_token:
+      {0,1,T,F,t,f}      -> BOOLEAN
+      starts with alpha   -> ENUM
+      parseable as float  -> CONTIN
+      anything else       -> ENUM  (ill-formed; same C++ fallback)
+    """
+    t = token.strip()
+    if t in _BOOL_TOKENS:
+        return _ColType.BOOLEAN
+    if t and t[0].isalpha():
+        return _ColType.ENUM
+    try:
+        float(t)
+        return _ColType.CONTIN
+    except ValueError:
+        return _ColType.ENUM
+
+
+def _widen_type(current, token):
+    """Return the new column type after seeing *token*, given *current* belief.
+
+    Mirrors C++ infer_type_from_token2 widening rules:
+      BOOLEAN + CONTIN-token  -> CONTIN   (0/1 are valid floats; widen)
+      CONTIN  + BOOLEAN-token -> CONTIN   (0/1 also valid; keep the wider type)
+      any other conflict      -> ENUM     (safe catch-all)
+    """
+    if current is _ColType.ENUM:
+        return _ColType.ENUM        # already at the top; stay there
+    new = _infer_token_type(token)
+    if new is current:
+        return current              # consistent; no change
+    if current is _ColType.BOOLEAN and new is _ColType.CONTIN:
+        return _ColType.CONTIN      # widen boolean -> contin
+    if current is _ColType.CONTIN and new is _ColType.BOOLEAN:
+        return _ColType.CONTIN      # 0/1 are valid floats; keep contin
+    return _ColType.ENUM            # any other conflict -> enum
+
+
+# Comment prefixes recognised by the C++ get_data_line() function.
+_COMMENT_CHARS = frozenset("#;!")
+
+
+def _read_all_rows(path):
+    """Parse the CSV at *path* and return all non-comment rows as list[list[str]].
+
+    * UTF-8 BOM is stripped transparently (utf-8-sig).
+    * strict=True makes malformed quoting raise csv.Error immediately.
+    * Comment lines (first non-whitespace char in {#, ;, !}) are skipped,
+      matching the C++ get_data_line() behaviour.
+    """
+    with open(path, encoding="utf-8-sig", newline="") as fh:
+        reader = csv.reader(fh, strict=True)
+        try:
+            rows = list(reader)
+        except csv.Error as err:
+            raise csv.Error(f"row {reader.line_num}: malformed CSV: {err}") from err
+
+    return [
+        row for row in rows
+        if not (row and row[0].lstrip() and row[0].lstrip()[0] in _COMMENT_CHARS)
+    ]
+
+
+def _infer_col_types(body, ncols):
+    """Infer the _ColType of each column by scanning the data body rows.
+
+    Starts every column at BOOLEAN (most specific) and widens upward as
+    needed, mirroring C++ infer_column_types / infer_type_from_token2.
+    """
+    types = [_ColType.BOOLEAN] * ncols
+    for row in body:
+        for ci, cell in enumerate(row):
+            types[ci] = _widen_type(types[ci], cell)
+    return types
+
+
+def _to_metta_literal(token, col_type):
+    """Convert a raw CSV token to its MeTTa literal string.
+
+    BOOLEAN -> True / False  (C++ token_to_boolean)
+    CONTIN  -> repr(float)   (round-trips binary64; C++ token_to_contin)
+    ENUM    -> bare atom     (C++ token_to_vertex enum branch)
+    """
+    t = token.strip()
+    if col_type is _ColType.BOOLEAN:
+        lower = t.lower()
+        if lower in _BOOL_ALIASES:
+            return _BOOL_ALIASES[lower]
+        if t in {"1", "T", "t"}:
+            return "True"
+        if t in {"0", "F", "f"}:
+            return "False"
+        raise ValueError(f"cannot convert {token!r} to boolean literal")
+    if col_type is _ColType.CONTIN:
+        return repr(float(t))
+    # ENUM: return the token as a bare MeTTa atom.
+    return t
+
+
+def load_table(path, target_feature=""):
+    """Generalised CSV -> column-major MeTTa mkITable loader.
+
+    Performs two passes over the CSV, mirroring the C++ MOSES pipeline in
+    table_io.cc (istreamTable / inferTableAttributes / istreamDenseTable):
+
+      Pass 1  Read all rows as strings; infer per-column types using the
+              boolean < contin < enum widening hierarchy.
+      Pass 2  Convert every cell to its typed MeTTa literal; build the
+              column-major data structure; reorder so the target column is last.
+
+    The first (non-comment) row is always treated as a header (column labels),
+    consistent with both load_boolean_table and load_continuous_table.
+
+    Args:
+        path           : filesystem path to the CSV.
+        target_feature : name of the output column.  Empty/None means
+                         "use the last column as-is" (MeTTa convention).
+
+    Returns:
+        str  - an S-expression of the form
+               (mkITable (<col0> <col1> ... <colN>) ("lbl0" "lbl1" ... "lblN"))
+               where each inner list is one complete column (column-major),
+               and the last inner list / label is the target.
+
+    Raises:
+        FileNotFoundError : path does not exist.
+        ValueError        : empty file, header-only file, ragged rows,
+                            unknown target column, or un-convertible cell.
+        csv.Error         : malformed CSV quoting.
+    """
+    rows = _read_all_rows(path)
+
+    if not rows:
+        raise ValueError(f"{path!r}: empty CSV")
+
+    # --- header ----------------------------------------------------------
+    labels = [lbl.strip() for lbl in rows[0]]
+    if not labels:
+        raise ValueError("row 1: missing header columns")
+
+    seen = set()
+    for idx, lbl in enumerate(labels, 1):
+        if not lbl:
+            raise ValueError(f"row 1, column {idx}: empty header label")
+        if lbl in seen:
+            raise ValueError(f"row 1, column {idx}: duplicate header {lbl!r}")
+        seen.add(lbl)
+
+    body = rows[1:]
+    if not body:
+        raise ValueError(f"{path!r}: header only, no data rows")
+
+    ncols = len(labels)
+
+    # --- validate row widths ---------------------------------------------
+    for r_num, row in enumerate(body, start=2):
+        if len(row) != ncols:
+            raise ValueError(f"row {r_num}: {len(row)} columns, expected {ncols}")
+
+    # --- resolve target column index -------------------------------------
+    if target_feature in ("", None):
+        target_idx = ncols - 1
+    elif target_feature in labels:
+        target_idx = labels.index(target_feature)
+    else:
+        raise ValueError(
+            f"target feature {target_feature!r} not found in columns {labels!r}"
+        )
+
+    # column order: all non-target columns first, then target last.
+    col_order = [i for i in range(ncols) if i != target_idx] + [target_idx]
+    out_labels = [labels[i] for i in col_order]
+
+    # --- pass 1 : infer column types -------------------------------------
+    col_types_orig = _infer_col_types(body, ncols)
+    col_types = [col_types_orig[i] for i in col_order]
+
+    # --- pass 2 : convert cells -> column-major MeTTa literals -----------
+    columns = [[] for _ in range(ncols)]
+
+    for r_num, row in enumerate(body, start=2):
+        for out_idx, in_idx in enumerate(col_order):
+            cell = row[in_idx]
+            ctype = col_types[out_idx]
+            try:
+                literal = _to_metta_literal(cell, ctype)
+            except (ValueError, OverflowError) as exc:
+                raise ValueError(
+                    f"row {r_num}, column {in_idx + 1} ({labels[in_idx]!r}): {exc}"
+                ) from exc
+            columns[out_idx].append(literal)
+
+    # --- serialise -------------------------------------------------------
+    columns_sexpr = _expr_list(_expr_list(col) for col in columns)
+    labels_sexpr  = _expr_list(json.dumps(lbl, ensure_ascii=False) for lbl in out_labels)
+    return f"(mkITable {columns_sexpr} {labels_sexpr})"
+
+
+def load_table_result(path, target_feature=""):
+    """MeTTa bridge: return a parseable mkITable or a tagged mkCEvalError."""
+    try:
+        return load_table(path, target_feature)
+    except (OSError, ValueError, csv.Error) as error:
+        return "(mkCEvalError {})".format(json.dumps(str(error), ensure_ascii=False))
